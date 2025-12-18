@@ -1,0 +1,51 @@
+
+#pragma once
+
+#include "storage/registry.h"
+#include "components/components.h"
+#include "components/tags.h"
+#include "spawners/notifications/notification.h"
+#include "resources/assets.h"
+
+namespace sys::dmg {
+    inline void ApplyDamage(Storage::Registry& world) {
+        for (auto entity : world.View<cmpt::Health, cmpt::DamageReceiver>()) {
+            auto& hp = world.GetComponent<cmpt::Health>(entity);
+            auto& dmg = world.GetComponent<cmpt::DamageReceiver>(entity);
+            if (dmg.total <= 0) {
+                continue;
+            }
+
+            if (world.HasComponent<cmpt::Invulnerable>(entity)) {
+                dmg.total = 0;
+                continue;
+            }
+
+            if (world.HasComponent<tag::Player>(entity)) {
+                world.AddComponent<cmpt::Invulnerable>(entity, 5.0f);
+                spwn::noti::Notification(
+                    world, 
+                    std::string("- " + std::to_string(dmg.total) + " HP, GAIN INVUL")
+                );
+            }
+            
+            world.AddComponent<cmpt::DamageFlash>(
+                entity, 
+                cmpt::DamageFlash{ .duration = 0.1f }
+            );
+
+            hp.amount -= dmg.total;
+            dmg.total = 0;
+            PlaySound(rsrc::asset::damage_fx);
+            SetSoundPitch(rsrc::asset::damage_fx, (float)GetRandomValue(9, 15) * 0.1f);
+
+            if (hp.amount <= 0) {
+                world.AddComponent<cmpt::DeathAnimation>(
+                    entity, 
+                    cmpt::DeathAnimation{ .duration = 0.5f }
+                );
+                //world.AddComponent<tag::Destroy>(entity);
+            }
+        }
+    }
+}

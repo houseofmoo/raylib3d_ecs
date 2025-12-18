@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.15)
+project(RL_IMGUI LANGUAGES C CXX)
+
+# cpp version
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# c version
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+
+set(RL_IMGUI_SOURCES
+    rlImGui.cpp
+)
+
+include_directories(./)
+
+add_library(${PROJECT_NAME} STATIC ${RL_IMGUI_SOURCES})
