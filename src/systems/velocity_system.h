@@ -6,7 +6,6 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 namespace sys::vel {
     // ApplyMovement
@@ -15,9 +14,7 @@ namespace sys::vel {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& vel = world.GetComponent<cmpt::Velocity>(entity);
 
-            trans.position.x += vel.x * delta_time;
-            trans.position.y += vel.y * delta_time;
-            trans.position.z += vel.z * delta_time;
+            trans.position = Vector3Add(trans.position, Vector3Scale(vel, delta_time));
         }
     }
 

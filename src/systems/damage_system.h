@@ -3,8 +3,7 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "components/tags.h"
-#include "spawners/notifications/notification.h"
+#include "spawners/events/notification.h"
 #include "resources/assets.h"
 
 namespace sys::dmg {
@@ -31,7 +30,7 @@ namespace sys::dmg {
                 // while invulnerable do not interact with enemies
                 col.mask = col.mask & ~data::layer::ENEMY;
 
-                spwn::noti::Notification(
+                spwn::evt::Notification(
                     world, 
                     std::string("- " + std::to_string(dmg.total) + " HP, GAIN INVUL")
                 );

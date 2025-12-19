@@ -4,7 +4,6 @@
 #include "data/player/player.h"
 #include "resources/assets.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 namespace spwn::loot {
     Vector3 FuzzPosition(Vector3 position) {
@@ -41,7 +40,10 @@ namespace spwn::loot {
                 .layer = data::layer::LOOT,
                 .mask = data::layer::PLAYER,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = Vector3Scale(data::size::EXP, data::player::g_player.pickup_range_multiplier)
+                .size = Vector3Scale(
+                    data::size::MinColldierSize(data::size::EXP),
+                    data::player::g_player.pickup_range_multiplier
+                )
             }
         );
 
@@ -90,7 +92,10 @@ namespace spwn::loot {
                 .layer = data::layer::LOOT,
                 .mask = data::layer::PLAYER,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = Vector3Scale(data::size::MONEY, data::player::g_player.pickup_range_multiplier)
+                .size = Vector3Scale(
+                    data::size::MinColldierSize(data::size::MONEY),
+                    data::player::g_player.pickup_range_multiplier
+                )
             }
         );
 
@@ -144,7 +149,10 @@ namespace spwn::loot {
                 .layer = data::layer::LOOT,
                 .mask = data::layer::PLAYER,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = Vector3Scale(data::size::POWERUP, data::player::g_player.pickup_range_multiplier)
+                .size = Vector3Scale(
+                    data::size::MinColldierSize(data::size::POWERUP),
+                    data::player::g_player.pickup_range_multiplier
+                )
             }
         );
 
@@ -198,7 +206,10 @@ namespace spwn::loot {
                 .layer = data::layer::LOOT,
                 .mask = data::layer::PLAYER,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = Vector3Scale(data::size::WEAPON, data::player::g_player.pickup_range_multiplier)
+                .size = Vector3Scale(
+                    data::size::MinColldierSize(data::size::WEAPON),
+                    data::player::g_player.pickup_range_multiplier
+                )
             }
         );
 

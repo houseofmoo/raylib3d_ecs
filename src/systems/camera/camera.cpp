@@ -2,7 +2,6 @@
 
 #include "raymath.h"
 #include "components/components.h"
-#include "components/tags.h"
 #include "data/entity.h"
 
 

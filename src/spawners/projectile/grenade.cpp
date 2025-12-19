@@ -4,7 +4,6 @@
 #include "data/entity.h"
 #include "resources/assets.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 namespace spwn::proj {
     void Grenade(Storage::Registry& world, const Vector3 start_pos,

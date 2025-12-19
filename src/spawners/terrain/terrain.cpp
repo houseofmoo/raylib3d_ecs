@@ -1,7 +1,6 @@
 #include "spawners/terrain/terrain.h"
 #include "raymath.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 namespace spwn::terrain {
     void Terrain(Storage::Registry& world, const Vector3 position, const Vector3 size, const bool visible) {

@@ -1,8 +1,7 @@
-#include "systems/collision/entity_collision_system.h"
+#include "systems/collisions/entity_collision_system.h"
 
 #include <vector>
 #include "components/components.h"
-#include "components/tags.h"
 #include "utils/rl_utils.h"
 #include "utils/profiler.h"
 

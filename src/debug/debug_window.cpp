@@ -6,7 +6,6 @@
 #include "utils/profiler.h"
 
 #include "components/components.h"
-#include "components/tags.h"
 
 namespace debug {
     static bool show_demo_window = false;

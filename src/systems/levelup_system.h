@@ -1,10 +1,11 @@
+#pragma once
 
-#include "systems/player/player_levelup.h"
-#include "spawners/notifications/notification.h"
+#include "storage/registry.h"
+#include "spawners/events/notification.h"
 #include "data/player/player.h"
 
-namespace sys::player {
-    void PlayerLevelup(Storage::Registry& world) {
+namespace sys::lvl {
+    inline void PlayerLevelup(Storage::Registry& world) {
         if (data::player::g_player.exp >= data::player::g_player.exp_to_next_level) {
             data::player::g_player.level += 1;
             data::player::g_player.exp_to_next_level *= 1.2f;
@@ -16,7 +17,7 @@ namespace sys::player {
             data::player::g_player.pickup_range_multiplier += 0.1f;
             // player some animation/sound effect
 
-            spwn::noti::Notification(world, std::string("LVL UP " + std::to_string(data::player::g_player.level)));
+            spwn::evt::Notification(world, std::string("LVL UP " + std::to_string(data::player::g_player.level)));
         }
     }
 }

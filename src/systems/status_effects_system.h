@@ -2,7 +2,7 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "spawners/notifications/notification.h"
+#include "spawners/events/notification.h"
 
 namespace sys::se {
     inline void ApplyStatusEffects(Storage::Registry& world) {
@@ -27,7 +27,7 @@ namespace sys::se {
                 }
                 world.RemoveComponent<cmpt::Invulnerable>(entity);
                 
-                spwn::noti::Notification(
+                spwn::evt::Notification(
                     world, 
                     std::string("-INVUL")
                 );

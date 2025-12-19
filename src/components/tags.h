@@ -1,16 +1,14 @@
-#pragma once
+// #pragma once
 
-#include "raylib.h"
+// #include "raylib.h"
 
-namespace tag {
-    struct Player {};
-    struct Weapon {};
-    struct Projectile {};
-    // struct Bullet {};
-    // struct Grenade {};
-    struct Enemy {};
-    struct Destroy {};
-    struct Terrain {};
-
-    struct DropsLoot {};
-}
+// namespace tag {
+//     struct Player {};
+//     struct Weapon {};
+//     struct Projectile {};
+//     struct Enemy {};
+//     struct Destroy {};
+//     struct Terrain {};
+//     struct DropsLoot {};
+//     struct Event {};
+// }

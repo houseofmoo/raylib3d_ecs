@@ -4,42 +4,35 @@
 // #include <cmath>
 // #include <string>
 #include <format>
-
 #include "rlgl.h"
 
 #include "data/player/player.h"
 #include "data/game/game.h"
 #include "resources/assets.h"
+#include "utils/print.h"
 
 #include "spawners/camera/camera.h"
-#include "spawners/enemy/enemy.h"
 #include "spawners/map/map.h"
 #include "spawners/player/player.h"
 #include "spawners/weapon/pistol.h"
 
-#include "systems/ai/ai.h"
+#include "systems/animation_system.h"
+#include "systems/attack_system.h"
 #include "systems/camera/camera.h"
-#include "systems/collision/entity_collision_system.h"
-#include "systems/collision/collision_handlers.h"
+#include "systems/cleanup_system.h"
+#include "systems/collisions/entity_collision_system.h"
+#include "systems/collisions/collision_handlers.h"
+#include "systems/constraint.h"
 #include "systems/damage_system.h"
-#include "systems/enemy/timed_spawn.h"
+#include "systems/drop_loot.h"
+#include "systems/timed_spawn_system.h"
+#include "systems/events/loot_pickedup_event_system.h"
+#include "systems/events/notification_event_system.h"
 #include "systems/input_system.h"
 #include "systems/movement_system.h"
-#include "systems/terrain_collision.h"
-#include "systems/velocity_system.h"
-
-
-#include "systems/attack_system.h"
-#include "systems/drop_loot.h"
-#include "systems/animation_system.h"
-#include "systems/player/player_levelup.h"
-#include "systems/cleanup_system.h"
+#include "systems/levelup_system.h"
 #include "systems/status_effects_system.h"
-#include "systems/constraint.h"
-#include "systems/notification/notification.h"
-
-
-#include "utils/print.h"
+#include "systems/velocity_system.h"
 
 namespace sys {
     Camera3D camera;
@@ -76,7 +69,7 @@ namespace sys {
         // also re-add the sound for pickups
 
         // spawn additional enemies
-        sys::enemy::SpawnEnemyInterval(world, boundary, delta_time);
+        sys::SpawnEnemyInterval(world, boundary, delta_time);
         
         // input/move ai move intent
         sys::input::PlayerInput(world, camera);
@@ -121,10 +114,11 @@ namespace sys {
         // sys::proj::BulletTerrainCollision(world);
         // sys::player::PlayerTerrainCollision(world);
 
-        sys::player::PlayerLevelup(world);
+        sys::lvl::PlayerLevelup(world);
         sys::SpawnAnimation(world);
         sys::DeathAnimation(world, delta_time);
         sys::loot::LootDrop(world);
+        sys::evt::HandleLootPickedupEvents(world);
         sys::cleanup::Cleanup(world, delta_time);
         sys::ConstraintToWorld(world, boundary);
     }
@@ -191,6 +185,6 @@ namespace sys {
         DrawText(std::format("Level: {}", data::player::g_player.level).c_str(), 30, 100, 20, RAYWHITE);
         DrawText(std::format("Difficulty : {}", data::game::g_difficulty_level).c_str(), 30, 140, 20, RAYWHITE);
         DrawText(std::format("Enemies Defeated: {}", data::player::g_player.enemies_defeated).c_str(), 30, 160, 20, RAYWHITE);
-        sys::noti::DrawNotifications(world, delta_time);
+        sys::evt::DrawNotifications(world, delta_time);
     }
 }

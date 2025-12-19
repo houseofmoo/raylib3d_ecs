@@ -3,7 +3,6 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 namespace sys {
     inline void ConstraintToWorld(Storage::Registry& world, const BoundingBox world_boundary) {

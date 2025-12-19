@@ -99,4 +99,13 @@ namespace utils {
             dir.x * s + dir.z * c
         };
     }
+
+    inline Vector3 FlattenAndNormalize(Vector3 vec) noexcept {
+        vec.y = 0.0f;
+        return Vector3Normalize(vec);
+    }
+
+    inline Vector3 Direction(const Vector3& me, const Vector3& them) noexcept {
+        return Vector3Subtract(them, me);
+    }
 }

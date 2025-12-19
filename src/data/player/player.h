@@ -6,6 +6,7 @@ namespace data::player {
     struct Player {
         Entity id;
         int level;
+        int money;
         int exp;
         int exp_to_next_level;
         int enemies_defeated;

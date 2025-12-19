@@ -5,12 +5,17 @@
 #include "raylib.h"
 #include "data/entity.h"
 #include "data/loot.h"
-// #include "components/stats.h"
-// #include "components/loot.h"
-// #include "components/weapon.h"
-// #include "components/notifications.h"
-// #include "components/status_effects.h"
-// #include "components/animations.h"
+
+namespace tag {
+    struct Player {};
+    struct Weapon {};
+    struct Projectile {};
+    struct Enemy {};
+    struct Destroy {};
+    struct Terrain {};
+    struct DropsLoot {};
+    struct Event {};
+}
 
 namespace cmpt {
     ////////////////////////////////////////////////
@@ -151,10 +156,6 @@ namespace cmpt {
         data::loot::LootKind kind;
     };
 
-    struct LootRequest {
-        data::loot::LootKind kind;
-    };
-
     struct WeaponStats {
         Entity parent;
         data::loot::WeaponKind kind;
@@ -169,10 +170,15 @@ namespace cmpt {
     };
 
     ////////////////////////////////////////////////
-    // NOTIFICATIONS
+    // EVENTS
     ////////////////////////////////////////////////
     struct Notification {
         int notification_index;
+    };
+
+    struct LootEvent {
+        Entity id;
+        data::loot::LootKind kind;
     };
 
     ////////////////////////////////////////////////

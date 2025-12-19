@@ -3,7 +3,6 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "components/tags.h"
 #include "data/player/player.h"
 #include "utils/rl_utils.h"
 

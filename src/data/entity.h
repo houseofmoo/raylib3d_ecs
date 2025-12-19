@@ -37,10 +37,20 @@ namespace data {
     namespace size {
         constexpr Vector3 PLAYER = { 1.0f, 2.0f, 1.0f };
         constexpr Vector3 PROJECTILE = { 0.25f, 0.25f, 0.25f };
-        constexpr Vector3 ENEMY = {1.0f, 1.5f, 1.0f};
+        constexpr Vector3 GRUNT = {1.0f, 1.5f, 1.0f};
+        constexpr Vector3 BRUTE = {1.5f, 2.5f, 1.5f};
         constexpr Vector3 EXP = {0.3f, 0.3f, 0.3f};
         constexpr Vector3 MONEY = {0.3f, 0.3f, 0.3f};
         constexpr Vector3 POWERUP = {0.5f, 0.5f, 0.5f};
         constexpr Vector3 WEAPON = {1.25f, 0.35f, 0.35f};
+
+
+        inline Vector3 MinColldierSize(Vector3 vec) {
+            // min collider size
+            if (vec.x * vec.y * vec.z < 0.125f) {
+                return Vector3{0.5f, 0.5f, 0.5f};
+            }
+            return vec;
+        }
     }
 }

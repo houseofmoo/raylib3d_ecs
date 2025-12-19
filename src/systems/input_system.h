@@ -5,7 +5,6 @@
 #include "storage/registry.h"
 #include "systems/player/player_input.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 #include "utils/print.h"
 
@@ -89,7 +88,7 @@ namespace sys::input {
                 }
 
                 case cmpt::MoveIntentType::Random: {
-                    Vector3 dir = Vector3Subtract(ptrans->position, trans.position);
+                    Vector3 dir = utils::Direction(trans.position, ptrans->position);
                     dir = Vector3{
                         dir.x + GetRandomValue(-100, 100),
                         dir.y = 0.0f,

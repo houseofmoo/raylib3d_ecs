@@ -6,7 +6,6 @@
 #include "data/player/player.h"
 #include "spawners/projectile/bullet.h"
 #include "components/components.h"
-#include "components/tags.h"
 #include "utils/rl_utils.h"
 
 namespace sys::atk {
@@ -59,11 +58,10 @@ namespace sys::atk {
                 continue;
             }
 
-            Vector3 direction = Vector3Subtract(parent_input->mouse_world_position, parent_trans->position);
-            if (Vector3LengthSqr(direction) < 0.000001f) continue;
-            direction = Vector3Normalize(direction);
-            direction = Vector3 { direction.x * stats.projectile_speed, 0.0f, direction.z * stats.projectile_speed };
-
+            Vector3 direction = utils::Direction(parent_trans->position, parent_input->mouse_world_position);
+            direction = utils::FlattenAndNormalize(direction);
+            direction = Vector3Scale(direction, stats.projectile_speed);
+    
             // if (stats.pellet_count <= 1) {
                 spwn::proj::Bullet(
                     world, 

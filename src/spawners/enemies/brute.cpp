@@ -1,32 +1,31 @@
-#include "spawners/enemy/enemy.h"
+#include "spawners/enemies/brute.h"
 
 #include "raymath.h"
 #include "data/entity.h"
 #include "resources/assets.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 namespace spwn::enemy {
-    void Enemy(Storage::Registry& world, const Vector3 position, const int hp) {
+    void Brute(Storage::Registry& world, const Vector3 position, const int hp) {
 
-        auto enemy = world.CreateEntity();
+        auto brute = world.CreateEntity();
 
         // for drop in animation
         Vector3 start_position = Vector3{ position.x, 50.0f, position.z };
-        Vector3 end_position = Vector3{ position.x, data::size::ENEMY.y * 0.5f, position.z };
+        Vector3 end_position = Vector3{ position.x, data::size::BRUTE.y * 0.5f, position.z };
         
         world.AddComponent<tag::Enemy>(
-            enemy,
+            brute,
             tag::Enemy{}
         );
 
         world.AddComponent<tag::DropsLoot>(
-            enemy,
+            brute,
             tag::DropsLoot{}
         );
         
         world.AddComponent<cmpt::Transform>(
-            enemy,
+            brute,
             cmpt::Transform{ 
                 .position = start_position,
                 .rotation = QuaternionIdentity()
@@ -34,12 +33,12 @@ namespace spwn::enemy {
         );
         
         world.AddComponent<cmpt::Velocity>(
-            enemy,
+            brute,
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
         world.AddComponent<cmpt::MoveIntent>(
-            enemy,
+            brute,
             cmpt::MoveIntent{
                 .type = cmpt::MoveIntentType::Melee,
                 .direction = Vector3Zero()
@@ -47,41 +46,41 @@ namespace spwn::enemy {
         );
 
         world.AddComponent<cmpt::Collider>(
-            enemy,
+            brute,
             cmpt::Collider{
                 .layer = data::layer::ENEMY,
                 .mask = data::layer::PLAYER | data::layer::PROJECTILE | data::layer::TERRAIN,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = data::size::ENEMY
+                .size = data::size::MinColldierSize(data::size::BRUTE)
             }
         );
 
         world.AddComponent<cmpt::Health>(
-            enemy,
-            cmpt::Health{ hp }
+            brute,
+            cmpt::Health{ hp * 2 }
         );
 
         world.AddComponent<cmpt::DamageReceiver>(
-            enemy,
+            brute,
             cmpt::DamageReceiver{ 0 }
         );
 
         world.AddComponent<cmpt::Speed>(
-            enemy,
+            brute,
             cmpt::Speed{ 
-                .speed = 5.0f, 
+                .speed = 3.5f, 
                 .speed_multiplier = 1.0f, 
                 .dash_multiplier = 1.0f,
             }
         );
 
         world.AddComponent<cmpt::DamageDealer>(
-            enemy,
-            cmpt::DamageDealer{5}
+            brute,
+            cmpt::DamageDealer{10}
         );
 
         world.AddComponent<cmpt::SpawnAnimation>(
-            enemy,
+            brute,
             cmpt::SpawnAnimation{
                 .start_position = start_position,
                 .end_position = end_position
@@ -89,11 +88,11 @@ namespace spwn::enemy {
         );
         
         world.AddComponent<cmpt::Draw>(
-            enemy,
+            brute,
             cmpt::Draw{ 
-                .size = data::size::ENEMY, 
-                .color = MAGENTA, 
-                .model = &rsrc::asset::enemy_model,
+                .size = data::size::BRUTE, 
+                .color = Color{ 255, 100, 255, 255 }, 
+                .model = &rsrc::asset::brute_model,
             }
         );
     }

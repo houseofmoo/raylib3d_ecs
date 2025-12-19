@@ -1,6 +1,5 @@
 #include "spawners/weapon/pistol.h"
 #include "components/components.h"
-#include "components/tags.h"
 #include "data/loot.h"
 
 namespace spwn::weapon {

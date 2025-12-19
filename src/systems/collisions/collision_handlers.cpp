@@ -1,9 +1,11 @@
-#include "systems/collision/collision_handlers.h"
+#include "systems/collisions/collision_handlers.h"
 
+#include "data/loot.h"
+#include "data/player/player.h"
 #include "storage/collision_pairs.h"
-#include "systems/collision/entity_collision_system.h"
+#include "systems/collisions/entity_collision_system.h"
 #include "components/components.h"
-#include "components/tags.h"
+#include "spawners/events/loot_received_event.h"
 #include "utils/rl_utils.h"
 #include "utils/profiler.h"
 
@@ -97,16 +99,48 @@ namespace sys::col {
             if (auto* a = world.TryGetComponent<tag::Player>(col.entity_a)) {
                 if (auto* b = world.TryGetComponent<cmpt::Loot>(col.entity_b)) {
                     world.AddComponent<tag::Destroy>(col.entity_b);
-                    // cannot do a "request" since player may pick up multiple
-                    // lootable objects in 1 frame
+                    switch (b->kind) {
+                        case data::loot::LootKind::Exp: {
+                            data::player::g_player.exp += 1;
+                            break;
+                        }
+                        case data::loot::LootKind::Money: {
+                            data::player::g_player.money += 1;
+                            break;
+                        }
+                        case data::loot::LootKind::Powerup:
+                        case data::loot::LootKind::Weapon: {
+                            spwn::evt::LootPickedupEvent(world, col.entity_b, b->kind);
+                            break;
+                        }
+                        default: {
+                            PRINT("UNKNOWN LOOT KIND ON PICKUP COLLISION");
+                        }
+                    }
                 }
             }
 
             if (auto* b = world.TryGetComponent<tag::Player>(col.entity_b)) {
                 if (auto* a = world.TryGetComponent<cmpt::Loot>(col.entity_a)) {
                     world.AddComponent<tag::Destroy>(col.entity_a);
-                    // cannot do a "request" since player may pick up multiple
-                    // lootable objects in 1 frame
+                    switch (a->kind) {
+                        case data::loot::LootKind::Exp: {
+                            data::player::g_player.exp += 1;
+                            break;
+                        }
+                        case data::loot::LootKind::Money: {
+                            data::player::g_player.money += 1;
+                            break;
+                        }
+                        case data::loot::LootKind::Powerup:
+                        case data::loot::LootKind::Weapon: {
+                            spwn::evt::LootPickedupEvent(world, col.entity_a, a->kind);
+                            break;
+                        }
+                        default: {
+                            PRINT("UNKNOWN LOOT KIND ON PICKUP COLLISION");
+                        }
+                    }
                 }
             }
         }

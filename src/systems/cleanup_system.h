@@ -2,7 +2,6 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "components/tags.h"
 #include "data/player/player.h"
 
 namespace sys::cleanup {

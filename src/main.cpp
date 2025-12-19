@@ -18,7 +18,6 @@
 #include "resources/assets.h"
 #include "systems/systems.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 int main() {
     const int screenWidth  = 1920;

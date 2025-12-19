@@ -1,13 +1,13 @@
+#pragma once
 
-#include "systems/enemy/timed_spawn.h"
-
+#include "storage/registry.h"
 #include "data/game/game.h"
-#include "spawners/enemy/enemy.h"
+#include "spawners/enemies/grunt.h"
+#include "spawners/enemies/brute.h"
 
-namespace sys::enemy {
-    float spawn_countdown = data::game::g_enemy_spawn_interval;
-
-    void SpawnEnemyInterval(Storage::Registry& world, const BoundingBox& boundary, const float delta_time) {
+namespace sys {
+    inline void SpawnEnemyInterval(Storage::Registry& world, const BoundingBox& boundary, const float delta_time) {
+        static float spawn_countdown = data::game::g_enemy_spawn_interval;
         spawn_countdown -= delta_time;
         if (spawn_countdown > 0.0f) return;
         
@@ -30,11 +30,14 @@ namespace sys::enemy {
         for (int i = 0; i < enemy_count; i++) {
             float enemy_x = (float)GetRandomValue(boundary.min.x + 1.0f, boundary.max.x - 1.0f);
             float enemy_z = (float)GetRandomValue(boundary.min.z + 1.0f, boundary.max.z - 1.0f);
-            spwn::enemy::Enemy(
-                world, 
-                Vector3{ enemy_x, 0.0f, enemy_z }, 
-                enemy_hp
-            );
+
+            // 10% chance to spawn brutes
+            int roll = GetRandomValue(0, 99);
+            if (roll >= 90) {
+                spwn::enemy::Brute(world, Vector3{ enemy_x, 0.0f, enemy_z }, enemy_hp);
+            } else {
+                spwn::enemy::Grunt(world, Vector3{ enemy_x, 0.0f, enemy_z }, enemy_hp);
+            }
         }
     }
 }

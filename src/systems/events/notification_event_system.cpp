@@ -1,10 +1,9 @@
-#include "systems/notification/notification.h"
+#include "systems/events/notification_event_system.h"
 #include "raylib.h"
 #include "components/components.h"
-#include "components/tags.h"
 #include "data/notifications/notification.h"
 
-namespace sys::noti {
+namespace sys::evt {
    void DrawNotifications(Storage::Registry& world, const float delta_time) noexcept {
         int y_offset = GetScreenHeight() - 50;  // start from bottom of the screen 
         int x_pos = 50;                         // left side

@@ -3,14 +3,19 @@
 
 namespace rsrc::asset {
     Model player_model;
-    Model enemy_model;
+
+    Model grunt_model;
+    Model brute_model;
+
     Model bullet_model;
+
     Model exp_model;
     Model money_model;
     Model powerup_model;
     Model weapon_model;
 
     Music bg_music;
+
     Sound powerup_fx;
     Sound shoot_fx;
     Sound damage_fx;;
@@ -39,8 +44,11 @@ namespace rsrc::asset {
         //player_model = LoadModel("assets/models/robot.glb");
         //player_model = LoadModel("assets/models/robot1.gltf");
 
-        Mesh enemy_mesh = GenMeshCube(data::size::ENEMY.x, data::size::ENEMY.y, data::size::ENEMY.z);
-        enemy_model = LoadModelFromMesh(enemy_mesh);
+        Mesh grunt_mesh = GenMeshCube(data::size::GRUNT.x, data::size::GRUNT.y, data::size::GRUNT.z);
+        grunt_model = LoadModelFromMesh(grunt_mesh);
+
+        Mesh brute_mesh = GenMeshCube(data::size::BRUTE.x, data::size::BRUTE.y, data::size::BRUTE.z);
+        brute_model = LoadModelFromMesh(brute_mesh);
 
         Mesh bullet_mesh = GenMeshCube(data::size::PROJECTILE.x, data::size::PROJECTILE.y, data::size::PROJECTILE.z);
         bullet_model = LoadModelFromMesh(bullet_mesh);
@@ -53,6 +61,7 @@ namespace rsrc::asset {
 
         Mesh powerup_mesh = GenMeshCube(data::size::POWERUP.x, data::size::POWERUP.y, data::size::POWERUP.z);
         powerup_model = LoadModelFromMesh(powerup_mesh);
+        //powerup_model = LoadModel("assets/models/powerup.glb");
 
         Mesh weapon_mesh = GenMeshCube(data::size::WEAPON.x, data::size::WEAPON.y, data::size::WEAPON.z);
         weapon_model = LoadModelFromMesh(weapon_mesh);
@@ -65,13 +74,18 @@ namespace rsrc::asset {
 
     void UnloadAssets() {
         UnloadMusicStream(bg_music);
+
         UnloadSound(damage_fx);
         UnloadSound(shoot_fx);
         UnloadSound(powerup_fx);
 
         UnloadModel(player_model);
-        UnloadModel(enemy_model);
+
+        UnloadModel(grunt_model);
+        UnloadModel(brute_model);
+
         UnloadModel(bullet_model);
+
         UnloadModel(exp_model);
         UnloadModel(money_model);
         UnloadModel(powerup_model);

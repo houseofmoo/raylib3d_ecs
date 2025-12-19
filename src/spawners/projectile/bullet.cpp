@@ -3,7 +3,6 @@
 #include "data/entity.h"
 #include "resources/assets.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 namespace spwn::proj {
     void Bullet(Storage::Registry& world, const Vector3 position, const Vector3 direction,

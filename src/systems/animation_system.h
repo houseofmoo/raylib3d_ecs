@@ -2,7 +2,6 @@
 #include "raymath.h"
 #include "storage/registry.h"
 #include "components/components.h"
-#include "components/tags.h"
 #include "utils/rl_utils.h"
 
 namespace sys {

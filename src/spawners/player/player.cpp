@@ -3,7 +3,6 @@
 #include "data/entity.h"
 #include "resources/assets.h"
 #include "components/components.h"
-#include "components/tags.h"
 
 namespace spwn::player {
     Entity Player(Storage::Registry& world) {
@@ -34,7 +33,7 @@ namespace spwn::player {
                 .layer = data::layer::PLAYER,
                 .mask = data::layer::ENEMY | data::layer::LOOT | data::layer::TERRAIN,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = data::size::PLAYER
+                .size = data::size::MinColldierSize(data::size::PLAYER)
             }
         );
 
