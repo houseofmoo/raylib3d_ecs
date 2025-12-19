@@ -1,11 +1,11 @@
-#pragma once
+// #pragma once
 
-#include "raylib.h"
+// #include "raylib.h"
 
-namespace cmpt {
-    typedef Vector2 Transform2D;
+// namespace cmpt {
+//     typedef Vector2 Transform2D;
 
-    struct Notification {
-        int notification_index;
-    };
-}
+//     struct Notification {
+//         int notification_index;
+//     };
+// }

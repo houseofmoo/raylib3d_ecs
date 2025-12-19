@@ -41,7 +41,7 @@ namespace spwn::enemy {
         world.AddComponent<cmpt::MoveIntent>(
             enemy,
             cmpt::MoveIntent{
-                .type = cmpt::MoveIntentType::Seek,
+                .type = cmpt::MoveIntentType::Melee,
                 .direction = Vector3Zero()
             }
         );

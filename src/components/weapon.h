@@ -1,20 +1,20 @@
-#pragma once
+// #pragma once
 
-#include "raylib.h"
-#include "data/entity.h"
-#include "data/loot.h"
+// #include "raylib.h"
+// #include "data/entity.h"
+// #include "data/loot.h"
 
-namespace cmpt {
-    struct WeaponStats {
-        Entity parent;
-        data::loot::WeaponKind kind;
-        float cooldown;
-        float countdown;
-        float projectile_speed;
-        int damage;
-    };
+// namespace cmpt {
+//     struct WeaponStats {
+//         Entity parent;
+//         data::loot::WeaponKind kind;
+//         float cooldown;
+//         float countdown;
+//         float projectile_speed;
+//         int damage;
+//     };
 
-    struct Spread {
-        int pellet_count;
-    };
-}
+//     struct Spread {
+//         int pellet_count;
+//     };
+// }

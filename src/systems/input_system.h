@@ -66,19 +66,30 @@ namespace sys::input {
 
             // get player position
             Entity player_id = data::player::g_player.id;
-            auto& ptrans = world.GetComponent<cmpt::Transform>(player_id);
+            auto ptrans = world.TryGetComponent<cmpt::Transform>(player_id);
+            if (!ptrans) {
+                // TODO: set gameover
+                PRINT("player does not exist");
+                return;
+            }
 
             switch (intent.type) {
-                case cmpt::MoveIntentType::Seek: {
+                case cmpt::MoveIntentType::Melee: {
                     intent.direction = Vector3Normalize(
-                        Vector3Subtract(ptrans.position, trans.position)
+                        Vector3Subtract(ptrans->position, trans.position)
                     );
                     intent.direction.y = 0.0f;
                     break;
                 }
 
+                case cmpt::MoveIntentType::Ranged: {
+                    // move towards player until theyre some distance from them
+                    // move away from player if they're too close
+                    break;
+                }
+
                 case cmpt::MoveIntentType::Random: {
-                    Vector3 dir = Vector3Subtract(ptrans.position, trans.position);
+                    Vector3 dir = Vector3Subtract(ptrans->position, trans.position);
                     dir = Vector3{
                         dir.x + GetRandomValue(-100, 100),
                         dir.y = 0.0f,

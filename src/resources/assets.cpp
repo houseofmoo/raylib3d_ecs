@@ -5,7 +5,10 @@ namespace rsrc::asset {
     Model player_model;
     Model enemy_model;
     Model bullet_model;
-    Model loot_model;
+    Model exp_model;
+    Model money_model;
+    Model powerup_model;
+    Model weapon_model;
 
     Music bg_music;
     Sound powerup_fx;
@@ -42,8 +45,17 @@ namespace rsrc::asset {
         Mesh bullet_mesh = GenMeshCube(data::size::PROJECTILE.x, data::size::PROJECTILE.y, data::size::PROJECTILE.z);
         bullet_model = LoadModelFromMesh(bullet_mesh);
 
-        Mesh loot_mesh = GenMeshCube(data::size::LOOT.x, data::size::LOOT.y, data::size::LOOT.z);
-        loot_model = LoadModelFromMesh(loot_mesh);
+        Mesh exp_mesh = GenMeshCube(data::size::EXP.x, data::size::EXP.y, data::size::EXP.z);
+        exp_model = LoadModelFromMesh(exp_mesh);
+
+        Mesh money_mesh = GenMeshCube(data::size::MONEY.x, data::size::MONEY.y, data::size::MONEY.z);
+        money_model = LoadModelFromMesh(money_mesh);
+
+        Mesh powerup_mesh = GenMeshCube(data::size::POWERUP.x, data::size::POWERUP.y, data::size::POWERUP.z);
+        powerup_model = LoadModelFromMesh(powerup_mesh);
+
+        Mesh weapon_mesh = GenMeshCube(data::size::WEAPON.x, data::size::WEAPON.y, data::size::WEAPON.z);
+        weapon_model = LoadModelFromMesh(weapon_mesh);
     }
     
     void LoadAssets() {
@@ -60,6 +72,9 @@ namespace rsrc::asset {
         UnloadModel(player_model);
         UnloadModel(enemy_model);
         UnloadModel(bullet_model);
-        UnloadModel(loot_model);
+        UnloadModel(exp_model);
+        UnloadModel(money_model);
+        UnloadModel(powerup_model);
+        UnloadModel(weapon_model);
     }
 }

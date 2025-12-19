@@ -3,6 +3,7 @@
 #include "raymath.h"
 #include "components/components.h"
 #include "components/tags.h"
+#include "data/entity.h"
 
 
 namespace sys::cam {
@@ -11,7 +12,7 @@ namespace sys::cam {
         constexpr Vector3 TARGET_OFFSET = { 0.0f, 0.5f, 0.0f };     // look a bit above feet
         constexpr float FOLLOW_SHARPNESS = 14.0f;                   // bigger = tighter
 
-        Vector3 player_position;
+        Vector3 player_position = Vector3Zero();
          for (auto entity : world.View<tag::Player,
                                         cmpt::Transform>()) {
 

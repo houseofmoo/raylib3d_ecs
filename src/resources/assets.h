@@ -9,7 +9,10 @@ namespace rsrc::asset {
     extern Model player_model;
     extern Model enemy_model;
     extern Model bullet_model;
-    extern Model loot_model;
+    extern Model exp_model;
+    extern Model money_model;
+    extern Model powerup_model;
+    extern Model weapon_model;
 
     extern Music bg_music;
     extern Sound powerup_fx;

@@ -1,14 +1,14 @@
-#pragma once
+// #pragma once
 
-#include "raylib.h"
-#include "data/loot.h"
+// #include "raylib.h"
+// #include "data/loot.h"
 
-namespace cmpt {
-    struct Loot {
-        data::loot::LootKind kind;
-    };
+// namespace cmpt {
+//     struct Loot {
+//         data::loot::LootKind kind;
+//     };
 
-    struct LootRequest {
-        data::loot::LootKind kind;
-    };
-}
+//     struct LootRequest {
+//         data::loot::LootKind kind;
+//     };
+// }

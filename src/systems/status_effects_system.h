@@ -21,7 +21,12 @@ namespace sys::se {
             invuln.countdown -= GetFrameTime();
 
             if (invuln.countdown <= 0.0f) {
+                // restore mask
+                if (auto col = world.TryGetComponent<cmpt::Collider>(entity)) {
+                    col->mask = invuln.mask;
+                }
                 world.RemoveComponent<cmpt::Invulnerable>(entity);
+                
                 spwn::noti::Notification(
                     world, 
                     std::string("-INVUL")

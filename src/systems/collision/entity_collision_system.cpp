@@ -36,7 +36,8 @@ namespace sys::col {
 
                 // do these layer interact?
                 auto& bcol = world.GetComponent<cmpt::Collider>(b);
-                bool interacts = data::layer::Interacts(acol.layer, acol.mask, bcol.layer, bcol.mask);
+                bool interacts = data::layer::InteractsBoth(acol.layer, acol.mask, bcol.layer, bcol.mask);
+                //bool interacts = data::layer::InteractsOneWay(acol.layer, acol.mask, bcol.layer, bcol.mask);
                 if (!interacts) continue;
                 
                 // are these colliding?

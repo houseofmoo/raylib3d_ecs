@@ -1,7 +1,7 @@
-#pragma once
+// #pragma once
 
-#include "storage/registry.h"
+// #include "storage/registry.h"
 
-namespace sys::loot {
-    void LootMovement(Storage::Registry& world, const float delta_time);
-}
+// namespace sys::loot {
+//     void LootMovement(Storage::Registry& world, const float delta_time);
+// }

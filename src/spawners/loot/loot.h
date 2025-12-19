@@ -1,14 +1,12 @@
 #pragma once
 
 #include "raylib.h"
-#include "data/loot.h"
 #include "storage/registry.h"
+#include "data/loot.h"
 
 namespace spwn::loot {
-    void Loot(
-        Storage::Registry& world, 
-        const Vector3 position, 
-        data::loot::LootKind kind,
-        Color color
-    );
+    void Exp(Storage::Registry& world, const Vector3 position);
+    void Money(Storage::Registry& world, const Vector3 position);
+    void Powerup(Storage::Registry& world, const Vector3 position, data::loot::PowerupKind kind);
+    void Weapon(Storage::Registry& world, const Vector3 position, data::loot::WeaponKind kind);
 }

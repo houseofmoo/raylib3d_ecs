@@ -1,9 +1,9 @@
 
-#pragma once
+// #pragma once
 
-#include "storage/registry.h"
+// #include "storage/registry.h"
 
-namespace sys::enemy {
-    // void EnemyTerrainCollision(Storage::Registry& world);
-    void EnemyPlayerCollision(Storage::Registry& world);
-}
+// namespace sys::enemy {
+//     // void EnemyTerrainCollision(Storage::Registry& world);
+//     void EnemyPlayerCollision(Storage::Registry& world);
+// }

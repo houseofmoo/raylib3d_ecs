@@ -143,13 +143,16 @@ namespace sys {
                 DrawCubeWiresV(trans.position, draw.size, BLACK);
             } else {
                 Color color = draw.color;
-                if (sys::world.HasComponent<cmpt::DamageFlash>(entity)) {
+                if (world.HasComponent<cmpt::DamageFlash>(entity)) {
                     auto& flash = sys::world.GetComponent<cmpt::DamageFlash>(entity);
                     flash.duration -= delta_time;
                     if (flash.duration < 0.0f) {
-                        sys::world.RemoveComponent<cmpt::DamageFlash>(entity);
+                        world.RemoveComponent<cmpt::DamageFlash>(entity);
                     }
                     color = WHITE;
+                }
+                if (world.HasComponent<cmpt::Invulnerable>(entity)) {
+                    color.a = 128;
                 }
 
                 Vector3 axis;

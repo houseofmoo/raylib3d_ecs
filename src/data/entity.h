@@ -22,8 +22,14 @@ namespace data {
         // Layer TERRAIN    = 1 << 8;
         // Layer TERRAIN    = 1 << 9;
 
-        inline bool Interacts(Layer layer_a, Mask mask_a, Layer layer_b, Mask mask_b) {
+        inline bool InteractsOneWay(Layer layer_a, Mask mask_a, Layer layer_b, Mask mask_b) {
+            // if either interact with the other
             return (layer_a & mask_b) > 0 || (layer_b & mask_a) > 0;
+        }
+
+        inline bool InteractsBoth(Layer layer_a, Mask mask_a, Layer layer_b, Mask mask_b) {
+            // must interact with each other
+            return (layer_a & mask_b) > 0 && (layer_b & mask_a) > 0;
         }
     }
 
@@ -32,6 +38,9 @@ namespace data {
         constexpr Vector3 PLAYER = { 1.0f, 2.0f, 1.0f };
         constexpr Vector3 PROJECTILE = { 0.25f, 0.25f, 0.25f };
         constexpr Vector3 ENEMY = {1.0f, 1.5f, 1.0f};
-        constexpr Vector3 LOOT = {0.5f, 0.5f, 0.5f};
+        constexpr Vector3 EXP = {0.3f, 0.3f, 0.3f};
+        constexpr Vector3 MONEY = {0.3f, 0.3f, 0.3f};
+        constexpr Vector3 POWERUP = {0.5f, 0.5f, 0.5f};
+        constexpr Vector3 WEAPON = {1.25f, 0.35f, 0.35f};
     }
 }

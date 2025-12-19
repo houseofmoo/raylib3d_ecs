@@ -1,8 +1,8 @@
 
-#pragma once
-#include "raylib.h"
-#include "storage/registry.h"
+// #pragma once
+// #include "raylib.h"
+// #include "storage/registry.h"
 
-namespace sys::loot {
-    void LootPlayerCollision(Storage::Registry& world, const Sound& sound_fx);
-}
+// namespace sys::loot {
+//     void LootPlayerCollision(Storage::Registry& world, const Sound& sound_fx);
+// }

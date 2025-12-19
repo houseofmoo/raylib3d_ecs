@@ -13,11 +13,6 @@ namespace spwn::noti {
             cmpt::Notification{ .notification_index = index }
         );
 
-        world.AddComponent<cmpt::Transform2D>(
-            noti,
-            cmpt::Transform2D{ .x= 0.0f, .y = 40.0f }
-        );
-
         world.AddComponent<cmpt::Lifetime>(
             noti,
             cmpt::Lifetime{ .countdown = 3.0f }

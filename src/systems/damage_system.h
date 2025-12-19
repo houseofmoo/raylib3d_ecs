@@ -22,7 +22,15 @@ namespace sys::dmg {
             }
 
             if (world.HasComponent<tag::Player>(entity)) {
-                world.AddComponent<cmpt::Invulnerable>(entity, 5.0f);
+                auto& col = world.GetComponent<cmpt::Collider>(entity);
+                world.AddComponent<cmpt::Invulnerable>(
+                    entity, 
+                    cmpt::Invulnerable{ .mask = col.mask, .countdown = 1.0f}
+                );
+                
+                // while invulnerable do not interact with enemies
+                col.mask = col.mask & ~data::layer::ENEMY;
+
                 spwn::noti::Notification(
                     world, 
                     std::string("- " + std::to_string(dmg.total) + " HP, GAIN INVUL")
