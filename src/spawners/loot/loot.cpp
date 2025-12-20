@@ -125,10 +125,10 @@ namespace spwn::loot {
             cmpt::Loot{ .kind = data::loot::LootKind::Powerup }
         );
 
-        // world.AddComponent<cmpt::Powerup>(
-        //     powerup,
-        //     cmpt::Powerup { .kind = kind }
-        // );
+        world.AddComponent<cmpt::PowerupLoot>(
+            powerup,
+            cmpt::PowerupLoot { .kind = kind }
+        );
 
         world.AddComponent<cmpt::Transform>(
             powerup,
@@ -182,10 +182,10 @@ namespace spwn::loot {
             cmpt::Loot{ .kind = data::loot::LootKind::Weapon }
         );
 
-        // world.AddComponent<cmpt::Weapon>(
-        //     powerup,
-        //     cmpt::Weapon { .kind = kind }
-        // );
+        world.AddComponent<cmpt::WeaponLoot>(
+            weapon,
+            cmpt::WeaponLoot { .kind = kind }
+        );
 
         world.AddComponent<cmpt::Transform>(
             weapon,

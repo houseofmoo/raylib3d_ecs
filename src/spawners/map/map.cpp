@@ -29,13 +29,12 @@ namespace spwn::map {
         pos = Vector3{ 20.0f, size.y*0.5f, -10.0f };
         spwn::terrain::Terrain2(world, pos, size);
 
-
         // short terrain
-        size = Vector3{ 5.0f, 0.8f, 5.0f };
+        size = Vector3{ 5.0f, 0.5f, 5.0f };
         pos = Vector3{ 0.0f, size.y*0.5f, 20.0f };
         spwn::terrain::Terrain2(world, pos, size);
 
-        size = Vector3{ 5.0f, 0.8f, 5.0f };
+        size = Vector3{ 5.0f, 0.5f, 5.0f };
         pos = Vector3{ 0.0f, size.y*0.5f, -20.0f };
         spwn::terrain::Terrain2(world, pos, size);
     }

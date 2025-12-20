@@ -63,11 +63,11 @@ namespace sys {
         // also re-add the sound for pickups
 
         // spawn additional enemies
-        sys::SpawnEnemyInterval(world, data::size::PLAY_AREA, delta_time);
+        sys::SpawnEnemyInterval(world, delta_time);
         
         // input/move ai move intent
         sys::input::PlayerInput(world, camera);
-        sys::input::AIMoveIntent(world);
+        sys::input::AIMoveIntent(world, delta_time);
 
         // apply movement to velocity
         sys::se::ApplyStatusEffects(world);

@@ -18,6 +18,7 @@ namespace data::player {
 
         // cheats
         bool god_mode;
+        bool always_drop_loot;
         bool profiler_enabled;
     };
 

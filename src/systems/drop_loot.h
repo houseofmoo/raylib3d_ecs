@@ -6,6 +6,7 @@
 #include "storage/registry.h"
 #include "components/components.h"
 #include "spawners/loot/loot.h"
+#include "data/player/player.h"
 #include "utils/debug.h"
 
 namespace sys::loot {
@@ -20,18 +21,30 @@ namespace sys::loot {
             // all enemies that drop loot always drop exp
             spwn::loot::Exp(world, etrans.position);
 
+            if (data::player::g_player.always_drop_loot) {
+                int roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last) - 1;
+                spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);
+                
+                roll = GetRandomValue(0, (int)data::loot::WeaponKind::Last - 1);
+                spwn::loot::Weapon(world, etrans.position, (data::loot::WeaponKind)roll);
+                return;
+            }
+
             int roll = GetRandomValue(0, 99);
             if (roll < 70) continue;
 
-            if (roll < 85) {
+            if (roll < 80) {
                 // some enemies drop money
                 spwn::loot::Money(world, etrans.position);
-            } else if (roll >= 85 && roll < 95) {
+            } else if (roll >= 80 && roll < 92) {
                 // less enemies drop powerups
-                spwn::loot::Powerup(world, etrans.position, data::loot::PowerupKind::Damage);
-            } else if (roll >= 95) {
+                roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last) - 1;
+                spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);
+
+            } else if (roll >= 92) {
                 // even less enemies drop weapons
-                spwn::loot::Weapon(world, etrans.position, data::loot::WeaponKind::Rifle);
+                roll = GetRandomValue(0, (int)data::loot::WeaponKind::Last - 1);
+                spwn::loot::Weapon(world, etrans.position, (data::loot::WeaponKind)roll);
             }
         }
     }

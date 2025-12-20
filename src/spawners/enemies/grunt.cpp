@@ -6,7 +6,11 @@
 #include "components/components.h"
 
 namespace spwn::enemy {
-    void Grunt(Storage::Registry& world, const Vector3 position, const int hp) {
+    void Grunt(
+            Storage::Registry& world, 
+            const Vector3 position, 
+            const cmpt::MoveIntentType move_type, 
+            const int hp) {
 
         auto enemy = world.CreateEntity();
 
@@ -37,10 +41,23 @@ namespace spwn::enemy {
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
+        switch (move_type) {
+            case cmpt::MoveIntentType::Melee: {
+                // nothing
+            }
+            
+            case cmpt::MoveIntentType::Random: {
+                world.AddComponent<cmpt::RandomMovement>(
+                    enemy,
+                    cmpt::RandomMovement{ 5.0f }
+                );
+                break;
+            }
+        }
         world.AddComponent<cmpt::MoveIntent>(
             enemy,
             cmpt::MoveIntent{
-                .type = cmpt::MoveIntentType::Melee,
+                .type = cmpt::MoveIntentType::Random,
                 .direction = Vector3Zero()
             }
         );

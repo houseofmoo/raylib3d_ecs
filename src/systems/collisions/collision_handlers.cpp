@@ -10,6 +10,7 @@
 #include "systems/collisions/entity_collision_system.h"
 #include "components/components.h"
 #include "spawners/events/loot_received_event.h"
+#include "spawners/events/notification.h"
 #include "utils/rl_utils.h"
 #include "utils/position_helpers.h"
 #include "utils/debug.h"
@@ -114,15 +115,22 @@ namespace sys::col {
                     switch (b->kind) {
                         case data::loot::LootKind::Exp: {
                             data::player::g_player.exp += 1;
+                            spwn::evt::Notification(world, "+1 EXP");
                             break;
                         }
                         case data::loot::LootKind::Money: {
                             data::player::g_player.money += 1;
+                            spwn::evt::Notification(world, "+1 MONEY");
                             break;
                         }
-                        case data::loot::LootKind::Powerup:
+                        case data::loot::LootKind::Powerup: {
+                            auto& pukind = world.GetComponent<cmpt::PowerupLoot>(col.entity_b);
+                            spwn::evt::LootPickedupEvent(world, col.entity_a, b->kind, pukind.kind);
+                            break;
+                        }
                         case data::loot::LootKind::Weapon: {
-                            spwn::evt::LootPickedupEvent(world, col.entity_b, b->kind);
+                            auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(col.entity_b);
+                            spwn::evt::LootPickedupEvent(world, col.entity_a, b->kind, wepkind.kind);
                             break;
                         }
                         default: {
@@ -144,9 +152,14 @@ namespace sys::col {
                             data::player::g_player.money += 1;
                             break;
                         }
-                        case data::loot::LootKind::Powerup:
+                        case data::loot::LootKind::Powerup: {
+                            auto& pukind = world.GetComponent<cmpt::PowerupLoot>(col.entity_a);
+                            spwn::evt::LootPickedupEvent(world, col.entity_b, a->kind, pukind.kind);
+                            break;
+                        }
                         case data::loot::LootKind::Weapon: {
-                            spwn::evt::LootPickedupEvent(world, col.entity_a, a->kind);
+                            auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(col.entity_a);
+                            spwn::evt::LootPickedupEvent(world, col.entity_b, a->kind, wepkind.kind);
                             break;
                         }
                         default: {

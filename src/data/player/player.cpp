@@ -17,6 +17,7 @@ namespace data::player {
 
         // cheats
         .god_mode = false,
+        .always_drop_loot = false,
         .profiler_enabled = false,
     };
 }

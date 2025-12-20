@@ -2,9 +2,29 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#include "data/game/game.h"
 #include "components/components.h"
 
 namespace utils {
+    inline Vector3 GetRandomValidLocation() {
+        float enemy_x = 0.0f;
+        float enemy_z = 0.0f;
+        while (true) {
+            enemy_x = (float)GetRandomValue(
+                data::size::PLAY_AREA.min.x + 1.0f, 
+                data::size::PLAY_AREA.max.x - 1.0f
+            );
+            enemy_z = (float)GetRandomValue(
+                data::size::PLAY_AREA.min.z + 1.0f, 
+                data::size::PLAY_AREA.max.z - 1.0f
+            );
+            
+            if (!data::game::terrain.IsBlockedWorld(enemy_x, enemy_z)) break;
+        }
+
+        return Vector3{enemy_x, 0.0f, enemy_z};
+    }
+
     inline BoundingBox GetBoundingBox(const Vector3 position, const Vector3 offset, const Vector3 size) {
         Vector3 center = Vector3Add(position, offset);
         Vector3 half_size =  Vector3Scale(size, 0.5f);

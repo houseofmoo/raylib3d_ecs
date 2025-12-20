@@ -27,18 +27,15 @@ namespace data::loot {
 
     // player global powerups -> affect player modifiers
     enum class PowerupKind {
-        //PelletCount,
         Damage,
         AttackSpeed,
         MoveSpeed,
         PickupRange,
-        //Penetration,
-        //Richochette,
-
         DashDistance,
         Health,
         MaxHp,
         HpRegen,
+        Last
     };
 
     // allowed to carry 2 weapons + an equipment?
@@ -51,6 +48,7 @@ namespace data::loot {
         SMG,             // high attack speed
         Grenade,         // arch + area damage
         RocketLauncher,  // slow moving + area damage
+        Last
     };
 
     extern std::unordered_map<data::loot::PowerupKind, Color> g_powerup_colors;

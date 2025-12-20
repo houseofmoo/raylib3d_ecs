@@ -42,6 +42,10 @@ namespace cmpt {
         float height;
     };
 
+    struct RandomMovement {
+        float countdown;
+    };
+
     ////////////////////////////////////////////////
     // COLLISION
     ////////////////////////////////////////////////
@@ -62,6 +66,7 @@ namespace cmpt {
     enum class MoveIntentType {
         Melee,
         Ranged,
+        Lazy,
         Random,
     };
 
@@ -155,6 +160,14 @@ namespace cmpt {
     ////////////////////////////////////////////////
     struct Loot {
         data::loot::LootKind kind;
+    };
+
+    struct PowerupLoot {
+        data::loot::PowerupKind kind;
+    };
+
+    struct WeaponLoot {
+        data::loot::WeaponKind kind;
     };
 
     struct WeaponStats {

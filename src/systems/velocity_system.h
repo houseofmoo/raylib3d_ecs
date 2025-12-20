@@ -19,7 +19,15 @@ namespace sys::vel {
 
             Vector3 delta = Vector3Scale(vel, delta_time);
 
-            // special case entities that are destroyed on terrain contact
+            // projectiles are allow it to travel over low terrain
+            if (world.HasComponent<tag::Projectile>(entity)) {
+                if (!utils::MoveOverTerrainProjectile(trans.position, delta)) {\
+                    world.AddComponent<tag::Destroy>(entity);
+                }
+                continue;
+            }
+
+            // special case entities that are destroyed on terrain or low terrain contact
             if (world.HasComponent<tag::DestroyOnTerrainCollision>(entity)) {
                 Vector3 new_pos = Vector3Add(trans.position, delta);
                 if (data::game::terrain.IsBlockedWorld(new_pos.x, new_pos.z)) {
@@ -28,34 +36,14 @@ namespace sys::vel {
                 }
             }
 
-            // only spawning animations have a Y velocity
+            // spawning animations are not modified
             if (world.HasComponent<cmpt::SpawnAnimation>(entity)) {
                 trans.position = Vector3Add(trans.position, delta);
                 continue;
             }
 
+            // all over units movement handled here
             utils::MoveAndSlideTerrain(trans.position, delta);
-
-            // // test X position, apply if valid
-            // Vector3 try_x = trans.position;
-            // try_x.x += delta.x;
-            // if (!data::game::terrain.IsBlockedWorld(try_x.x, try_x.z)) {
-            //     trans.position.x = try_x.x;
-            // } else {
-            //     vel.x = 0.0f;
-            // }
-
-            // // test Z position, apply if valid
-            // Vector3 try_z = trans.position;
-            // try_z.z += delta.z;
-            // if (!data::game::terrain.IsBlockedWorld(try_z.x, try_z.z)) {
-            //     trans.position.z = try_z.z;
-            // } else {
-            //     vel.z = 0.0f;
-            // }
-
-            // // apply Y
-            // trans.position.y += delta.y;
         }
     }
 

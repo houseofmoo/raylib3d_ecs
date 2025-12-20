@@ -80,7 +80,7 @@ namespace debug {
 
         float exp = static_cast<float>(data::player::g_player.exp);
         float next = static_cast<float>(data::player::g_player.exp_to_next_level);
-        ImGui::ProgressBar(exp/next, ImVec2(-FLT_MIN, 0.0f), "Exp Porgress");
+        ImGui::ProgressBar(exp/next, ImVec2(-FLT_MIN, 0.0f), "Exp");
         ImGui::Text("Dmg%: %.2f", data::player::g_player.damage_multiplier);
         ImGui::Text("ASpd%: %.2f", data::player::g_player.attack_speed_multiplier);
         ImGui::Text("Mspd%: %.2f", data::player::g_player.move_speed_multiplier);
@@ -88,6 +88,7 @@ namespace debug {
         ImGui::Separator();
 
         ImGui::Checkbox("God Mode: ", &data::player::g_player.god_mode);
+        ImGui::Checkbox("Loot Mode: ", &data::player::g_player.always_drop_loot);
         ImGui::Separator();
 
         for (auto wep : world.View<tag::Weapon, cmpt::WeaponStats>()) {

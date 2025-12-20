@@ -51,7 +51,7 @@ namespace sys::input {
         }
     }
 
-    inline void AIMoveIntent(Storage::Registry& world) {
+    inline void AIMoveIntent(Storage::Registry& world, const float delta_time) {
         PROFILE_SCOPE("AIMoveIntent()");
         for (auto entity : world.View<cmpt::MoveIntent, cmpt::Transform>()) {
             auto& intent = world.GetComponent<cmpt::MoveIntent>(entity);
@@ -89,13 +89,17 @@ namespace sys::input {
                     break;
                 }
 
+                case cmpt::MoveIntentType::Lazy: {
+                    // make their way in the general direction of the player
+                    break;
+                }
+
                 case cmpt::MoveIntentType::Random: {
-                    Vector3 dir = utils::Direction(trans.position, ptrans->position);
-                    dir = Vector3{
-                        dir.x + GetRandomValue(-100, 100),
-                        dir.y = 0.0f,
-                        dir.z + GetRandomValue(-100, 100),
-                    };
+                    auto& ran_dir = world.GetComponent<cmpt::RandomMovement>(entity);
+                    ran_dir.countdown -= delta_time;
+                    if (ran_dir.countdown > 0.0f) continue;
+                    ran_dir.countdown = 5.0f;
+                    Vector3 dir = utils::GetRandomValidLocation();
                     intent.direction = Vector3Normalize(dir);
                     break;
                 }

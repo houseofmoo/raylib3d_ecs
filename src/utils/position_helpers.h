@@ -1,6 +1,7 @@
 #pragma once
 
 #include "raylib.h"
+#include "storage/registry.h"
 #include "data/game/game.h"
 
 namespace utils {
@@ -12,6 +13,17 @@ namespace utils {
         Vector3 tryZ = pos;
         tryZ.z += delta.z;
         if (!data::game::terrain.IsBlockedWorld(tryZ.x, tryZ.z)) pos.z = tryZ.z;
+    }
+
+    // returns false if must be destroyed
+    inline bool MoveOverTerrainProjectile(Vector3& pos, Vector3 delta) {
+        Vector3 new_pos = Vector3Add(pos, delta);
+        bool terrain_blocked = data::game::terrain.IsProjectileBlockedWorld(new_pos.x, new_pos.z);
+        if (terrain_blocked) {
+            return false;
+        }
+        pos = new_pos;
+        return true;
     }
 
     // Minimum Translation Vector
