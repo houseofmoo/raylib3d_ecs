@@ -7,7 +7,7 @@
 namespace utils {
     inline BoundingBox GetBoundingBox(const Vector3 position, const Vector3 offset, const Vector3 size) {
         Vector3 center = Vector3Add(position, offset);
-        Vector3 half_size =  size * 0.5f;
+        Vector3 half_size =  Vector3Scale(size, 0.5f);
 
         return BoundingBox{
             Vector3Subtract(center, half_size),
@@ -27,45 +27,6 @@ namespace utils {
         return (p.x >= b.min.x && p.x <= b.max.x) &&
             (p.y >= b.min.y && p.y <= b.max.y) &&
             (p.z >= b.min.z && p.z <= b.max.z);
-    }
-
-    inline Vector3 PushbackDirection(const BoundingBox& a, const BoundingBox& b) {
-        // get direction box a should be pushed back so it no longer
-        // overlaps with box b
-        
-        // assumes they intersect
-        float axCenter = (a.min.x + a.max.x) * 0.5f;
-        float ayCenter = (a.min.y + a.max.y) * 0.5f;
-        float azCenter = (a.min.z + a.max.z) * 0.5f;
-
-        float bxCenter = (b.min.x + b.max.x) * 0.5f;
-        float byCenter = (b.min.y + b.max.y) * 0.5f;
-        float bzCenter = (b.min.z + b.max.z) * 0.5f;
-
-        float dx = axCenter - bxCenter;
-        float dy = ayCenter - byCenter;
-        float dz = azCenter - bzCenter;
-
-        float axHalf = (a.max.x - a.min.x) * 0.5f;
-        float ayHalf = (a.max.y - a.min.y) * 0.5f;
-        float azHalf = (a.max.z - a.min.z) * 0.5f;
-
-        float bxHalf = (b.max.x - b.min.x) * 0.5f;
-        float byHalf = (b.max.y - b.min.y) * 0.5f;
-        float bzHalf = (b.max.z - b.min.z) * 0.5f;
-
-        float ox = (axHalf + bxHalf) - fabsf(dx);
-        float oy = (ayHalf + byHalf) - fabsf(dy);
-        float oz = (azHalf + bzHalf) - fabsf(dz);
-
-        // push out along smallest overlap axis
-        if (ox < oy && ox < oz) {
-            return { (dx < 0.0f ? -ox : ox), 0.0f, 0.0f };
-        } else if (oy < oz) {
-            return { 0.0f, (dy < 0.0f ? -oy : oy), 0.0f };
-        } else {
-            return { 0.0f, 0.0f, (dz < 0.0f ? -oz : oz) };
-        }
     }
 
     inline Quaternion GetRotationToLocation(Vector3 source, Vector3 location) {

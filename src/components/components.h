@@ -12,6 +12,7 @@ namespace tag {
     struct Projectile {};
     struct Enemy {};
     struct Destroy {};
+    struct DestroyOnTerrainCollision {};
     struct Terrain {};
     struct DropsLoot {};
     struct Event {};
@@ -51,9 +52,9 @@ namespace cmpt {
         Vector3 size;
     };
     
-    struct DestroyOnContact {
-        int penetration;
-    };
+    // struct DestroyOnContact {
+    //     int penetration;
+    // };
 
     ////////////////////////////////////////////////
     // INPUT
@@ -167,6 +168,10 @@ namespace cmpt {
 
     struct Spread {
         int pellet_count;
+    };
+
+    struct Penetration {
+        int amount;
     };
 
     ////////////////////////////////////////////////

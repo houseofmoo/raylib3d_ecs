@@ -15,6 +15,10 @@ namespace data::player {
         float attack_speed_multiplier;
         float move_speed_multiplier;
         float pickup_range_multiplier;
+
+        // cheats
+        bool god_mode;
+        bool profiler_enabled;
     };
 
     extern Player g_player;

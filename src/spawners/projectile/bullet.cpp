@@ -15,6 +15,11 @@ namespace spwn::proj {
             tag::Projectile{}
         );
 
+        world.AddComponent<tag::DestroyOnTerrainCollision>(
+            bullet,
+            tag::DestroyOnTerrainCollision{}
+        );
+
         world.AddComponent<cmpt::Transform>(
             bullet,
             cmpt::Transform{ 
@@ -51,9 +56,9 @@ namespace spwn::proj {
             cmpt::DamageDealer{ damage }
         );
 
-        world.AddComponent<cmpt::DestroyOnContact>(
+        world.AddComponent<cmpt::Penetration>(
             bullet,
-            cmpt::DestroyOnContact { penetration }
+            cmpt::Penetration { penetration }
         );
 
         world.AddComponent<cmpt::Draw>(

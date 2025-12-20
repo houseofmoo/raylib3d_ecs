@@ -5,9 +5,11 @@
 #include "components/components.h"
 #include "spawners/events/notification.h"
 #include "resources/assets.h"
+#include "utils/debug.h"
 
 namespace sys::dmg {
     inline void ApplyDamage(Storage::Registry& world) {
+        PROFILE_SCOPE("ApplyDamage()");
         for (auto entity : world.View<cmpt::Health, cmpt::DamageReceiver>()) {
             auto& hp = world.GetComponent<cmpt::Health>(entity);
             auto& dmg = world.GetComponent<cmpt::DamageReceiver>(entity);
@@ -21,6 +23,11 @@ namespace sys::dmg {
             }
 
             if (world.HasComponent<tag::Player>(entity)) {
+                // if god mode enabled, remove all player damage
+                if (data::player::g_player.god_mode) {
+                    dmg.total = 0;
+                } 
+
                 auto& col = world.GetComponent<cmpt::Collider>(entity);
                 world.AddComponent<cmpt::Invulnerable>(
                     entity, 

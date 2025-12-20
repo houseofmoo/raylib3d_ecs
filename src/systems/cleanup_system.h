@@ -3,9 +3,11 @@
 #include "storage/registry.h"
 #include "components/components.h"
 #include "data/player/player.h"
+#include "utils/debug.h"
 
 namespace sys::cleanup {
     void Cleanup(Storage::Registry& world, const float delta_time) {
+        PROFILE_SCOPE("Cleanup()");
         for (auto entity : world.View<cmpt::Lifetime>()) {
             auto& lifetime = world.GetComponent<cmpt::Lifetime>(entity);
             lifetime.countdown -= delta_time;

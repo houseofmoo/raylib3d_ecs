@@ -6,15 +6,56 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
+#include "utils/position_helpers.h"
+#include "utils/debug.h"
 
 namespace sys::vel {
     // ApplyMovement
     inline void ApplyVelocity(Storage::Registry& world, const float delta_time) {
+        PROFILE_SCOPE("ApplyVelocity()");
         for (auto entity : world.View<cmpt::Velocity, cmpt::Transform>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& vel = world.GetComponent<cmpt::Velocity>(entity);
 
-            trans.position = Vector3Add(trans.position, Vector3Scale(vel, delta_time));
+            Vector3 delta = Vector3Scale(vel, delta_time);
+
+            // special case entities that are destroyed on terrain contact
+            if (world.HasComponent<tag::DestroyOnTerrainCollision>(entity)) {
+                Vector3 new_pos = Vector3Add(trans.position, delta);
+                if (data::game::terrain.IsBlockedWorld(new_pos.x, new_pos.z)) {
+                    world.AddComponent<tag::Destroy>(entity);
+                    continue;
+                }
+            }
+
+            // only spawning animations have a Y velocity
+            if (world.HasComponent<cmpt::SpawnAnimation>(entity)) {
+                trans.position = Vector3Add(trans.position, delta);
+                continue;
+            }
+
+            utils::MoveAndSlideTerrain(trans.position, delta);
+
+            // // test X position, apply if valid
+            // Vector3 try_x = trans.position;
+            // try_x.x += delta.x;
+            // if (!data::game::terrain.IsBlockedWorld(try_x.x, try_x.z)) {
+            //     trans.position.x = try_x.x;
+            // } else {
+            //     vel.x = 0.0f;
+            // }
+
+            // // test Z position, apply if valid
+            // Vector3 try_z = trans.position;
+            // try_z.z += delta.z;
+            // if (!data::game::terrain.IsBlockedWorld(try_z.x, try_z.z)) {
+            //     trans.position.z = try_z.z;
+            // } else {
+            //     vel.z = 0.0f;
+            // }
+
+            // // apply Y
+            // trans.position.y += delta.y;
         }
     }
 
@@ -27,6 +68,7 @@ namespace sys::vel {
 
     // ApplyArchMovement
     inline void ApplyArch(Storage::Registry& world, const float delta_time) {
+        PROFILE_SCOPE("ApplyArch()");
         // this are not moving in normal horizontal space, they're arching
         // through the air and do not have a cmpt::Velocty and instead have
         // a cmpt::ArchMove
@@ -46,6 +88,7 @@ namespace sys::vel {
     }
 
     inline void ApplyRotateInPlace(Storage::Registry& world, const float delta_time) {
+        PROFILE_SCOPE("ApplyRotateInPlace()");
         for (auto entity : world.View<cmpt::RotateInPlace, cmpt::Transform>()) {
 
             auto& rip = world.GetComponent<cmpt::RotateInPlace>(entity);

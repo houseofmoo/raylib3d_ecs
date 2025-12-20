@@ -3,8 +3,7 @@
 #include "rlImGui.h"
 #include "data/game/game.h"
 #include "data/player/player.h"
-#include "utils/profiler.h"
-
+#include "utils/debug.h"
 #include "components/components.h"
 
 namespace debug {
@@ -47,6 +46,9 @@ namespace debug {
 
     void DrawDebugUI(Storage::Registry& world, ImGuiIO& io) {
         static bool show_demo_window = false;
+        static float position_x = 0;
+        static float position_z = 0;
+        static bool position_blocked = false;
 
         rlImGuiBegin();
         SetImGuiDocking(io);
@@ -61,7 +63,8 @@ namespace debug {
         ImGui::Separator();
             
         ImGui::Text("FPS: %d", GetFPS());
-        ImGui::Text("Entity count: %d", data::game::g_number_entities);
+        ImGui::Text("Entities: %d", data::game::g_number_entities);
+        ImGui::Text("Enemies: %d", data::game::g_number_enemies);
         ImGui::Separator();
 
         if (ImGui::SliderInt("Difficulty", &data::game::g_difficulty_level, 0, 1000)) {}
@@ -73,6 +76,8 @@ namespace debug {
         ImGui::Text("Level: %d", data::player::g_player.level);
         ImGui::Text("Exp: %d", data::player::g_player.exp);
         ImGui::Text("ExpLvl: %d", data::player::g_player.exp_to_next_level);
+        ImGui::Separator();
+
         float exp = static_cast<float>(data::player::g_player.exp);
         float next = static_cast<float>(data::player::g_player.exp_to_next_level);
         ImGui::ProgressBar(exp/next, ImVec2(-FLT_MIN, 0.0f), "Exp Porgress");
@@ -80,6 +85,9 @@ namespace debug {
         ImGui::Text("ASpd%: %.2f", data::player::g_player.attack_speed_multiplier);
         ImGui::Text("Mspd%: %.2f", data::player::g_player.move_speed_multiplier);
         ImGui::Text("PRng%: %.2f", data::player::g_player.pickup_range_multiplier);
+        ImGui::Separator();
+
+        ImGui::Checkbox("God Mode: ", &data::player::g_player.god_mode);
         ImGui::Separator();
 
         for (auto wep : world.View<tag::Weapon, cmpt::WeaponStats>()) {
@@ -91,13 +99,32 @@ namespace debug {
             ImGui::Separator();
         }
 
+        if (ImGui::Button("Draw Tilemap")) {
+            data::game::terrain.DrawTileMap();
+        }
+
+
+        ImGui::InputFloat("X:", &position_x);
+        ImGui::InputFloat("Z:", &position_z);
+        if (ImGui::Button("Test Point")) {
+            position_blocked = data::game::terrain.IsBlockedWorld(position_x, position_z);
+        }
+        ImGui::Text("Blocked: %d", position_blocked);
+
         #ifdef PROFILER_ENABLED
         ImGui::Separator();
+        if (ImGui::Checkbox("Enable Profiler: ", &data::player::g_player.profiler_enabled)) {
+            PRINT("Profiler contents cleared");
+            PROFILER_CLEAR;
+        }
+
         if (ImGui::Button("Dump profiler", ImVec2{120, 20})) {
-            profiler::Print();
+            PRINT("Profiler contents written");
+            PROFILER_PRINT;
         }
         if (ImGui::Button("Clear profiler", ImVec2{120, 20})) {
-            profiler::Clear();
+            PRINT("Profiler contents cleared");
+            PROFILER_CLEAR;
         }
         #endif
 

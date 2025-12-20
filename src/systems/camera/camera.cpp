@@ -3,10 +3,12 @@
 #include "raymath.h"
 #include "components/components.h"
 #include "data/entity.h"
+#include "utils/debug.h"
 
 
 namespace sys::cam {
     void CameraMovement(Storage::Registry& world, Camera3D& camera, const float delta_time) {
+        PROFILE_SCOPE("CameraMovement()");
         constexpr Vector3 CAMERA_OFFSET = { 0.0f, 35.0f, 15.0f };   // up + back (fixed)
         constexpr Vector3 TARGET_OFFSET = { 0.0f, 0.5f, 0.0f };     // look a bit above feet
         constexpr float FOLLOW_SHARPNESS = 14.0f;                   // bigger = tighter

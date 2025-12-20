@@ -6,9 +6,11 @@
 #include "storage/registry.h"
 #include "components/components.h"
 #include "spawners/loot/loot.h"
+#include "utils/debug.h"
 
 namespace sys::loot {
     inline void LootDrop(Storage::Registry& world) {
+        PROFILE_SCOPE("LootDrop()");
         for (auto enemy : world.View<tag::DropsLoot, 
                                         tag::Destroy,
                                         cmpt::Transform>()) {

@@ -7,7 +7,6 @@
 namespace sys {
     extern Camera3D camera;
     extern Storage::Registry world;
-    extern BoundingBox boundary;
 
     void InitWorld() noexcept;
     void RunUpdateSystems(const float delta_time) noexcept;

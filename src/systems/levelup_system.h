@@ -3,9 +3,11 @@
 #include "storage/registry.h"
 #include "spawners/events/notification.h"
 #include "data/player/player.h"
+#include "utils/debug.h"
 
 namespace sys::lvl {
     inline void PlayerLevelup(Storage::Registry& world) {
+        PROFILE_SCOPE("PlayerLevelup()");
         if (data::player::g_player.exp >= data::player::g_player.exp_to_next_level) {
             data::player::g_player.level += 1;
             data::player::g_player.exp_to_next_level *= 1.2f;

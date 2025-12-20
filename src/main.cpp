@@ -11,7 +11,7 @@
 #include "rlImGui.h"
 #include "imgui.h"
 #include "debug/debug_window.h"
-#include "print.h"
+#include "utils/debug.h"
 #endif
 
 #include "data/game/game.h"

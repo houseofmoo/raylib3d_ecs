@@ -44,6 +44,11 @@ namespace data {
         constexpr Vector3 POWERUP = {0.5f, 0.5f, 0.5f};
         constexpr Vector3 WEAPON = {1.25f, 0.35f, 0.35f};
 
+        constexpr BoundingBox PLAY_AREA = {
+            .min = Vector3{-60.0f, 0.0f, -30.0f},
+            .max = Vector3{60.0f, 55.0f, 30.0f}
+        };
+
 
         inline Vector3 MinColldierSize(Vector3 vec) {
             // min collider size

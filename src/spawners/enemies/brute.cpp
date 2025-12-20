@@ -49,7 +49,7 @@ namespace spwn::enemy {
             brute,
             cmpt::Collider{
                 .layer = data::layer::ENEMY,
-                .mask = data::layer::PLAYER | data::layer::PROJECTILE | data::layer::TERRAIN,
+                .mask = data::layer::PLAYER | data::layer::ENEMY | data::layer::PROJECTILE | data::layer::TERRAIN,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = data::size::MinColldierSize(data::size::BRUTE)
             }

@@ -1,13 +1,18 @@
 #include "systems/collisions/collision_handlers.h"
 
+#include "raylib.h"
+#include "raymath.h"
+
 #include "data/loot.h"
 #include "data/player/player.h"
+#include "data/game/game.h"
 #include "storage/collision_pairs.h"
 #include "systems/collisions/entity_collision_system.h"
 #include "components/components.h"
 #include "spawners/events/loot_received_event.h"
 #include "utils/rl_utils.h"
-#include "utils/profiler.h"
+#include "utils/position_helpers.h"
+#include "utils/debug.h"
 
 namespace sys::col {
     void DamageOnCollision(Storage::Registry& world) {
@@ -15,6 +20,11 @@ namespace sys::col {
         for (auto& col : sys::col::collision_cache.current) {
             // if A and B interacted last frame, ignore them this frame
             if (sys::col::collision_cache.previous.contains(col)) continue;
+
+            // if a and b are enemies, they cannot damage eachother
+            if (world.HasComponent<tag::Enemy>(col.entity_a) && world.HasComponent<tag::Enemy>(col.entity_b)) {
+                continue;
+            }
 
             // if A deals damage and B receives damage
             if (auto* dmg = world.TryGetComponent<cmpt::DamageDealer>(col.entity_a)) {
@@ -31,17 +41,17 @@ namespace sys::col {
             }
 
             // if A has a penetration value decrement that on collision
-            if (auto* pen = world.TryGetComponent<cmpt::DestroyOnContact>(col.entity_a)) {
-                pen->penetration -= 1;
-                if (pen->penetration <= 0) {
+            if (auto* pen = world.TryGetComponent<cmpt::Penetration>(col.entity_a)) {
+                pen->amount -= 1;
+                if (pen->amount <= 0) {
                     world.AddComponent<tag::Destroy>(col.entity_a);
                 }
             }
 
             // if B has a penetration value decrement that on collision
-            if (auto* pen = world.TryGetComponent<cmpt::DestroyOnContact>(col.entity_b)) {
-                pen->penetration -= 1;
-                if (pen->penetration <= 0) {
+            if (auto* pen = world.TryGetComponent<cmpt::Penetration>(col.entity_b)) {
+                pen->amount -= 1;
+                if (pen->amount <= 0) {
                     world.AddComponent<tag::Destroy>(col.entity_b);
                 }
             }
@@ -50,20 +60,22 @@ namespace sys::col {
 
     void DestroyOnCollision(Storage::Registry& world) {
         PROFILE_SCOPE("DestroyOnCollision()");
-        for (auto& col : sys::col::collision_cache.current) {
-            // only terrain destroys cmpt::DestroyOnContact elements
-            if (auto* a = world.TryGetComponent<tag::Terrain>(col.entity_a)) {
-                if (auto* b = world.TryGetComponent<cmpt::DestroyOnContact>(col.entity_b)) {
-                    world.AddComponent<tag::Destroy>(col.entity_b);
-                }
-            }
+        // // TODO: since only terrain causes destruction on collision
+        // // without thought, we just do this in the movement system
+        // for (auto& col : sys::col::collision_cache.current) {
+        //     // only terrain destroys cmpt::DestroyOnContact elements
+        //     if (auto* a = world.TryGetComponent<tag::Terrain>(col.entity_a)) {
+        //         if (auto* b = world.TryGetComponent<cmpt::DestroyOnContact>(col.entity_b)) {
+        //             world.AddComponent<tag::Destroy>(col.entity_b);
+        //         }
+        //     }
 
-            if (auto* b = world.TryGetComponent<tag::Terrain>(col.entity_b)) {
-                if (auto* a = world.TryGetComponent<cmpt::DestroyOnContact>(col.entity_a)) {
-                    world.AddComponent<tag::Destroy>(col.entity_a);
-                }
-            }
-        }
+        //     if (auto* b = world.TryGetComponent<tag::Terrain>(col.entity_b)) {
+        //         if (auto* a = world.TryGetComponent<cmpt::DestroyOnContact>(col.entity_a)) {
+        //             world.AddComponent<tag::Destroy>(col.entity_a);
+        //         }
+        //     }
+        // }
     }
 
     void KnockbackOnCollision(Storage::Registry& world) {
@@ -152,34 +164,27 @@ namespace sys::col {
 
     void RepositionOnCollision(Storage::Registry& world) {
         PROFILE_SCOPE("RepositionOnCollision()");
-         for (auto& col : sys::col::collision_cache.current) {
-            // if entities collide with terrain, move them out of terrain
-            if (auto* a = world.TryGetComponent<tag::Terrain>(col.entity_a)) {
-                auto& atrans = world.GetComponent<cmpt::Transform>(col.entity_a);
-                auto& acol = world.GetComponent<cmpt::Collider>(col.entity_a);
-                
-                auto& btrans = world.GetComponent<cmpt::Transform>(col.entity_b);
-                auto& bcol = world.GetComponent<cmpt::Collider>(col.entity_b);
+        for (auto& col : sys::col::collision_cache.current) {
+            // enemies cannot overlap
+            if (auto* a = world.TryGetComponent<tag::Enemy>(col.entity_a)) {
+                if (auto* b = world.TryGetComponent<tag::Enemy>(col.entity_b)) {
+                    // push enenmies out of each other
+                    auto& btrans = world.GetComponent<cmpt::Transform>(col.entity_b);
+                    auto& bcol = world.GetComponent<cmpt::Collider>(col.entity_b);
 
-                auto direction = utils::PushbackDirection(
-                    utils::GetBoundingBox(btrans, bcol),
-                    utils::GetBoundingBox(atrans, acol)
-                );
-                btrans.position = Vector3Add(btrans.position, Vector3{ direction.x, 0.0f, direction.z });
-            }
+                    auto& atrans = world.GetComponent<cmpt::Transform>(col.entity_a);
+                    auto& acol = world.GetComponent<cmpt::Collider>(col.entity_a);
+                    auto direction = utils::PushbackMTV_XZ(
+                        utils::GetBoundingBox(atrans, acol),
+                        utils::GetBoundingBox(btrans, bcol)
+                    );
 
-            if (auto* b = world.TryGetComponent<tag::Terrain>(col.entity_b)) {
-                auto& btrans = world.GetComponent<cmpt::Transform>(col.entity_b);
-                auto& bcol = world.GetComponent<cmpt::Collider>(col.entity_b);
-
-                auto& atrans = world.GetComponent<cmpt::Transform>(col.entity_a);
-                auto& acol = world.GetComponent<cmpt::Collider>(col.entity_a);
-
-                auto direction = utils::PushbackDirection(
-                    utils::GetBoundingBox(atrans, acol),
-                    utils::GetBoundingBox(btrans, bcol)
-                );
-                atrans.position = Vector3Add(atrans.position, Vector3{ direction.x, 0.0f, direction.z });
+                    // apply velocty away from each other instead of modifying position directly
+                    if (direction.x != 0.0f || direction.z != 0) {
+                        utils::MoveAndSlideTerrain(atrans.position, Vector3Scale(direction,  0.5f));
+                        utils::MoveAndSlideTerrain(btrans.position, Vector3Scale(direction, -0.5f));
+                    }
+                }
             }
         }
     }

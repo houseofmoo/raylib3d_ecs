@@ -3,9 +3,11 @@
 #include "storage/registry.h"
 #include "components/components.h"
 #include "spawners/events/notification.h"
+#include "utils/debug.h"
 
 namespace sys::se {
     inline void ApplyStatusEffects(Storage::Registry& world) {
+        PROFILE_SCOPE("ApplyStatusEffects()");
         // dash
         for (auto entity : world.View<cmpt::Dash, cmpt::Speed>()) {
             auto& spd = world.GetComponent<cmpt::Speed>(entity);
@@ -15,6 +17,7 @@ namespace sys::se {
     }
 
     inline void RemoveStatsusEffects(Storage::Registry& world) {
+        PROFILE_SCOPE("RemoveStatsusEffects()");
         // remove invulnerability
         for (auto entity : world.View<cmpt::Invulnerable>()) {
             auto& invuln = world.GetComponent<cmpt::Invulnerable>(entity);

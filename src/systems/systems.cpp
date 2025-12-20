@@ -9,7 +9,7 @@
 #include "data/player/player.h"
 #include "data/game/game.h"
 #include "resources/assets.h"
-#include "utils/print.h"
+#include "utils/debug.h"
 
 #include "spawners/camera/camera.h"
 #include "spawners/map/map.h"
@@ -37,16 +37,11 @@
 namespace sys {
     Camera3D camera;
     Storage::Registry world;
-    BoundingBox boundary;
 
     void InitWorld() noexcept {
         camera = spwn::camera::Camera();
-        boundary = {
-            Vector3{-60.0f, 0.0f, -30.0f},
-            Vector3{60.0f, 55.0f, 30.0f}
-        };
 
-        spwn::map::GenerateMap(world, boundary);
+        spwn::map::GenerateMap(world, data::size::PLAY_AREA);
         data::player::g_player.id = spwn::player::Player(world);
         spwn::weapon::Pistol(world, data::player::g_player.id);
     }
@@ -56,7 +51,6 @@ namespace sys {
             return;
         }
 
-        
         // weapons as loot?
         // if so, make them long rectanlges
         // do we allow the player to hold as many weapons or a set amount?
@@ -69,7 +63,7 @@ namespace sys {
         // also re-add the sound for pickups
 
         // spawn additional enemies
-        sys::SpawnEnemyInterval(world, boundary, delta_time);
+        sys::SpawnEnemyInterval(world, data::size::PLAY_AREA, delta_time);
         
         // input/move ai move intent
         sys::input::PlayerInput(world, camera);
@@ -77,15 +71,14 @@ namespace sys {
 
         // apply movement to velocity
         sys::se::ApplyStatusEffects(world);
-        sys::mov::ApplyDash(world, delta_time);
         sys::mov::ApplyPlayerMovement(world, delta_time);
         sys::mov::ApplyAIMovement(world, delta_time);
         sys::cam::CameraMovement(world, camera, delta_time);
 
-        // apply velocity to position
-        sys::vel::ApplyVelocity(world, delta_time);
-        sys::vel::ApplyArch(world, delta_time);
-        sys::vel::ApplyRotateInPlace(world, delta_time);
+        // // apply velocity to position
+        // sys::vel::ApplyVelocity(world, delta_time);
+        // sys::vel::ApplyArch(world, delta_time);
+        // sys::vel::ApplyRotateInPlace(world, delta_time);
         
         // sys::loot::LootMovement(world, delta_time);
         // sys::player::PlayerMovement(world, delta_time);
@@ -119,13 +112,21 @@ namespace sys {
         sys::DeathAnimation(world, delta_time);
         sys::loot::LootDrop(world);
         sys::evt::HandleLootPickedupEvents(world);
+
+        // apply velocity to position
+        sys::vel::ApplyVelocity(world, delta_time);
+        sys::vel::ApplyArch(world, delta_time);
+        sys::vel::ApplyRotateInPlace(world, delta_time);
+
         sys::cleanup::Cleanup(world, delta_time);
-        sys::ConstraintToWorld(world, boundary);
+        //sys::ConstraintToWorld(world, data::size::PLAY_AREA);
     }
 
     void RunEntityDrawSystems(const float delta_time) noexcept {
+        PROFILE_SCOPE("RunEntityDrawSystems()");
         // draw all drawable entities
         int entities_count = 0;
+        int enemies_count = 0;
 
         for (auto entity : sys::world.View<cmpt::Draw, cmpt::Transform>()) {
             auto& draw = sys::world.GetComponent<cmpt::Draw>(entity);
@@ -136,6 +137,8 @@ namespace sys {
                 DrawCubeV(trans.position, draw.size, draw.color);
                 DrawCubeWiresV(trans.position, draw.size, BLACK);
             } else {
+                if (world.HasComponent<tag::Enemy>(entity)) enemies_count += 1;
+
                 Color color = draw.color;
                 if (world.HasComponent<cmpt::DamageFlash>(entity)) {
                     auto& flash = sys::world.GetComponent<cmpt::DamageFlash>(entity);
@@ -164,15 +167,42 @@ namespace sys {
         }
         
         // ground
-        float width = sys::boundary.max.x - sys::boundary.min.x;
-        float length = sys::boundary.max.z - sys::boundary.min.z; 
+        float width = data::size::PLAY_AREA.max.x - data::size::PLAY_AREA.min.x;
+        float length = data::size::PLAY_AREA.max.z - data::size::PLAY_AREA.min.z; 
         DrawCube(Vector3{0.0f, -0.51f, 0.0f}, width, 1.0f, length, GRAY);
 
         DrawGrid(60, 1.0f);
+
+        // draw play area
+        //DrawBoundingBox(data::size::PLAY_AREA, GREEN);
+
+        // draw play area walls
+        Vector3 position = { data::size::PLAY_AREA.min.x - 0.5f, 3.0f, 0.0f };
+        Vector3 size = { 1.0f, 6.0f, data::size::PLAY_AREA.max.z - data::size::PLAY_AREA.min.z };
+        DrawCubeV(position, size, DARKGRAY);
+        DrawCubeWiresV(position, size, BLACK);
+
+        position = { data::size::PLAY_AREA.max.x + 0.5f, 3.0f, 0.0f };
+        size = { 1.0f, 6.0f, data::size::PLAY_AREA.max.z - data::size::PLAY_AREA.min.z };
+        DrawCubeV(position, size, DARKGRAY);
+        DrawCubeWiresV(position, size, BLACK);
+
+        position = {  0.0f, 3.0f, data::size::PLAY_AREA.min.z - 0.5f };
+        size = { data::size::PLAY_AREA.max.x - data::size::PLAY_AREA.min.x, 6.0f, 1.0f };
+        DrawCubeV(position, size, DARKGRAY);
+        DrawCubeWiresV(position, size, BLACK);
+
+        position = {   0.0f, 3.0f, data::size::PLAY_AREA.max.z + 0.5f };
+        size = { data::size::PLAY_AREA.max.x - data::size::PLAY_AREA.min.x, 6.0f, 1.0f };
+        //DrawCubeV(position, size, DARKGRAY);
+        //DrawCubeWiresV(position, size, BLACK);
+
         data::game::g_number_entities = entities_count;
+        data::game::g_number_enemies = enemies_count;
     }
 
     void RunUIDrawSystems(const float delta_time) noexcept {
+        PROFILE_SCOPE("RunUIDrawSystems()");
         int player_hp = 0;
         if (sys::world.HasComponent<cmpt::Health>(data::player::g_player.id)) {
             auto& hp_comp = sys::world.GetComponent<cmpt::Health>(data::player::g_player.id);

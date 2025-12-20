@@ -16,6 +16,11 @@ namespace spwn::proj {
             tag::Projectile{}
         );
 
+        world.AddComponent<tag::DestroyOnTerrainCollision>(
+            grenade,
+            tag::DestroyOnTerrainCollision{}
+        );
+
         world.AddComponent<cmpt::Transform>(
             grenade,
             cmpt::Transform{ 
@@ -59,11 +64,6 @@ namespace spwn::proj {
                 .amount = damage,
                 .penetration = 0
             }
-        );
-
-        world.AddComponent<cmpt::DestroyOnContact>(
-            grenade,
-            cmpt::DestroyOnContact { 1 }
         );
 
         world.AddComponent<cmpt::Draw>(

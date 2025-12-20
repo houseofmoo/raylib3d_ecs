@@ -3,9 +3,11 @@
 #include "storage/registry.h"
 #include "components/components.h"
 #include "utils/rl_utils.h"
+#include "utils/debug.h"
 
 namespace sys {
     inline void SpawnAnimation(Storage::Registry& world) {
+        PROFILE_SCOPE("SpawnAnimation()");
         for (auto enemy : world.View<cmpt::SpawnAnimation,
                                     cmpt::Transform,
                                     cmpt::Velocity>()) {
@@ -29,6 +31,7 @@ namespace sys {
     }
 
     inline void DeathAnimation(Storage::Registry& world, float delta_time) {
+        PROFILE_SCOPE("DeathAnimation()");
         for (auto enemy : world.View<cmpt::DeathAnimation,
                                     cmpt::Transform,
                                     cmpt::Velocity>()) {

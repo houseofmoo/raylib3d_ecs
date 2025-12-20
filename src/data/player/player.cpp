@@ -13,6 +13,10 @@ namespace data::player {
         .damage_multiplier = 1.0f,
         .attack_speed_multiplier = 1.0f,
         .move_speed_multiplier = 1.0f,
-        .pickup_range_multiplier = 1.0f
+        .pickup_range_multiplier = 1.0f,
+
+        // cheats
+        .god_mode = false,
+        .profiler_enabled = false,
     };
 }

@@ -5,8 +5,7 @@
 #include "storage/registry.h"
 #include "systems/player/player_input.h"
 #include "components/components.h"
-
-#include "utils/print.h"
+#include "utils/debug.h"
 
 namespace sys::input {
     inline bool RayPlaneIntersection(const Ray& ray, float planeY, Vector3& outPoint) {
@@ -22,6 +21,8 @@ namespace sys::input {
     }
 
     inline void PlayerInput(Storage::Registry& world, Camera3D& camera) {
+        PROFILE_SCOPE("PlayerInput()");
+
         for (auto entity : world.View<tag::Player, 
                                     cmpt::Input>()) {
 
@@ -51,6 +52,7 @@ namespace sys::input {
     }
 
     inline void AIMoveIntent(Storage::Registry& world) {
+        PROFILE_SCOPE("AIMoveIntent()");
         for (auto entity : world.View<cmpt::MoveIntent, cmpt::Transform>()) {
             auto& intent = world.GetComponent<cmpt::MoveIntent>(entity);
             auto& trans = world.GetComponent<cmpt::Transform>(entity);

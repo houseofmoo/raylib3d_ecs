@@ -7,6 +7,7 @@
 #include "spawners/projectile/bullet.h"
 #include "components/components.h"
 #include "utils/rl_utils.h"
+#include "utils/debug.h"
 
 namespace sys::atk {
     inline void FireSpread(Storage::Registry& world, Vector3 origin, Vector3 baseDir, int pelletCount,
@@ -34,6 +35,7 @@ namespace sys::atk {
     }
 
     inline void WeaponAttacks(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
+        PROFILE_SCOPE("WeaponAttacks()");
         for (auto weapon : world.View<tag::Weapon, 
                                     cmpt::WeaponStats>()) {
             
@@ -71,16 +73,16 @@ namespace sys::atk {
                     1//stats.penetration
                 );
             // } else {
-            //     float spread_deg = 20.0f;
-            //     FireSpread(
-            //         world, 
-            //         parent_trans->position, 
-            //         direction, 
-            //         stats.pellet_count, 
-            //         spread_deg, 
-            //         stats.damage * data::player::g_player.damage_multiplier,
-            //         1//stats.penetration
-            //     );
+                // float spread_deg = 30.0f;
+                // FireSpread(
+                //     world, 
+                //     parent_trans->position, 
+                //     direction, 
+                //     20, 
+                //     spread_deg, 
+                //     100,//stats.damage * data::player::g_player.damage_multiplier,
+                //     5//stats.penetration
+                // );
             // }
             PlaySound(sound_fx);
             SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
