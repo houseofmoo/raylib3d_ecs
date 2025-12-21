@@ -15,27 +15,27 @@ namespace spwn::map {
         // Extra terrain for funsies
         Vector3 size = Vector3{ 1.0f, 2.0f, 15.0f };
         Vector3 pos = Vector3{ -20.0f, size.y*0.5f, 10.0f };
-        spwn::terrain::Terrain2(world, pos, size);
+        spwn::terrain::Terrain(world, pos, size);
 
         size = Vector3{ 1.0f, 2.0f, 15.0f };
         pos = Vector3{ 20.0f, size.y*0.5f, 10.0f };
-        spwn::terrain::Terrain2(world, pos, size);
+        spwn::terrain::Terrain(world, pos, size);
 
         size = Vector3{ 1.0f, 2.0f, 15.0f };
         pos = Vector3{ -20.0f, size.y*0.5f, -10.0f };
-        spwn::terrain::Terrain2(world, pos, size);
+        spwn::terrain::Terrain(world, pos, size);
 
         size = Vector3{ 1.0f, 2.0f, 15.0f };
         pos = Vector3{ 20.0f, size.y*0.5f, -10.0f };
-        spwn::terrain::Terrain2(world, pos, size);
+        spwn::terrain::Terrain(world, pos, size);
 
         // short terrain
         size = Vector3{ 5.0f, 0.5f, 5.0f };
         pos = Vector3{ 0.0f, size.y*0.5f, 20.0f };
-        spwn::terrain::Terrain2(world, pos, size);
+        spwn::terrain::Terrain(world, pos, size);
 
         size = Vector3{ 5.0f, 0.5f, 5.0f };
         pos = Vector3{ 0.0f, size.y*0.5f, -20.0f };
-        spwn::terrain::Terrain2(world, pos, size);
+        spwn::terrain::Terrain(world, pos, size);
     }
 }

@@ -9,7 +9,7 @@ namespace data::game {
     int g_number_enemies = 0;
     bool g_paused = false;
 
-    Tilemap terrain(
+    strg::Tilemap terrain(
         data::size::PLAY_AREA.min,
         data::size::PLAY_AREA.max
     );

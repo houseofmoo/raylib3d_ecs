@@ -1,4 +1,4 @@
-#include "resources/assets.h"
+#include "resources/asset_loader.h"
 #include "data/entity.h"
 
 namespace rsrc::asset {

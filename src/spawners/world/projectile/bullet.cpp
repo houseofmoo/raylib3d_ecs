@@ -1,7 +1,7 @@
 #include "spawners/world/projectile/bullet.h"
 #include "raymath.h"
 #include "data/entity.h"
-#include "resources/assets.h"
+#include "resources/asset_loader.h"
 #include "components/components.h"
 
 namespace spwn::proj {
@@ -37,7 +37,7 @@ namespace spwn::proj {
             bullet,
             cmpt::Collider{
                 .layer = data::layer::PROJECTILE,
-                .mask = data::layer::ENEMY | data::layer::TERRAIN,
+                .mask = data::layer::ENEMY,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = data::size::PROJECTILE
             }

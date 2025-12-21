@@ -15,12 +15,12 @@ namespace data {
         constexpr Layer ENEMY      = 1 << 1;
         constexpr Layer PROJECTILE = 1 << 2;
         constexpr Layer LOOT       = 1 << 3;
-        constexpr Layer TERRAIN    = 1 << 4;
-        // Layer TERRAIN    = 1 << 5;
-        // Layer TERRAIN    = 1 << 6;
-        // Layer TERRAIN    = 1 << 7;
-        // Layer TERRAIN    = 1 << 8;
-        // Layer TERRAIN    = 1 << 9;
+        //constexpr Layer TERRAIN    = 1 << 4;
+        //constexpr Layer LAYER_TBD  = 1 << 5;
+        //constexpr Layer LAYER_TBD  = 1 << 6;
+        //constexpr Layer LAYER_TBD  = 1 << 7;
+        //constexpr Layer LAYER_TBD  = 1 << 8;
+        //constexpr Layer LAYER_TBD  = 1 << 9;
 
         inline bool InteractsOneWay(Layer layer_a, Mask mask_a, Layer layer_b, Mask mask_b) {
             // if either interact with the other
@@ -48,7 +48,6 @@ namespace data {
             .min = Vector3{-60.0f, 0.0f, -30.0f},
             .max = Vector3{60.0f, 55.0f, 30.0f}
         };
-
 
         inline Vector3 MinColldierSize(Vector3 vec) {
             // min collider size

@@ -195,7 +195,7 @@ namespace sys::col {
                         utils::GetBoundingBox(btrans, bcol)
                     );
 
-                    // apply velocty away from each other instead of modifying position directly
+                    // other than velocity system, this should be the only place that modifies transforms position directly
                     if (direction.x != 0.0f || direction.z != 0) {
                         utils::MoveAndSlideTerrain(atrans.position, Vector3Scale(direction,  0.5f));
                         utils::MoveAndSlideTerrain(btrans.position, Vector3Scale(direction, -0.5f));

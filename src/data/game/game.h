@@ -1,6 +1,6 @@
 #pragma once
 #include "raylib.h"
-#include "tilemap.h"
+#include "storage/tilemap.h"
 
 namespace data::game {
     extern int g_difficulty_level;
@@ -9,5 +9,5 @@ namespace data::game {
     extern int g_number_enemies;
     extern bool g_paused;
 
-    extern Tilemap terrain;
+    extern strg::Tilemap terrain;
 }

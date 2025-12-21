@@ -1,14 +1,11 @@
 #include "systems/systems.h"
 
-// #include <iostream>
-// #include <cmath>
-// #include <string>
 #include <format>
 #include "rlgl.h"
 
 #include "data/player/player.h"
 #include "data/game/game.h"
-#include "resources/assets.h"
+#include "resources/asset_loader.h"
 #include "utils/debug.h"
 
 #include "spawners/system/camera/camera.h"
@@ -30,7 +27,6 @@
 #include "systems/events/notification_event_system.h"
 #include "systems/input_system.h"
 #include "systems/movement_system.h"
-//#include "systems/levelup_system.h"
 #include "systems/status_effects_system.h"
 #include "systems/velocity_system.h"
 
@@ -44,24 +40,14 @@ namespace sys {
         spwn::map::GenerateMap(world, data::size::PLAY_AREA);
         data::player::g_player.id = spwn::player::Player(world);
         spwn::weapon::EquipPistol(world, data::player::g_player.id);
-        //spwn::weapon::Pistol(world, data::player::g_player.id);
-    }
+     }
 
     void RunUpdateSystems(const float delta_time) noexcept {
         if (data::game::g_paused) {
             return;
         }
 
-        // weapons as loot?
-        // if so, make them long rectanlges
-        // do we allow the player to hold as many weapons or a set amount?
-        // we want the enemies to have weapons at some point as well so they can shoot at the player
-
-        // TODO: disable colliders via masks
-        // as in when the player is invul, change their mask to no longer include anything but terrain and pickup
-
-        // TODO: re-add loot upgrades, we can pick things up but they do nothing
-        // also re-add the sound for pickups
+        // TODO: re-add the sound for pickups
 
         // spawn additional enemies
         sys::SpawnEnemyInterval(world, delta_time);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "raylib.h"
-#include "raymath.h"
 #include "storage/registry.h"
 
 namespace sys {

@@ -2,8 +2,8 @@
 
 #include "raymath.h"
 #include "data/entity.h"
-#include "resources/assets.h"
-#include "utils/cmpt_add.h"
+#include "components/attach.h"
+#include "resources/asset_loader.h"
 
 namespace spwn::enemy {
     void Grunt(
@@ -41,7 +41,7 @@ namespace spwn::enemy {
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
-        cmpt::add::AddMovementType(world, enemy, move_type);
+        cmpt::AttachMovementComponent(world, enemy, move_type);
         world.AddComponent<cmpt::MoveIntent>(
             enemy,
             cmpt::MoveIntent{
@@ -50,11 +50,12 @@ namespace spwn::enemy {
             }
         );
 
-        world.AddComponent<cmpt::Collider>(
+        cmpt::AttachColliderComponent(
+            world,
             enemy,
             cmpt::Collider{
                 .layer = data::layer::ENEMY,
-                .mask = data::layer::PLAYER | data::layer::ENEMY | data::layer::PROJECTILE | data::layer::TERRAIN,
+                .mask = data::layer::PLAYER | data::layer::ENEMY | data::layer::PROJECTILE,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = data::size::MinColldierSize(data::size::GRUNT)
             }

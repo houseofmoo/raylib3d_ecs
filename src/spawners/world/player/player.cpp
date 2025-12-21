@@ -1,8 +1,9 @@
 #include "spawners/world/player/player.h"
 #include "raymath.h"
 #include "data/entity.h"
-#include "resources/assets.h"
+#include "resources/asset_loader.h"
 #include "components/components.h"
+#include "components/attach.h"
 
 namespace spwn::player {
     Entity Player(Storage::Registry& world) {
@@ -27,11 +28,12 @@ namespace spwn::player {
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
-        world.AddComponent<cmpt::Collider>(
+        cmpt::AttachColliderComponent(
+            world,
             player,
             cmpt::Collider{
                 .layer = data::layer::PLAYER,
-                .mask = data::layer::ENEMY | data::layer::LOOT | data::layer::TERRAIN,
+                .mask = data::layer::ENEMY | data::layer::LOOT,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = data::size::MinColldierSize(data::size::PLAYER)
             }

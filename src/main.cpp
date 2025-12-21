@@ -15,7 +15,7 @@
 #endif
 
 #include "data/game/game.h"
-#include "resources/assets.h"
+#include "resources/asset_loader.h"
 #include "systems/systems.h"
 #include "components/components.h"
 

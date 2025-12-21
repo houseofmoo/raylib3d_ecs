@@ -4,7 +4,7 @@
 #include "storage/registry.h"
 #include "components/components.h"
 #include "spawners/system/events/notification.h"
-#include "resources/assets.h"
+#include "resources/asset_loader.h"
 #include "utils/debug.h"
 
 namespace sys::dmg {

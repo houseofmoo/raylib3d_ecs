@@ -2,8 +2,9 @@
 #include "raymath.h"
 #include "data/entity.h"
 #include "data/player/player.h"
-#include "resources/assets.h"
+#include "resources/asset_loader.h"
 #include "components/components.h"
+#include "components/attach.h"
 
 namespace spwn::loot {
     Vector3 FuzzPosition(Vector3 position) {
@@ -39,7 +40,8 @@ namespace spwn::loot {
             cmpt::RotateInPlace{ .speed = 2.5f }
         );
 
-        world.AddComponent<cmpt::Collider>(
+        cmpt::AttachColliderComponent(
+            world,
             exp,
             cmpt::Collider{
                 .layer = data::layer::LOOT,

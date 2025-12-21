@@ -3,11 +3,13 @@
 #include <cinttypes>
 #include <vector>
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <algorithm>
 #include "raylib.h"
 #include "utils/debug.h"
 
+namespace strg {
     // TEMP MASKS
     constexpr uint8_t OPEN    = 0;
     constexpr uint8_t LOW     = 1 << 0; // bullets can travel over this
@@ -138,10 +140,15 @@
             std::ofstream file(path);
             for (int tz = 0; tz < height; ++tz) {
                 for (int tx = 0; tx < width; ++tx) {
-                    file << (IsBlockedTile(tx, tz) ? '#' : '_');
+                    if ((int)GetMaskTile(tx, tz) == 0) {
+                        file << "_";
+                    } else {
+                        file << std::to_string((int)GetMaskTile(tx, tz));
+                    }
                 }
                 file << '\n';
             }
             file.close();
         }
     };
+}
