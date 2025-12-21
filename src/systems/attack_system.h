@@ -61,7 +61,7 @@ namespace sys::atk {
             }
 
             Vector3 direction = utils::Direction(parent_trans->position, parent_input->mouse_world_position);
-            direction = utils::FlattenAndNormalize(direction);
+            direction = utils::FlattenThenNormalize(direction);
             direction = Vector3Scale(direction, stats.projectile_speed);
     
             // if (stats.pellet_count <= 1) {

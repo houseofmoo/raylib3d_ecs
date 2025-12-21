@@ -6,25 +6,6 @@
 #include "components/components.h"
 
 namespace utils {
-    inline Vector3 GetRandomValidLocation() {
-        float enemy_x = 0.0f;
-        float enemy_z = 0.0f;
-        while (true) {
-            enemy_x = (float)GetRandomValue(
-                data::size::PLAY_AREA.min.x + 1.0f, 
-                data::size::PLAY_AREA.max.x - 1.0f
-            );
-            enemy_z = (float)GetRandomValue(
-                data::size::PLAY_AREA.min.z + 1.0f, 
-                data::size::PLAY_AREA.max.z - 1.0f
-            );
-            
-            if (!data::game::terrain.IsBlockedWorld(enemy_x, enemy_z)) break;
-        }
-
-        return Vector3{enemy_x, 0.0f, enemy_z};
-    }
-
     inline BoundingBox GetBoundingBox(const Vector3 position, const Vector3 offset, const Vector3 size) {
         Vector3 center = Vector3Add(position, offset);
         Vector3 half_size =  Vector3Scale(size, 0.5f);
@@ -81,12 +62,24 @@ namespace utils {
         };
     }
 
-    inline Vector3 FlattenAndNormalize(Vector3 vec) noexcept {
+    // Remove Y component then normalize
+    inline Vector3 FlattenThenNormalize(Vector3 vec) noexcept {
         vec.y = 0.0f;
         return Vector3Normalize(vec);
     }
 
+    // Get the direction from ME to THEM
     inline Vector3 Direction(const Vector3& me, const Vector3& them) noexcept {
         return Vector3Subtract(them, me);
+    }
+
+    // Get the direction from ME to THEM then normalize
+    inline Vector3 DirectionNormalized(const Vector3& me, const Vector3& them) noexcept {
+        return Vector3Normalize(Direction(me, them));
+    }
+
+    // Get the direction from ME to THEM, then remove Y component and normalize
+    inline Vector3 DirectionFlattenThenNormalize(const Vector3& me, const Vector3& them) noexcept {
+        return FlattenThenNormalize(Direction(me, them));
     }
 }

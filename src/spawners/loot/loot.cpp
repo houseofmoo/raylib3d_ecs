@@ -13,12 +13,17 @@ namespace spwn::loot {
         return Vector3 { position.x + (x*0.1f), position.y, position.z + (z*0.1f)};
     }
 
-    void Exp(Storage::Registry& world, const Vector3 position) {
+    void Exp(Storage::Registry& world, const Vector3 position, int exp_amount) {
         Entity exp = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
             exp, 
             cmpt::Loot{ .kind = data::loot::LootKind::Exp }
+        );
+
+        world.AddComponent<cmpt::ExpLoot>(
+            exp,
+            cmpt::ExpLoot { exp_amount }
         );
 
         world.AddComponent<cmpt::Transform>(

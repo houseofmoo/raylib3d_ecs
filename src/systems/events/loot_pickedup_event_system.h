@@ -2,46 +2,52 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "utils/debug.h"
+#include "spawners/events/notification.h"
 #include "data/player/player.h"
+#include "utils/debug.h"
 
 namespace sys::evt {
-    inline void ApplyPowerup(data::loot::PowerupKind kind) {
+    inline void ApplyPowerup(Storage::Registry& world, data::loot::PowerupKind kind) {
         switch (kind) {
             case data::loot::PowerupKind::Damage: {
-                PRINT("+Damage powerup");
                 data::player::g_player.damage_multiplier += 0.1f;
+                spwn::evt::Notification(world, "+DAMGE");
                 break;
             }
             case data::loot::PowerupKind::AttackSpeed: {
                 data::player::g_player.attack_speed_multiplier += 0.1f;
-                PRINT("+AttackSpeed powerup");
+                spwn::evt::Notification(world, "+ATTACK SPEED");
                 break;
             }
             case data::loot::PowerupKind::MoveSpeed: {
                 data::player::g_player.move_speed_multiplier += 0.1f;
-                PRINT("+MoveSpeed powerup");
+                spwn::evt::Notification(world, "+MOVE SPEED");
                 break;
             }
             case data::loot::PowerupKind::PickupRange: {
                 data::player::g_player.pickup_range_multiplier += 0.1f;
-                PRINT("+PickupRange powerup");
+                spwn::evt::Notification(world, "+PICKUP RANGE");
                 break;
             }
             case data::loot::PowerupKind::DashDistance: {
-                PRINT("+DashDistance powerup");
+                // TODO: 
+                spwn::evt::Notification(world, "+DASH");
                 break;
             }
             case data::loot::PowerupKind::Health: {
-                PRINT("+Health powerup");
+                auto& hp = world.GetComponent<cmpt::Health>(data::player::g_player.id);
+                if (hp.amount < hp.max) {
+                    hp.amount += 10;
+                    if (hp.amount > hp.max) hp.amount = hp.max;
+                }
+                spwn::evt::Notification(world, "+HP");
                 break;
             }
             case data::loot::PowerupKind::MaxHp: {
-                PRINT("+MaxHp powerup");
-                break;
-            }
-            case data::loot::PowerupKind::HpRegen: {
-                PRINT("+HpRegen powerup");
+                auto& hp = world.GetComponent<cmpt::Health>(data::player::g_player.id);
+                hp.max += 10;
+                hp.amount += 10;
+                spwn::evt::Notification(world, "+MAX HP");
                 break;
             }
             default: {
@@ -51,7 +57,7 @@ namespace sys::evt {
         }
     }
 
-       inline void ApplyWeapon(data::loot::WeaponKind kind) {
+       inline void ApplyWeapon(Storage::Registry& world, data::loot::WeaponKind kind) {
         switch (kind) {
             case data::loot::WeaponKind::Pistol: {
                 PRINT("+Pistol");
@@ -100,13 +106,13 @@ namespace sys::evt {
             switch (evt.kind) {
                 case data::loot::LootKind::Powerup: {
                     auto& pukind = world.GetComponent<cmpt::PowerupLoot>(entity);
-                    ApplyPowerup(pukind.kind);
+                    ApplyPowerup(world, pukind.kind);
                     break;
                 }
 
                 case data::loot::LootKind::Weapon: {
                     auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(entity);
-                    ApplyWeapon(wepkind.kind);
+                    ApplyWeapon(world, wepkind.kind);
                     PRINT("got weapon pickup");
                     break;
                 }

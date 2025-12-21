@@ -6,7 +6,8 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "utils/position_helpers.h"
+#include "data/game/game.h"
+#include "utils/position.h"
 #include "utils/debug.h"
 
 namespace sys::vel {

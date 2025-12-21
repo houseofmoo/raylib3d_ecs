@@ -34,7 +34,6 @@ namespace data::loot {
         DashDistance,
         Health,
         MaxHp,
-        HpRegen,
         Last
     };
 

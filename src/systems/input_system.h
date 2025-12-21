@@ -2,9 +2,12 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#include "data/player/player.h"
 #include "storage/registry.h"
 #include "systems/player/player_input.h"
 #include "components/components.h"
+#include "utils/position.h"
+#include "utils/rl_utils.h"
 #include "utils/debug.h"
 
 namespace sys::input {
@@ -76,10 +79,11 @@ namespace sys::input {
 
             switch (intent.type) {
                 case cmpt::MoveIntentType::Melee: {
-                    intent.direction = Vector3Normalize(
-                        Vector3Subtract(ptrans->position, trans.position)
+                    // moves directly at the player
+                    intent.direction = utils::DirectionFlattenThenNormalize(
+                        trans.position,
+                        ptrans->position
                     );
-                    intent.direction.y = 0.0f;
                     break;
                 }
 
@@ -91,6 +95,16 @@ namespace sys::input {
 
                 case cmpt::MoveIntentType::Lazy: {
                     // make their way in the general direction of the player
+                    auto& lazy = world.GetComponent<cmpt::LazyMovement>(entity);
+                    lazy.countdown -= delta_time;
+                    if (lazy.countdown > 0.0f) continue;
+                    lazy.countdown = 3.0f;
+                    Vector3 dir = utils::Direction(trans.position, ptrans->position);
+                    // add a random offset so we dont move directly at the player
+                    dir.x += (float)GetRandomValue(-5, 5);
+                    dir.z += (float)GetRandomValue(-5, 5);
+                    intent.direction = utils::FlattenThenNormalize(dir);
+                    // TODO: lazy gets stuck sometimes, add component to indicate stuck?
                     break;
                 }
 
@@ -99,8 +113,10 @@ namespace sys::input {
                     ran_dir.countdown -= delta_time;
                     if (ran_dir.countdown > 0.0f) continue;
                     ran_dir.countdown = 5.0f;
-                    Vector3 dir = utils::GetRandomValidLocation();
-                    intent.direction = Vector3Normalize(dir);
+                    intent.direction = utils::DirectionFlattenThenNormalize(
+                         trans.position,
+                        utils::GetRandomValidPosition()
+                    );
                     break;
                 }
 

@@ -14,7 +14,6 @@ namespace tag {
     struct Destroy {};
     struct DestroyOnTerrainCollision {};
     struct Terrain {};
-    struct DropsLoot {};
     struct Event {};
 }
 
@@ -42,10 +41,6 @@ namespace cmpt {
         float height;
     };
 
-    struct RandomMovement {
-        float countdown;
-    };
-
     ////////////////////////////////////////////////
     // COLLISION
     ////////////////////////////////////////////////
@@ -64,16 +59,29 @@ namespace cmpt {
     // INPUT
     ////////////////////////////////////////////////
     enum class MoveIntentType {
-        Melee,
-        Ranged,
-        Lazy,
-        Random,
+        Melee,  // heads directly at player
+        Ranged, // stays some min/max distance near player
+        Lazy,   // moves generally towards player
+        Random, // move entirely randomly
     };
 
     // non-player characters have this value for AI movement
     struct MoveIntent { 
         MoveIntentType type;
         Vector3 direction;
+    };
+
+    struct RandomMovement {
+        float countdown;
+    };
+
+    struct LazyMovement {
+        float countdown;
+    };
+
+    struct RangedMovement {
+        float distance_min;
+        float distance_max;
     };
 
     struct Input {
@@ -114,6 +122,7 @@ namespace cmpt {
     // ENTITY STATS
     ////////////////////////////////////////////////
     struct Health {
+        int max;
         int amount;
     };
 
@@ -158,8 +167,16 @@ namespace cmpt {
     ////////////////////////////////////////////////
     // LOOT/WEAPONS
     ////////////////////////////////////////////////
+    struct DropsLoot {
+        float loot_chance;
+    };
+
     struct Loot {
         data::loot::LootKind kind;
+    };
+
+    struct ExpLoot {
+        int amount;
     };
 
     struct PowerupLoot {

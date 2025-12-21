@@ -1,10 +1,30 @@
 #pragma once
 
 #include "raylib.h"
+#include "raymath.h"
 #include "storage/registry.h"
 #include "data/game/game.h"
 
 namespace utils {
+    inline Vector3 GetRandomValidPosition() {
+        float enemy_x = 0.0f;
+        float enemy_z = 0.0f;
+        while (true) {
+            enemy_x = (float)GetRandomValue(
+                data::size::PLAY_AREA.min.x + 1.0f, 
+                data::size::PLAY_AREA.max.x - 1.0f
+            );
+            enemy_z = (float)GetRandomValue(
+                data::size::PLAY_AREA.min.z + 1.0f, 
+                data::size::PLAY_AREA.max.z - 1.0f
+            );
+            
+            if (!data::game::terrain.IsBlockedWorld(enemy_x, enemy_z)) break;
+        }
+
+        return Vector3{enemy_x, 0.0f, enemy_z};
+    }
+
     inline void MoveAndSlideTerrain(Vector3& pos, Vector3 delta) {
         Vector3 tryX = pos;
         tryX.x += delta.x;

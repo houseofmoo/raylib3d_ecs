@@ -12,7 +12,7 @@
 #include "spawners/events/loot_received_event.h"
 #include "spawners/events/notification.h"
 #include "utils/rl_utils.h"
-#include "utils/position_helpers.h"
+#include "utils/position.h"
 #include "utils/debug.h"
 
 namespace sys::col {
@@ -114,8 +114,9 @@ namespace sys::col {
                     world.AddComponent<tag::Destroy>(col.entity_b);
                     switch (b->kind) {
                         case data::loot::LootKind::Exp: {
-                            data::player::g_player.exp += 1;
-                            spwn::evt::Notification(world, "+1 EXP");
+                            auto& exp = world.GetComponent<cmpt::ExpLoot>(col.entity_b);
+                            data::player::g_player.exp += exp.amount;
+                            spwn::evt::Notification(world, "+EXP");
                             break;
                         }
                         case data::loot::LootKind::Money: {
@@ -145,7 +146,9 @@ namespace sys::col {
                     world.AddComponent<tag::Destroy>(col.entity_a);
                     switch (a->kind) {
                         case data::loot::LootKind::Exp: {
-                            data::player::g_player.exp += 1;
+                            auto& exp = world.GetComponent<cmpt::ExpLoot>(col.entity_a);
+                            data::player::g_player.exp += exp.amount;
+                            spwn::evt::Notification(world, "+EXP");
                             break;
                         }
                         case data::loot::LootKind::Money: {

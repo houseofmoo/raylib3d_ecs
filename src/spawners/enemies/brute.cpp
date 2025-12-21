@@ -3,10 +3,14 @@
 #include "raymath.h"
 #include "data/entity.h"
 #include "resources/assets.h"
-#include "components/components.h"
+#include "utils/cmpt_add.h"
 
 namespace spwn::enemy {
-    void Brute(Storage::Registry& world, const Vector3 position, const int hp) {
+    void Brute(
+            Storage::Registry& world, 
+            const Vector3 position, 
+            const cmpt::MoveIntentType move_type, 
+            const int hp) {
 
         auto brute = world.CreateEntity();
 
@@ -19,9 +23,9 @@ namespace spwn::enemy {
             tag::Enemy{}
         );
 
-        world.AddComponent<tag::DropsLoot>(
+        world.AddComponent<cmpt::DropsLoot>(
             brute,
-            tag::DropsLoot{}
+            cmpt::DropsLoot{ 1.5f }
         );
         
         world.AddComponent<cmpt::Transform>(
@@ -37,10 +41,11 @@ namespace spwn::enemy {
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
+        cmpt::add::AddMovementType(world, brute, move_type);
         world.AddComponent<cmpt::MoveIntent>(
             brute,
             cmpt::MoveIntent{
-                .type = cmpt::MoveIntentType::Melee,
+                .type = move_type,
                 .direction = Vector3Zero()
             }
         );
@@ -55,9 +60,10 @@ namespace spwn::enemy {
             }
         );
 
+        int max_hp = (int)(hp * 1.5);
         world.AddComponent<cmpt::Health>(
             brute,
-            cmpt::Health{ hp * 2 }
+            cmpt::Health{ max_hp,  max_hp }
         );
 
         world.AddComponent<cmpt::DamageReceiver>(

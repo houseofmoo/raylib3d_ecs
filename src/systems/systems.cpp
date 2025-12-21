@@ -204,14 +204,16 @@ namespace sys {
     void RunUIDrawSystems(const float delta_time) noexcept {
         PROFILE_SCOPE("RunUIDrawSystems()");
         int player_hp = 0;
+        int player_max_hp = 0;
         if (sys::world.HasComponent<cmpt::Health>(data::player::g_player.id)) {
             auto& hp_comp = sys::world.GetComponent<cmpt::Health>(data::player::g_player.id);
             player_hp = hp_comp.amount;
+            player_max_hp = hp_comp.max;
         }
         
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 30, 20, 20, RAYWHITE);
         DrawText(std::format("Entities Drawn: {}", data::game::g_number_entities).c_str(), 30, 40, 20, RAYWHITE);
-        DrawText(std::format("HP: {}/100", player_hp).c_str(), 30, 80, 20, RAYWHITE);
+        DrawText(std::format("HP: {}/{}", player_hp, player_max_hp).c_str(), 30, 80, 20, RAYWHITE);
         DrawText(std::format("Level: {}", data::player::g_player.level).c_str(), 30, 100, 20, RAYWHITE);
         DrawText(std::format("Difficulty : {}", data::game::g_difficulty_level).c_str(), 30, 140, 20, RAYWHITE);
         DrawText(std::format("Enemies Defeated: {}", data::player::g_player.enemies_defeated).c_str(), 30, 160, 20, RAYWHITE);

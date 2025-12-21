@@ -3,7 +3,7 @@
 #include "raymath.h"
 #include "data/entity.h"
 #include "resources/assets.h"
-#include "components/components.h"
+#include "utils/cmpt_add.h"
 
 namespace spwn::enemy {
     void Grunt(
@@ -23,9 +23,9 @@ namespace spwn::enemy {
             tag::Enemy{}
         );
 
-        world.AddComponent<tag::DropsLoot>(
+        world.AddComponent<cmpt::DropsLoot>(
             enemy,
-            tag::DropsLoot{}
+            cmpt::DropsLoot{ 1.0f }
         );
         
         world.AddComponent<cmpt::Transform>(
@@ -41,23 +41,11 @@ namespace spwn::enemy {
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
-        switch (move_type) {
-            case cmpt::MoveIntentType::Melee: {
-                // nothing
-            }
-            
-            case cmpt::MoveIntentType::Random: {
-                world.AddComponent<cmpt::RandomMovement>(
-                    enemy,
-                    cmpt::RandomMovement{ 5.0f }
-                );
-                break;
-            }
-        }
+        cmpt::add::AddMovementType(world, enemy, move_type);
         world.AddComponent<cmpt::MoveIntent>(
             enemy,
             cmpt::MoveIntent{
-                .type = cmpt::MoveIntentType::Random,
+                .type = move_type,
                 .direction = Vector3Zero()
             }
         );
@@ -74,7 +62,7 @@ namespace spwn::enemy {
 
         world.AddComponent<cmpt::Health>(
             enemy,
-            cmpt::Health{ hp }
+            cmpt::Health{ hp, hp }
         );
 
         world.AddComponent<cmpt::DamageReceiver>(

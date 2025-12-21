@@ -39,7 +39,7 @@ namespace spwn::player {
 
         world.AddComponent<cmpt::Health>(
             player,
-            cmpt::Health{100}
+            cmpt::Health{ 100, 100 }
         );
 
         world.AddComponent<cmpt::DamageReceiver>(

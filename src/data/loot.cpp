@@ -9,7 +9,6 @@ namespace data::loot {
         { data::loot::PowerupKind::DashDistance, PURPLE },
         { data::loot::PowerupKind::Health, VIOLET },
         { data::loot::PowerupKind::MaxHp, DARKPURPLE },
-        { data::loot::PowerupKind::HpRegen, BEIGE },
     };
 
     std::unordered_map<data::loot::WeaponKind, Color> g_weapon_colors = {

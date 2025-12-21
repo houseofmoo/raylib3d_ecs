@@ -4,6 +4,8 @@
 #include "data/game/game.h"
 #include "spawners/enemies/grunt.h"
 #include "spawners/enemies/brute.h"
+#include "utils/rl_utils.h"
+#include "utils/position.h"
 #include "utils/debug.h"
 
 namespace sys {
@@ -16,8 +18,8 @@ namespace sys {
         
         data::game::g_difficulty_level += 1;
         
-        // from difficulty 0..100 spawn enemies faster
-        data::game::g_enemy_spawn_interval = 1.5f - (data::game::g_difficulty_level * 0.01f);
+        // spawn enemies faster as difficulty increases
+        data::game::g_enemy_spawn_interval = 2.5f - (data::game::g_difficulty_level * 0.005f);
         if (data::game::g_enemy_spawn_interval < 0.5f) {
             data::game::g_enemy_spawn_interval = 0.5f;
         }
@@ -29,20 +31,26 @@ namespace sys {
         }
 
         // increase enemy hp based on difficulty
-        int enemy_hp = (data::game::g_difficulty_level / 8) + 25;
+        int enemy_hp = (data::game::g_difficulty_level / 10) + 20;
 
         // after difficulty 100, start spawning multiple enemies
         int num_to_spawn = (data::game::g_difficulty_level / 100) + 1;
 
         for (int i = 0; i < num_to_spawn; i++) {
-            Vector3 pos = utils::GetRandomValidLocation();
+            Vector3 pos = utils::GetRandomValidPosition();
 
             // 10% chance to spawn brutes
             int roll = GetRandomValue(0, 99);
-            if (roll >= 90) {
-                spwn::enemy::Brute(world, Vector3{ pos.x, 0.0f, pos.z }, enemy_hp);
-            } else {
+            if (roll < 50) {
                 spwn::enemy::Grunt(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::MoveIntentType::Random, enemy_hp);
+            } else if (roll >= 50 && roll < 80) {
+                spwn::enemy::Grunt(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::MoveIntentType::Lazy, enemy_hp);
+            } else if (roll >= 80 && roll < 90) {
+                spwn::enemy::Grunt(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::MoveIntentType::Melee, enemy_hp);
+            } else if (roll >= 90 && roll < 97) {
+                spwn::enemy::Brute(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::MoveIntentType::Lazy, enemy_hp);
+            } else {
+                spwn::enemy::Brute(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::MoveIntentType::Melee, enemy_hp);
             }
         }
     }
