@@ -62,68 +62,65 @@ namespace debug {
         }
         ImGui::Separator();
             
-        ImGui::Text("FPS: %d", GetFPS());
-        ImGui::Text("Entities: %d", data::game::g_number_entities);
-        ImGui::Text("Enemies: %d", data::game::g_number_enemies);
+        ImGui::Text("fps:        %d", GetFPS());
+        ImGui::Text("entities:   %d", data::game::g_number_entities);
+        ImGui::Text("enemies:    %d", data::game::g_number_enemies);
+        ImGui::Text("spawn time: %.2f", data::game::g_enemy_spawn_interval);
+        ImGui::Text("enemy hp:   %d", (data::game::g_difficulty_level / 10) + 30);
+        ImGui::Text("difficulty: %d", data::game::g_difficulty_level);
+        if (ImGui::SliderInt("##diff_slider", &data::game::g_difficulty_level, 0, 2000)) {}
         ImGui::Separator();
 
-        if (ImGui::SliderInt("Difficulty", &data::game::g_difficulty_level, 0, 1000)) {}
-        ImGui::Text("Spawn time: %.2f", data::game::g_enemy_spawn_interval);
-        ImGui::Text("Enemy hp: %d", (data::game::g_difficulty_level / 10) + 30);
+        ImGui::Text("id:         %d", data::player::g_player.id);
+        ImGui::Text("level:      %d", data::player::g_player.level);
+        ImGui::Text("gold:       %d", data::player::g_player.money);
+        ImGui::Text("exp:        %d", data::player::g_player.exp);
+        ImGui::Text("explvl:     %d", data::player::g_player.exp_to_next_level);
         ImGui::Separator();
 
-        ImGui::Text("Id: %d", data::player::g_player.id);
-        ImGui::Text("Level: %d", data::player::g_player.level);
-        ImGui::Text("Exp: %d", data::player::g_player.exp);
-        ImGui::Text("ExpLvl: %d", data::player::g_player.exp_to_next_level);
+        ImGui::Text("dmg%:       %.2f", data::player::g_player.damage_multiplier);
+        ImGui::Text("a-spd%:     %.2f", data::player::g_player.attack_speed_multiplier);
+        ImGui::Text("m-spd%:     %.2f", data::player::g_player.move_speed_multiplier);
+        ImGui::Text("d-rng%:     %.2f", data::player::g_player.move_speed_multiplier);
+        ImGui::Text("pu-rng%:    %.2f", data::player::g_player.pickup_range_multiplier);
         ImGui::Separator();
 
-        float exp = static_cast<float>(data::player::g_player.exp);
-        float next = static_cast<float>(data::player::g_player.exp_to_next_level);
-        ImGui::ProgressBar(exp/next, ImVec2(-FLT_MIN, 0.0f), "Exp");
-        ImGui::Text("Dmg%: %.2f", data::player::g_player.damage_multiplier);
-        ImGui::Text("ASpd%: %.2f", data::player::g_player.attack_speed_multiplier);
-        ImGui::Text("Mspd%: %.2f", data::player::g_player.move_speed_multiplier);
-        ImGui::Text("PRng%: %.2f", data::player::g_player.pickup_range_multiplier);
-        ImGui::Separator();
-
-        ImGui::Checkbox("God Mode: ", &data::player::g_player.god_mode);
-        ImGui::Checkbox("Loot Mode: ", &data::player::g_player.always_drop_loot);
+        ImGui::Checkbox(" god mode", &data::player::g_player.god_mode);
+        ImGui::Checkbox(" loot mode", &data::player::g_player.always_drop_loot);
         ImGui::Separator();
 
         for (auto wep : world.View<tag::Weapon, cmpt::WeaponStats>()) {
             auto& stats = world.GetComponent<cmpt::WeaponStats>(wep);
-            ImGui::Text("Weapon1:");
+            ImGui::Text("wep-pistol:");
             ImGui::Text("  dmg: %d", stats.damage);
             //ImGui::Text("  pen: %d", stats.penetration);
             //ImGui::Text("  cnt: %d", stats.pellet_count);
             ImGui::Separator();
         }
 
-        if (ImGui::Button("Draw Tilemap")) {
+        // tilemap testing
+        if (ImGui::Button("draw tilemap")) {
             data::game::terrain.DrawTileMap();
         }
-
-
-        ImGui::InputFloat("X:", &position_x);
-        ImGui::InputFloat("Z:", &position_z);
-        if (ImGui::Button("Test Point")) {
-            position_blocked = data::game::terrain.IsBlockedWorld(position_x, position_z);
-        }
-        ImGui::Text("Blocked: %d", position_blocked);
+        // ImGui::InputFloat("X:", &position_x);
+        // ImGui::InputFloat("Z:", &position_z);
+        // if (ImGui::Button("Test Point")) {
+        //     position_blocked = data::game::terrain.IsBlockedWorld(position_x, position_z);
+        // }
+        // ImGui::Text("Blocked: %d", position_blocked);
 
         #ifdef PROFILER_ENABLED
         ImGui::Separator();
-        if (ImGui::Checkbox("Enable Profiler: ", &data::player::g_player.profiler_enabled)) {
+        if (ImGui::Checkbox("enable profiler: ", &data::player::g_player.profiler_enabled)) {
             PRINT("Profiler contents cleared");
             PROFILER_CLEAR;
         }
 
-        if (ImGui::Button("Dump profiler", ImVec2{120, 20})) {
+        if (ImGui::Button("dump profiler", ImVec2{120, 20})) {
             PRINT("Profiler contents written");
             PROFILER_PRINT;
         }
-        if (ImGui::Button("Clear profiler", ImVec2{120, 20})) {
+        if (ImGui::Button("clear profiler", ImVec2{120, 20})) {
             PRINT("Profiler contents cleared");
             PROFILER_CLEAR;
         }

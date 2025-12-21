@@ -29,11 +29,18 @@ int main() {
     SetTargetFPS(240);
 
     #ifdef DEBUG
-    // imgui
+    //rlImGuiBeginInitImGui();
     rlImGuiSetup(true);
-    // enable docking
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    ImFont* font = io.Fonts->AddFontFromFileTTF("assets/fonts/consola.ttf", 16.0f);
+    if (font == nullptr) {
+        std::cout << "font failed to load" << std::endl;
+        return 1;
+    } else {
+        io.FontDefault = font;
+    }
+    //rlImGuiEndInitImGui();
     #endif
 
     rsrc::asset::LoadAssets();

@@ -2,7 +2,7 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "spawners/events/notification.h"
+#include "spawners/system/events/notification.h"
 #include "utils/debug.h"
 
 namespace sys::se {

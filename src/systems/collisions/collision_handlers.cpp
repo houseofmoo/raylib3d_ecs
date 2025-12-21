@@ -9,8 +9,8 @@
 #include "storage/collision_pairs.h"
 #include "systems/collisions/entity_collision_system.h"
 #include "components/components.h"
-#include "spawners/events/loot_received_event.h"
-#include "spawners/events/notification.h"
+#include "spawners/system/events/loot_received_event.h"
+#include "spawners/system/events/notification.h"
 #include "utils/rl_utils.h"
 #include "utils/position.h"
 #include "utils/debug.h"
@@ -108,61 +108,61 @@ namespace sys::col {
     void PickupOnCollision(Storage::Registry& world) {
         PROFILE_SCOPE("PickupOnCollision()");
        for (auto& col : sys::col::collision_cache.current) {
+
             // only players can pick up loot
-            if (auto* a = world.TryGetComponent<tag::Player>(col.entity_a)) {
-                if (auto* b = world.TryGetComponent<cmpt::Loot>(col.entity_b)) {
+            if (auto* player = world.TryGetComponent<tag::Player>(col.entity_a)) {
+                if (auto* loot = world.TryGetComponent<cmpt::Loot>(col.entity_b)) {
                     world.AddComponent<tag::Destroy>(col.entity_b);
-                    switch (b->kind) {
+                    switch (loot->kind) {
                         case data::loot::LootKind::Exp: {
                             auto& exp = world.GetComponent<cmpt::ExpLoot>(col.entity_b);
-                            data::player::g_player.exp += exp.amount;
-                            spwn::evt::Notification(world, "+EXP");
+                            spwn::evt::LootPickedupEvent(world, col.entity_a, loot->kind, exp.amount);
                             break;
                         }
                         case data::loot::LootKind::Money: {
-                            data::player::g_player.money += 1;
-                            spwn::evt::Notification(world, "+1 MONEY");
+                            auto& money = world.GetComponent<cmpt::MoneyLoot>(col.entity_b);
+                            spwn::evt::LootPickedupEvent(world, col.entity_a, loot->kind, money.amount);
                             break;
                         }
                         case data::loot::LootKind::Powerup: {
                             auto& pukind = world.GetComponent<cmpt::PowerupLoot>(col.entity_b);
-                            spwn::evt::LootPickedupEvent(world, col.entity_a, b->kind, pukind.kind);
+                            spwn::evt::LootPickedupEvent(world, col.entity_a, loot->kind, pukind.kind);
                             break;
                         }
                         case data::loot::LootKind::Weapon: {
                             auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(col.entity_b);
-                            spwn::evt::LootPickedupEvent(world, col.entity_a, b->kind, wepkind.kind);
+                            spwn::evt::LootPickedupEvent(world, col.entity_a, loot->kind, wepkind.kind);
                             break;
                         }
                         default: {
-                            PRINT("UNKNOWN LOOT KIND ON PICKUP COLLISION");
+                            PRINT("Unknown loot type found in PickupOnCollision()");
                         }
                     }
                 }
             }
 
-            if (auto* b = world.TryGetComponent<tag::Player>(col.entity_b)) {
-                if (auto* a = world.TryGetComponent<cmpt::Loot>(col.entity_a)) {
+            if (auto* player = world.TryGetComponent<tag::Player>(col.entity_b)) {
+                if (auto* loot = world.TryGetComponent<cmpt::Loot>(col.entity_a)) {
                     world.AddComponent<tag::Destroy>(col.entity_a);
-                    switch (a->kind) {
+                    switch (loot->kind) {
                         case data::loot::LootKind::Exp: {
                             auto& exp = world.GetComponent<cmpt::ExpLoot>(col.entity_a);
-                            data::player::g_player.exp += exp.amount;
-                            spwn::evt::Notification(world, "+EXP");
+                            spwn::evt::LootPickedupEvent(world, col.entity_b, loot->kind, exp.amount);
                             break;
                         }
                         case data::loot::LootKind::Money: {
-                            data::player::g_player.money += 1;
+                            auto& money = world.GetComponent<cmpt::MoneyLoot>(col.entity_a);
+                            spwn::evt::LootPickedupEvent(world, col.entity_b, loot->kind, money.amount);
                             break;
                         }
                         case data::loot::LootKind::Powerup: {
                             auto& pukind = world.GetComponent<cmpt::PowerupLoot>(col.entity_a);
-                            spwn::evt::LootPickedupEvent(world, col.entity_b, a->kind, pukind.kind);
+                            spwn::evt::LootPickedupEvent(world, col.entity_b, loot->kind, pukind.kind);
                             break;
                         }
                         case data::loot::LootKind::Weapon: {
                             auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(col.entity_a);
-                            spwn::evt::LootPickedupEvent(world, col.entity_b, a->kind, wepkind.kind);
+                            spwn::evt::LootPickedupEvent(world, col.entity_b, loot->kind, wepkind.kind);
                             break;
                         }
                         default: {

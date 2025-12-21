@@ -5,7 +5,7 @@
 #include "raymath.h"
 #include "storage/registry.h"
 #include "components/components.h"
-#include "spawners/loot/loot.h"
+#include "spawners/world/loot/loot.h"
 #include "data/player/player.h"
 #include "utils/debug.h"
 
@@ -62,7 +62,7 @@ namespace sys::loot {
             roll = GetRandomValue(0, 99);
 
             if (roll < 40) {
-                spwn::loot::Money(world, etrans.position);
+                spwn::loot::Money(world, etrans.position, 1);
             } else if (roll >= 40 && roll < 90) {
                 roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last - 1);
                 spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);

@@ -1,4 +1,4 @@
-#include "spawners/camera/camera.h"
+#include "spawners/system/camera/camera.h"
 
 namespace spwn::camera {
     Camera3D camera;

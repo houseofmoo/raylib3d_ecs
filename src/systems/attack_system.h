@@ -4,7 +4,7 @@
 #include "raymath.h"
 #include "storage/registry.h"
 #include "data/player/player.h"
-#include "spawners/projectile/bullet.h"
+#include "spawners/world/projectile/bullet.h"
 #include "components/components.h"
 #include "utils/rl_utils.h"
 #include "utils/debug.h"

@@ -1,4 +1,4 @@
-#include "spawners/events/notification.h"
+#include "spawners/system/events/notification.h"
 #include "data/notifications/notification.h"
 #include "data/entity.h"
 #include "components/components.h"

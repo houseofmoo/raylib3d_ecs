@@ -1,4 +1,4 @@
-#include "spawners/projectile/bullet.h"
+#include "spawners/world/projectile/bullet.h"
 #include "raymath.h"
 #include "data/entity.h"
 #include "resources/assets.h"

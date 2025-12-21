@@ -1,4 +1,4 @@
-#include "spawners/projectile/grenade.h"
+#include "spawners/world/projectile/grenade.h"
 
 #include "raymath.h"
 #include "data/entity.h"

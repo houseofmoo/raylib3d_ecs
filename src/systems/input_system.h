@@ -49,7 +49,8 @@ namespace sys::input {
             if (IsKeyPressed(KEY_SPACE) && 
                 !world.HasComponent<cmpt::Dash>(entity) && 
                 !world.HasComponent<cmpt::DashExhausted>(entity)) {
-                world.AddComponent<cmpt::Dash>(entity, cmpt::Dash{ 3.0f, 0.11f });
+                float dash_range = 3.0f * data::player::g_player.dash_range_multiplier;
+                world.AddComponent<cmpt::Dash>(entity, cmpt::Dash{ dash_range, 0.11f });
             }
         }
     }

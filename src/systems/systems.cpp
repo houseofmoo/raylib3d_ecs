@@ -11,10 +11,10 @@
 #include "resources/assets.h"
 #include "utils/debug.h"
 
-#include "spawners/camera/camera.h"
-#include "spawners/map/map.h"
-#include "spawners/player/player.h"
-#include "spawners/weapon/pistol.h"
+#include "spawners/system/camera/camera.h"
+#include "spawners/system/map/map.h"
+#include "spawners/system/weapon/pistol.h"
+#include "spawners/world/player/player.h"
 
 #include "systems/animation_system.h"
 #include "systems/attack_system.h"
@@ -30,7 +30,7 @@
 #include "systems/events/notification_event_system.h"
 #include "systems/input_system.h"
 #include "systems/movement_system.h"
-#include "systems/levelup_system.h"
+//#include "systems/levelup_system.h"
 #include "systems/status_effects_system.h"
 #include "systems/velocity_system.h"
 
@@ -107,7 +107,7 @@ namespace sys {
         // sys::proj::BulletTerrainCollision(world);
         // sys::player::PlayerTerrainCollision(world);
 
-        sys::lvl::PlayerLevelup(world);
+        //sys::lvl::PlayerLevelup(world);
         sys::SpawnAnimation(world);
         sys::DeathAnimation(world, delta_time);
         sys::loot::LootDrop(world);

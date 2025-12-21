@@ -3,7 +3,7 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "spawners/events/notification.h"
+#include "spawners/system/events/notification.h"
 #include "resources/assets.h"
 #include "utils/debug.h"
 

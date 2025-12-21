@@ -1,4 +1,4 @@
-#include "spawners/terrain/terrain.h"
+#include "spawners/world/terrain/terrain.h"
 #include "raymath.h"
 #include "components/components.h"
 #include "data/game/game.h"

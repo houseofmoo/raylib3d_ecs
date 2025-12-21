@@ -1,4 +1,4 @@
-#include "spawners/weapon/pistol.h"
+#include "spawners/system/weapon/pistol.h"
 #include "components/components.h"
 #include "data/loot.h"
 

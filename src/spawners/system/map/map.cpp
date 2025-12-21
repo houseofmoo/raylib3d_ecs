@@ -1,5 +1,5 @@
-#include "spawners/map/map.h"
-#include "spawners/terrain/terrain.h"
+#include "spawners/system/map/map.h"
+#include "spawners/world/terrain/terrain.h"
 #include "data/game/game.h"
 
 namespace spwn::map {

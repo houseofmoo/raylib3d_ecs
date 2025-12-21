@@ -1,4 +1,4 @@
-#include "spawners/loot/loot.h"
+#include "spawners/world/loot/loot.h"
 #include "raymath.h"
 #include "data/entity.h"
 #include "data/player/player.h"
@@ -8,9 +8,9 @@
 namespace spwn::loot {
     Vector3 FuzzPosition(Vector3 position) {
         // fuzz position x/z by -1,1
-        int x = GetRandomValue(-10, 10);
-        int z = GetRandomValue(-10, 10);
-        return Vector3 { position.x + (x*0.1f), position.y, position.z + (z*0.1f)};
+        float offset_x = (float)GetRandomValue(-10, 10) * 0.1f;
+        float offset_z = (float)GetRandomValue(-10, 10) * 0.1f;
+        return Vector3 { position.x + offset_x, position.y, position.z + offset_z};
     }
 
     void Exp(Storage::Registry& world, const Vector3 position, int exp_amount) {
@@ -70,12 +70,17 @@ namespace spwn::loot {
         );
     }
 
-    void Money(Storage::Registry& world, const Vector3 position) { 
+    void Money(Storage::Registry& world, const Vector3 position, int money_amount) { 
         Entity money = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
             money, 
             cmpt::Loot{ .kind = data::loot::LootKind::Money }
+        );
+
+        world.AddComponent<cmpt::MoneyLoot>(
+            money,
+            cmpt::MoneyLoot { money_amount }
         );
 
         world.AddComponent<cmpt::Transform>(
@@ -138,7 +143,7 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             powerup,
             cmpt::Transform{ 
-                .position = Vector3{ position.x, data::size::POWERUP.y * 0.5f, position.z },
+                .position = FuzzPosition(Vector3{ position.x, data::size::POWERUP.y * 0.5f, position.z }),
                 .rotation = QuaternionIdentity()
             }
         );
@@ -195,7 +200,7 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             weapon,
             cmpt::Transform{ 
-                .position = Vector3{ position.x, data::size::WEAPON.y * 0.5f, position.z },
+                .position = FuzzPosition(Vector3{ position.x, data::size::WEAPON.y * 0.5f, position.z }),
                 .rotation = QuaternionIdentity()
             }
         );

@@ -1,4 +1,4 @@
-#include "spawners/enemies/brute.h"
+#include "spawners/world/enemies/brute.h"
 
 #include "raymath.h"
 #include "data/entity.h"

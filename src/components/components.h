@@ -179,6 +179,10 @@ namespace cmpt {
         int amount;
     };
 
+    struct MoneyLoot {
+        int amount;
+    };
+
     struct PowerupLoot {
         data::loot::PowerupKind kind;
     };
