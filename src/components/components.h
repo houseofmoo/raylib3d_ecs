@@ -8,7 +8,6 @@
 
 namespace tag {
     struct Player {};
-    struct Weapon {};
     struct Projectile {};
     struct Enemy {};
     struct Destroy {};
@@ -165,7 +164,7 @@ namespace cmpt {
     };
 
     ////////////////////////////////////////////////
-    // LOOT/WEAPONS
+    // LOOT
     ////////////////////////////////////////////////
     struct DropsLoot {
         float loot_chance;
@@ -190,8 +189,16 @@ namespace cmpt {
     struct WeaponLoot {
         data::loot::WeaponKind kind;
     };
+    
+    ////////////////////////////////////////////////
+    // WEAPONS
+    ////////////////////////////////////////////////
+    struct Weapon {
+        Entity parent;
+        data::loot::WeaponKind kind;
+    };
 
-    struct WeaponStats {
+    struct WeaponBaseStats { 
         Entity parent;
         data::loot::WeaponKind kind;
         float cooldown;
@@ -200,10 +207,33 @@ namespace cmpt {
         int damage;
     };
 
-    struct Spread {
+    struct Pistol {
+        WeaponBaseStats base_stats;
+    };
+
+    struct Shotgun {
+        WeaponBaseStats base_stats;
+        float spread_deg;
         int pellet_count;
     };
 
+    struct Sniper {
+        WeaponBaseStats base_stats;
+        int penetration;
+    };
+
+    // struct WeaponStats {
+    //     Entity parent;
+    //     data::loot::WeaponKind kind;
+    //     float cooldown;
+    //     float countdown;
+    //     float projectile_speed;
+    //     int damage;
+    // };
+
+    ////////////////////////////////////////////////
+    // PROJECTILE SPECIFIC
+    ////////////////////////////////////////////////
     struct Penetration {
         int amount;
     };

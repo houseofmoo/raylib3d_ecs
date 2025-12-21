@@ -13,11 +13,11 @@
 
 #include "spawners/system/camera/camera.h"
 #include "spawners/system/map/map.h"
-#include "spawners/system/weapon/pistol.h"
+#include "spawners/equip/weapon/pistol.h"
 #include "spawners/world/player/player.h"
 
 #include "systems/animation_system.h"
-#include "systems/attack_system.h"
+#include "systems/attack/attack_system.h"
 #include "systems/camera/camera.h"
 #include "systems/cleanup_system.h"
 #include "systems/collisions/entity_collision_system.h"
@@ -43,7 +43,8 @@ namespace sys {
 
         spwn::map::GenerateMap(world, data::size::PLAY_AREA);
         data::player::g_player.id = spwn::player::Player(world);
-        spwn::weapon::Pistol(world, data::player::g_player.id);
+        spwn::weapon::EquipPistol(world, data::player::g_player.id);
+        //spwn::weapon::Pistol(world, data::player::g_player.id);
     }
 
     void RunUpdateSystems(const float delta_time) noexcept {

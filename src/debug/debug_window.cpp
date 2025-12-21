@@ -42,26 +42,8 @@ namespace debug {
             ImGui::End();
         }
     }
-    
-
-    void DrawDebugUI(Storage::Registry& world, ImGuiIO& io) {
-        static bool show_demo_window = false;
-        static float position_x = 0;
-        static float position_z = 0;
-        static bool position_blocked = false;
-
-        rlImGuiBegin();
-        SetImGuiDocking(io);
-        // State& state = GetState_Debug();
-
-        ImGui::Begin("Debug Panel");
-
-        ImGui::Checkbox("Demo window", &show_demo_window);
-        if (show_demo_window) {
-            ImGui::ShowDemoWindow(&show_demo_window);
-        }
-        ImGui::Separator();
-            
+   
+    void DrawStatsTab(Storage::Registry& world) {
         ImGui::Text("fps:        %d", GetFPS());
         ImGui::Text("entities:   %d", data::game::g_number_entities);
         ImGui::Text("enemies:    %d", data::game::g_number_enemies);
@@ -89,15 +71,6 @@ namespace debug {
         ImGui::Checkbox(" loot mode", &data::player::g_player.always_drop_loot);
         ImGui::Separator();
 
-        for (auto wep : world.View<tag::Weapon, cmpt::WeaponStats>()) {
-            auto& stats = world.GetComponent<cmpt::WeaponStats>(wep);
-            ImGui::Text("wep-pistol:");
-            ImGui::Text("  dmg: %d", stats.damage);
-            //ImGui::Text("  pen: %d", stats.penetration);
-            //ImGui::Text("  cnt: %d", stats.pellet_count);
-            ImGui::Separator();
-        }
-
         // tilemap testing
         if (ImGui::Button("draw tilemap")) {
             data::game::terrain.DrawTileMap();
@@ -108,24 +81,82 @@ namespace debug {
         //     position_blocked = data::game::terrain.IsBlockedWorld(position_x, position_z);
         // }
         // ImGui::Text("Blocked: %d", position_blocked);
+    }
 
-        #ifdef PROFILER_ENABLED
+    void DrawWeapsTab(Storage::Registry& world) {
+         if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::player::g_player.id)) {
+            ImGui::Text("pistol:");
+            ImGui::Text("  dmg:     %d", wep->base_stats.damage);
+            ImGui::Text("  pjk spd: %.2f", wep->base_stats.projectile_speed);
+            ImGui::Text("  cd:      %.2f", wep->base_stats.cooldown);
+            ImGui::Separator();
+        }
+
+        if (auto* wep = world.TryGetComponent<cmpt::Shotgun>(data::player::g_player.id)) {
+            ImGui::Text("shotgun:");
+            ImGui::Text("  dmg:     %d", wep->base_stats.damage);
+            ImGui::Text("  pjk spd: %.2f", wep->base_stats.projectile_speed);
+            ImGui::Text("  cd:      %.2f", wep->base_stats.cooldown);
+            ImGui::Text("  sprd:    %.2f", wep->spread_deg);
+            ImGui::Text("  plt cnt: %d", wep->pellet_count);
+            ImGui::Separator();
+        }
+    }
+
+    void DrawDebugUI(Storage::Registry& world, ImGuiIO& io) {
+        static bool show_demo_window = false;
+        static float position_x = 0;
+        static float position_z = 0;
+        static bool position_blocked = false;
+
+        rlImGuiBegin();
+        SetImGuiDocking(io);
+        // State& state = GetState_Debug();
+
+        ImGui::Begin("Debug Panel");
+
+        // exmaples so i can figure shit out
+        ImGui::Checkbox("Demo window", &show_demo_window);
+        if (show_demo_window) {
+            ImGui::ShowDemoWindow(&show_demo_window);
+        }
         ImGui::Separator();
-        if (ImGui::Checkbox("enable profiler: ", &data::player::g_player.profiler_enabled)) {
-            PRINT("Profiler contents cleared");
-            PROFILER_CLEAR;
-        }
 
-        if (ImGui::Button("dump profiler", ImVec2{120, 20})) {
-            PRINT("Profiler contents written");
-            PROFILER_PRINT;
-        }
-        if (ImGui::Button("clear profiler", ImVec2{120, 20})) {
-            PRINT("Profiler contents cleared");
-            PROFILER_CLEAR;
-        }
-        #endif
+        // main info panel
+        if (ImGui::BeginTabBar("main")) {
+            // Stats Tab
+            if (ImGui::BeginTabItem("stats")) {
+                DrawStatsTab(world);
+                ImGui::EndTabItem();
+            }
 
+            // Weapons Tab
+            if (ImGui::BeginTabItem("weapons")) {
+                DrawWeapsTab(world);
+                ImGui::EndTabItem();
+            }
+
+            #ifdef PROFILER_ENABLED
+            // Profiler Tab
+            if (ImGui::BeginTabItem("profiler")) {
+                if (ImGui::Checkbox("enable profiler: ", &data::player::g_player.profiler_enabled)) {
+                    PRINT("Profiler contents cleared");
+                    PROFILER_CLEAR;
+                }
+
+                if (ImGui::Button("dump profiler", ImVec2{120, 20})) {
+                    PRINT("Profiler contents written");
+                    PROFILER_PRINT;
+                }
+                if (ImGui::Button("clear profiler", ImVec2{120, 20})) {
+                    PRINT("Profiler contents cleared");
+                    PROFILER_CLEAR;
+                }
+                ImGui::EndTabItem();
+            }
+            #endif
+            ImGui::EndTabBar();
+        }
         ImGui::End();
         rlImGuiEnd();
     }

@@ -47,7 +47,7 @@ namespace sys::dmg {
                 entity, 
                 cmpt::DamageFlash{ .duration = 0.1f }
             );
-
+            PRINT("dmg received: ", dmg.total);
             hp.amount -= dmg.total;
             dmg.total = 0;
             PlaySound(rsrc::asset::damage_fx);

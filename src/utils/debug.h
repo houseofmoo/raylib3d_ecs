@@ -1,6 +1,7 @@
 #pragma once
 
 #ifdef DEBUG
+    #include <unordered_map>
     #include <iostream>
     #include <mutex>
     #include <sstream>

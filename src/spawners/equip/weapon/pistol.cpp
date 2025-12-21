@@ -1,0 +1,54 @@
+#include "spawners/equip/weapon/pistol.h"
+#include "components/components.h"
+#include "data/loot.h"
+
+namespace spwn::weapon {
+    void Pistol(Storage::Registry& world, Entity parent) {
+        auto weapon = world.CreateEntity();
+        
+        world.AddComponent<cmpt::Weapon>(
+            weapon,
+            cmpt::Weapon{ 
+                .parent = parent,
+                .kind = data::loot::WeaponKind::Pistol 
+            }
+        );
+
+        world.AddComponent<cmpt::Pistol>(
+            weapon,
+            cmpt::Pistol{
+                .base_stats = cmpt::WeaponBaseStats {
+                    .parent = parent,
+                    .kind = data::loot::WeaponKind::Pistol,
+                    .cooldown = 1.0f, 
+                    .countdown = 1.0f,
+                    .projectile_speed = 25.0f,
+                    .damage = 10,
+                }
+            }
+        );
+    }
+
+    void EquipPistol(Storage::Registry& world, Entity id) {
+        if (!world.HasComponent<cmpt::Pistol>(id)) {
+            world.AddComponent<cmpt::Pistol>(
+                id,
+                cmpt::Pistol{
+                    .base_stats = cmpt::WeaponBaseStats {
+                        .parent = id,
+                        .kind = data::loot::WeaponKind::Pistol,
+                        .cooldown = 1.0f, 
+                        .countdown = 1.0f,
+                        .projectile_speed = 25.0f,
+                        .damage = 10,
+                    },
+                }
+            );
+            return;
+        }
+
+        // upgrade random stat on the shotgun
+        auto& wep = world.GetComponent<cmpt::Pistol>(id);
+        wep.base_stats.damage += 1;
+    }
+}

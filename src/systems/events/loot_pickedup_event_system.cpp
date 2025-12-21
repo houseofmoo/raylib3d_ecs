@@ -3,11 +3,14 @@
 
 #include "components/components.h"
 #include "spawners/system/events/notification.h"
+#include "spawners/equip/weapon/shotgun.h"
+#include "spawners/equip/weapon/pistol.h"
 #include "data/player/player.h"
+#include "data/entity.h"
 #include "utils/debug.h"
 
 namespace sys::evt {
-    void ApplyPowerup(Storage::Registry& world, data::loot::PowerupKind kind) {
+    void ApplyPowerup(Storage::Registry& world, data::loot::PowerupKind kind, Entity id) {
         switch (kind) {
             case data::loot::PowerupKind::Damage: {
                 data::player::g_player.damage_multiplier += 0.1f;
@@ -57,14 +60,16 @@ namespace sys::evt {
         }
     }
 
-    void ApplyWeapon(Storage::Registry& world, data::loot::WeaponKind kind) {
+    void ApplyWeapon(Storage::Registry& world, data::loot::WeaponKind kind, Entity id) {
+        // TODO: if weapon exists, upgrade it
+        // otherwise give baselist to player
         switch (kind) {
             case data::loot::WeaponKind::Pistol: {
-                PRINT("+Pistol");
+                spwn::weapon::EquipPistol(world, id);
                 break;
             }
             case data::loot::WeaponKind::Shotgun: {
-                PRINT("+Shotgun");
+                spwn::weapon::EquipShotgun(world, id);
                 break;
             }
             case data::loot::WeaponKind::Rifle: {
@@ -123,13 +128,13 @@ namespace sys::evt {
 
                 case data::loot::LootKind::Powerup: {
                     auto& pukind = world.GetComponent<cmpt::PowerupLoot>(entity);
-                    ApplyPowerup(world, pukind.kind);
+                    ApplyPowerup(world, pukind.kind, evt.id);
                     break;
                 }
 
                 case data::loot::LootKind::Weapon: {
                     auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(entity);
-                    ApplyWeapon(world, wepkind.kind);
+                    ApplyWeapon(world, wepkind.kind, evt.id);
                     PRINT("got weapon pickup");
                     break;
                 }
