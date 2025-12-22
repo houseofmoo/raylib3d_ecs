@@ -14,6 +14,11 @@ namespace spwn::player {
             player,
             tag::Player{}
         );
+
+        world.AddComponent<tag::CameraFollow>(
+            player,
+            tag::CameraFollow{}
+        );
         
         world.AddComponent<cmpt::Transform>(
             player,

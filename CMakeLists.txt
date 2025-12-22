@@ -82,9 +82,16 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/raylib)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raylib/src)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
+# add raygui
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui/styles)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui/styles/default)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui/styles/dark)
+
 # add OpenGL (for imgui)
 #find_package(OpenGL REQUIRED)
 #target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
+
 
 # add glfw
 #add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glfw-3.4)

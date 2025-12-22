@@ -38,15 +38,11 @@ namespace sys {
         camera = spwn::camera::Camera();
 
         spwn::map::GenerateMap(world, data::size::PLAY_AREA);
-        data::player::g_player.id = spwn::player::Player(world);
-        spwn::weapon::EquipPistol(world, data::player::g_player.id);
+        data::g_player.id = spwn::player::Player(world);
+        spwn::weapon::EquipPistol(world, data::g_player.id);
      }
 
     void RunUpdateSystems(const float delta_time) noexcept {
-        if (data::game::g_paused) {
-            return;
-        }
-
         // TODO: re-add the sound for pickups
 
         // spawn additional enemies
@@ -184,26 +180,26 @@ namespace sys {
         //DrawCubeV(position, size, DARKGRAY);
         //DrawCubeWiresV(position, size, BLACK);
 
-        data::game::g_number_entities = entities_count;
-        data::game::g_number_enemies = enemies_count;
+        data::g_game.entity_count = entities_count;
+        data::g_game.enemy_count = enemies_count;
     }
 
     void RunUIDrawSystems(const float delta_time) noexcept {
         PROFILE_SCOPE("RunUIDrawSystems()");
         int player_hp = 0;
         int player_max_hp = 0;
-        if (sys::world.HasComponent<cmpt::Health>(data::player::g_player.id)) {
-            auto& hp_comp = sys::world.GetComponent<cmpt::Health>(data::player::g_player.id);
+        if (sys::world.HasComponent<cmpt::Health>(data::g_player.id)) {
+            auto& hp_comp = sys::world.GetComponent<cmpt::Health>(data::g_player.id);
             player_hp = hp_comp.amount;
             player_max_hp = hp_comp.max;
         }
         
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 30, 20, 20, RAYWHITE);
-        DrawText(std::format("Entities Drawn: {}", data::game::g_number_entities).c_str(), 30, 40, 20, RAYWHITE);
+        DrawText(std::format("Entities Drawn: {}", data::g_game.entity_count).c_str(), 30, 40, 20, RAYWHITE);
         DrawText(std::format("HP: {}/{}", player_hp, player_max_hp).c_str(), 30, 80, 20, RAYWHITE);
-        DrawText(std::format("Level: {}", data::player::g_player.level).c_str(), 30, 100, 20, RAYWHITE);
-        DrawText(std::format("Difficulty : {}", data::game::g_difficulty_level).c_str(), 30, 140, 20, RAYWHITE);
-        DrawText(std::format("Enemies Defeated: {}", data::player::g_player.enemies_defeated).c_str(), 30, 160, 20, RAYWHITE);
+        DrawText(std::format("Level: {}", data::g_player.level).c_str(), 30, 100, 20, RAYWHITE);
+        DrawText(std::format("Difficulty : {}", data::g_game.difficulty).c_str(), 30, 140, 20, RAYWHITE);
+        DrawText(std::format("Enemies Defeated: {}", data::g_player.enemies_defeated).c_str(), 30, 160, 20, RAYWHITE);
         sys::evt::DrawNotifications(world, delta_time);
     }
 }

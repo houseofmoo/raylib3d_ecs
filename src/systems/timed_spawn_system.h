@@ -12,29 +12,13 @@ namespace sys {
     inline void SpawnEnemyInterval(Storage::Registry& world, const float delta_time) {
         PROFILE_SCOPE("SpawnEnemyInterval()");
         
-        static float spawn_countdown = data::game::g_enemy_spawn_interval;
-        spawn_countdown -= delta_time;
-        if (spawn_countdown > 0.0f) return;
-        
-        data::game::g_difficulty_level += 1;
-        
-        // spawn enemies faster as difficulty increases
-        data::game::g_enemy_spawn_interval = 2.5f - (data::game::g_difficulty_level * 0.005f);
-        if (data::game::g_enemy_spawn_interval < 0.5f) {
-            data::game::g_enemy_spawn_interval = 0.5f;
-        }
-        spawn_countdown = data::game::g_enemy_spawn_interval;
-
-        if (data::game::g_number_enemies > 500) {
-            PRINT("too many enemies to spawn more!");
-            return;
-        }
+        data::g_game.Tick(delta_time);
 
         // increase enemy hp based on difficulty
-        int enemy_hp = (data::game::g_difficulty_level / 10) + 20;
+        int enemy_hp = data::g_game.GetEnemBaseHp(1.0f);
 
         // after difficulty 100, start spawning multiple enemies
-        int num_to_spawn = (data::game::g_difficulty_level / 100) + 1;
+        int num_to_spawn = data::g_game.GetSpawnEnemies();
 
         for (int i = 0; i < num_to_spawn; i++) {
             Vector3 pos = utils::GetRandomValidPosition();

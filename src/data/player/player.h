@@ -2,7 +2,7 @@
 
 #include "data/entity.h"
 
-namespace data::player {
+namespace data {
     struct Player {
         Entity id;
         int level;

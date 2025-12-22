@@ -5,14 +5,16 @@
 #include "resources/asset_loader.h"
 #include "components/components.h"
 #include "components/attach.h"
+#include "utils/position.h"
 
 namespace spwn::loot {
-    Vector3 FuzzPosition(Vector3 position) {
-        // fuzz position x/z by -1,1
-        float offset_x = (float)GetRandomValue(-10, 10) * 0.1f;
-        float offset_z = (float)GetRandomValue(-10, 10) * 0.1f;
-        return Vector3 { position.x + offset_x, position.y, position.z + offset_z};
-    }
+    // Vector3 FuzzPosition(Vector3 position) {
+    //     return GetRandomValidPisitionNearTarget()
+    //     // fuzz position x/z by -1,1
+    //     float offset_x = (float)GetRandomValue(-10, 10) * 0.1f;
+    //     float offset_z = (float)GetRandomValue(-10, 10) * 0.1f;
+    //     return Vector3 { position.x + offset_x, position.y, position.z + offset_z};
+    // }
 
     void Exp(Storage::Registry& world, const Vector3 position, int exp_amount) {
         Entity exp = world.CreateEntity();
@@ -30,7 +32,10 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             exp,
             cmpt::Transform{ 
-                .position = FuzzPosition(Vector3{ position.x, data::size::EXP.y * 0.5f, position.z }),
+                .position = utils::GetRandomValidPisitionNearTarget(
+                    Vector3{ position.x, data::size::EXP.y * 0.5f, position.z },
+                    1
+                ),
                 .rotation = QuaternionIdentity()
             }
         );
@@ -49,7 +54,7 @@ namespace spwn::loot {
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = Vector3Scale(
                     data::size::MinColldierSize(data::size::EXP),
-                    data::player::g_player.pickup_range_multiplier
+                    data::g_player.pickup_range_multiplier
                 )
             }
         );
@@ -88,7 +93,10 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             money,
             cmpt::Transform{ 
-                .position = FuzzPosition(Vector3{ position.x, data::size::MONEY.y * 0.5f, position.z }),
+                .position = utils::GetRandomValidPisitionNearTarget(
+                    Vector3{ position.x, data::size::MONEY.y * 0.5f, position.z },
+                    1
+                ),
                 .rotation = QuaternionIdentity()
             }
         );
@@ -98,7 +106,8 @@ namespace spwn::loot {
             cmpt::RotateInPlace{ .speed = 2.5f }
         );
 
-        world.AddComponent<cmpt::Collider>(
+        cmpt::AttachColliderComponent(
+            world,
             money,
             cmpt::Collider{
                 .layer = data::layer::LOOT,
@@ -106,7 +115,7 @@ namespace spwn::loot {
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = Vector3Scale(
                     data::size::MinColldierSize(data::size::MONEY),
-                    data::player::g_player.pickup_range_multiplier
+                    data::g_player.pickup_range_multiplier
                 )
             }
         );
@@ -145,7 +154,10 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             powerup,
             cmpt::Transform{ 
-                .position = FuzzPosition(Vector3{ position.x, data::size::POWERUP.y * 0.5f, position.z }),
+                .position = utils::GetRandomValidPisitionNearTarget(
+                    Vector3{ position.x, data::size::POWERUP.y * 0.5f, position.z },
+                    1
+                ),
                 .rotation = QuaternionIdentity()
             }
         );
@@ -155,7 +167,8 @@ namespace spwn::loot {
             cmpt::RotateInPlace{ .speed = 2.5f }
         );
 
-        world.AddComponent<cmpt::Collider>(
+        cmpt::AttachColliderComponent(
+            world,
             powerup,
             cmpt::Collider{
                 .layer = data::layer::LOOT,
@@ -163,7 +176,7 @@ namespace spwn::loot {
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = Vector3Scale(
                     data::size::MinColldierSize(data::size::POWERUP),
-                    data::player::g_player.pickup_range_multiplier
+                    data::g_player.pickup_range_multiplier
                 )
             }
         );
@@ -201,8 +214,11 @@ namespace spwn::loot {
 
         world.AddComponent<cmpt::Transform>(
             weapon,
-            cmpt::Transform{ 
-                .position = FuzzPosition(Vector3{ position.x, data::size::WEAPON.y * 0.5f, position.z }),
+            cmpt::Transform{
+                .position = utils::GetRandomValidPisitionNearTarget(
+                    Vector3{ position.x, data::size::WEAPON.y * 0.5f, position.z },
+                    1
+                ),
                 .rotation = QuaternionIdentity()
             }
         );
@@ -212,7 +228,8 @@ namespace spwn::loot {
             cmpt::RotateInPlace{ .speed = 2.5f }
         );
 
-        world.AddComponent<cmpt::Collider>(
+        cmpt::AttachColliderComponent(
+            world,
             weapon,
             cmpt::Collider{
                 .layer = data::layer::LOOT,
@@ -220,7 +237,7 @@ namespace spwn::loot {
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = Vector3Scale(
                     data::size::MinColldierSize(data::size::WEAPON),
-                    data::player::g_player.pickup_range_multiplier
+                    data::g_player.pickup_range_multiplier
                 )
             }
         );

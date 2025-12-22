@@ -45,35 +45,35 @@ namespace debug {
    
     void DrawStatsTab(Storage::Registry& world) {
         ImGui::Text("fps:        %d", GetFPS());
-        ImGui::Text("entities:   %d", data::game::g_number_entities);
-        ImGui::Text("enemies:    %d", data::game::g_number_enemies);
-        ImGui::Text("spawn time: %.2f", data::game::g_enemy_spawn_interval);
-        ImGui::Text("enemy hp:   %d", (data::game::g_difficulty_level / 10) + 30);
-        ImGui::Text("difficulty: %d", data::game::g_difficulty_level);
-        if (ImGui::SliderInt("##diff_slider", &data::game::g_difficulty_level, 0, 2000)) {}
+        ImGui::Text("entities:   %d", data::g_game.entity_count);
+        ImGui::Text("enemies:    %d", data::g_game.enemy_count);
+        ImGui::Text("spawn time: %.2f", data::g_game.enemy_spawn_interval);
+        ImGui::Text("enemy hp:   %d", data::g_game.GetEnemBaseHp(1.0f));
+        ImGui::Text("difficulty: %d", data::g_game.difficulty);
+        if (ImGui::SliderInt("##diff_slider", &data::g_game.difficulty, 0, 2000)) {}
         ImGui::Separator();
 
-        ImGui::Text("id:         %d", data::player::g_player.id);
-        ImGui::Text("level:      %d", data::player::g_player.level);
-        ImGui::Text("gold:       %d", data::player::g_player.money);
-        ImGui::Text("exp:        %d", data::player::g_player.exp);
-        ImGui::Text("explvl:     %d", data::player::g_player.exp_to_next_level);
+        ImGui::Text("id:         %d", data::g_player.id);
+        ImGui::Text("level:      %d", data::g_player.level);
+        ImGui::Text("gold:       %d", data::g_player.money);
+        ImGui::Text("exp:        %d", data::g_player.exp);
+        ImGui::Text("explvl:     %d", data::g_player.exp_to_next_level);
         ImGui::Separator();
 
-        ImGui::Text("dmg%:       %.2f", data::player::g_player.damage_multiplier);
-        ImGui::Text("a-spd%:     %.2f", data::player::g_player.attack_speed_multiplier);
-        ImGui::Text("m-spd%:     %.2f", data::player::g_player.move_speed_multiplier);
-        ImGui::Text("d-rng%:     %.2f", data::player::g_player.move_speed_multiplier);
-        ImGui::Text("pu-rng%:    %.2f", data::player::g_player.pickup_range_multiplier);
+        ImGui::Text("dmg%:       %.2f", data::g_player.damage_multiplier);
+        ImGui::Text("a-spd%:     %.2f", data::g_player.attack_speed_multiplier);
+        ImGui::Text("m-spd%:     %.2f", data::g_player.move_speed_multiplier);
+        ImGui::Text("d-rng%:     %.2f", data::g_player.move_speed_multiplier);
+        ImGui::Text("pu-rng%:    %.2f", data::g_player.pickup_range_multiplier);
         ImGui::Separator();
 
-        ImGui::Checkbox(" god mode", &data::player::g_player.god_mode);
-        ImGui::Checkbox(" loot mode", &data::player::g_player.always_drop_loot);
+        ImGui::Checkbox(" god mode", &data::g_player.god_mode);
+        ImGui::Checkbox(" loot mode", &data::g_player.always_drop_loot);
         ImGui::Separator();
 
         // tilemap testing
         if (ImGui::Button("draw tilemap")) {
-            data::game::terrain.DrawTileMap();
+            data::g_terrain.DrawTileMap();
         }
         // ImGui::InputFloat("X:", &position_x);
         // ImGui::InputFloat("Z:", &position_z);
@@ -84,7 +84,7 @@ namespace debug {
     }
 
     void DrawWeapsTab(Storage::Registry& world) {
-         if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::player::g_player.id)) {
+         if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::g_player.id)) {
             ImGui::Text("pistol:");
             ImGui::Text("  dmg:     %d", wep->base_stats.damage);
             ImGui::Text("  pjk spd: %.2f", wep->base_stats.projectile_speed);
@@ -92,7 +92,7 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::Shotgun>(data::player::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Shotgun>(data::g_player.id)) {
             ImGui::Text("shotgun:");
             ImGui::Text("  dmg:     %d", wep->base_stats.damage);
             ImGui::Text("  pjk spd: %.2f", wep->base_stats.projectile_speed);

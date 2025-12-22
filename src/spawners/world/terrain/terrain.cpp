@@ -42,6 +42,6 @@ namespace spwn::terrain {
         }
 
         // add to terrain tilemap
-        data::game::terrain.SetAreaMask(position, size);
+        data::g_terrain.SetAreaMask(position, size);
     }
 }

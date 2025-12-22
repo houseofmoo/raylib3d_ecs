@@ -49,7 +49,7 @@ namespace sys::input {
             if (IsKeyPressed(KEY_SPACE) && 
                 !world.HasComponent<cmpt::Dash>(entity) && 
                 !world.HasComponent<cmpt::DashExhausted>(entity)) {
-                float dash_range = 3.0f * data::player::g_player.dash_range_multiplier;
+                float dash_range = 3.0f * data::g_player.dash_range_multiplier;
                 world.AddComponent<cmpt::Dash>(entity, cmpt::Dash{ dash_range, 0.11f });
             }
         }
@@ -70,7 +70,7 @@ namespace sys::input {
             }
 
             // get player position
-            Entity player_id = data::player::g_player.id;
+            Entity player_id = data::g_player.id;
             auto ptrans = world.TryGetComponent<cmpt::Transform>(player_id);
             if (!ptrans) {
                 // TODO: set gameover

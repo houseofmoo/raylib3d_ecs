@@ -7,6 +7,10 @@
 #include "raylib.h"
 #include "raymath.h"
 
+#define RAYGUI_IMPLEMENTATION
+#include "raygui.h"
+#include "style_dark.h"
+
 #ifdef DEBUG
 #include "rlImGui.h"
 #include "imgui.h"
@@ -27,6 +31,9 @@ int main() {
     InitWindow(screenWidth, screenHeight, "3D Roguelite");
     InitAudioDevice();
     SetTargetFPS(240);
+
+    // raygui
+    ::GuiLoadStyleDark();
 
     #ifdef DEBUG
     //rlImGuiBeginInitImGui();
@@ -53,11 +60,41 @@ int main() {
 
         UpdateMusicStream(rsrc::asset::bg_music);
 
+        // check for pause key
         if (IsKeyPressed(KEY_GRAVE)) {
-            data::game::g_paused = !data::game::g_paused;
+            if (data::g_game.state == data::GameState_E::Paused) {
+                // unpausing restores previous game state
+                data::g_game.state = data::g_game.prev_state;
+            } else {
+                // pausing stores current gmae state and sets pause state
+                data::g_game.prev_state = data::g_game.state;
+                data::g_game.state = data::GameState_E::Paused;
+            }
         }
 
-        sys::RunUpdateSystems(delta_time);
+        switch (data::g_game.state) {
+            case data::GameState_E::StartUp: {
+                // draw startup menu
+                break;
+            }
+            case data::GameState_E::Running: {
+                // normal ops
+                sys::RunUpdateSystems(delta_time);
+                break;
+            }
+            case data::GameState_E::WeaponSelect: {
+                // draw weapon selection
+                break;
+            }
+            case data::GameState_E::StatsScreen: {
+                // draw stats screen menu
+                break;
+            }
+            case data::GameState_E::Paused: {
+                // draw pause/options menu
+                break;
+            }
+        }
 
         BeginDrawing();
         ClearBackground(Color{30,30,30,255});
@@ -65,9 +102,20 @@ int main() {
         sys::RunEntityDrawSystems(delta_time);
         EndMode3D();
 
+        // if (GuiButton(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 120, 30}, GuiIconText(ICON_INFO, "Show Message"))) {
+        //     std::cout << "button pressed" << std::endl;
+        // }
+
+        GuiStatusBar(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 120, 30}, "Test");
+        float val = 5.0f;
+        Color c = Color{0, 0, 0, 100};
+        //::DrawRectangleRec(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 240, 60}, c);
+        ::GuiGroupBox(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 240, 60}, nullptr);
+        ::GuiProgressBar(Rectangle{ (int)screenWidth * 0.5f + 60, (int)screenHeight * 0.5f + 30, 120, 30}, nullptr, nullptr, &val, 1.0f, 10.0f);
+
         sys::RunUIDrawSystems(delta_time);
 
-        if (data::game::g_paused) {
+        if (data::g_game.state == data::GameState_E::Paused) {
             // draw dark box over entire screen
             DrawRectangle(
                 0, 0, 

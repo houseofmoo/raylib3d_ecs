@@ -24,8 +24,8 @@ namespace sys::loot {
             // all enemies that drop loot always drop exp
             spwn::loot::Exp(world, etrans.position, 1);
 
-            if (data::player::g_player.always_drop_loot) {
-                int roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last) - 1;
+            if (data::g_player.always_drop_loot) {
+                int roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last - 1);
                 spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);
                 
                 roll = GetRandomValue(0, (int)data::loot::WeaponKind::Last - 1);
@@ -37,7 +37,7 @@ namespace sys::loot {
             int roll = GetRandomValue(0, 99);
             if (enemies_since_loot_dropped > 10) {
                 if (roll < 50) {
-                    roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last) - 1;
+                    roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last - 1);
                     spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);
                 } else {
                     roll = GetRandomValue(0, (int)data::loot::WeaponKind::Last - 1);
@@ -63,10 +63,10 @@ namespace sys::loot {
 
             if (roll < 40) {
                 spwn::loot::Money(world, etrans.position, 1);
-            } else if (roll >= 40 && roll < 90) {
+            } else if (roll >= 40 && roll < 80) {
                 roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last - 1);
                 spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);
-            } else if (roll >= 90) {
+            } else if (roll >= 80) {
                 roll = GetRandomValue(0, (int)data::loot::WeaponKind::Last - 1);
                 spwn::loot::Weapon(world, etrans.position, (data::loot::WeaponKind)roll);
             }

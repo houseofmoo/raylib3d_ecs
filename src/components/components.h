@@ -14,6 +14,7 @@ namespace tag {
     struct DestroyOnTerrainCollision {};
     struct Terrain {};
     struct Event {};
+    struct CameraFollow {};
 }
 
 namespace cmpt {

@@ -6,7 +6,7 @@
 #include "utils/debug.h"
 
 namespace cmpt {
-    // attaches collider to entity after ensure collider is at least a minimum size
+    // attaches collider to entity after ensuring collider is at least a minimum size
     inline void AttachColliderComponent(Storage::Registry& world, const Entity id, cmpt::Collider col) noexcept {
         col.size = data::size::MinColldierSize(col.size);
         world.AddComponent<cmpt::Collider>(id, col);

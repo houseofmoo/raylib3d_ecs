@@ -13,32 +13,32 @@ namespace sys::evt {
     void ApplyPowerup(Storage::Registry& world, data::loot::PowerupKind kind, Entity id) {
         switch (kind) {
             case data::loot::PowerupKind::Damage: {
-                data::player::g_player.damage_multiplier += 0.1f;
+                data::g_player.damage_multiplier += 0.1f;
                 spwn::evt::Notification(world, "+DAMGE");
                 break;
             }
             case data::loot::PowerupKind::AttackSpeed: {
-                data::player::g_player.attack_speed_multiplier += 0.1f;
+                data::g_player.attack_speed_multiplier += 0.1f;
                 spwn::evt::Notification(world, "+ATTACK SPEED");
                 break;
             }
             case data::loot::PowerupKind::MoveSpeed: {
-                data::player::g_player.move_speed_multiplier += 0.1f;
+                data::g_player.move_speed_multiplier += 0.1f;
                 spwn::evt::Notification(world, "+MOVE SPEED");
                 break;
             }
             case data::loot::PowerupKind::PickupRange: {
-                data::player::g_player.pickup_range_multiplier += 0.1f;
+                data::g_player.pickup_range_multiplier += 0.1f;
                 spwn::evt::Notification(world, "+PICKUP RANGE");
                 break;
             }
             case data::loot::PowerupKind::DashDistance: {
-                data::player::g_player.dash_range_multiplier += 0.1f;
+                data::g_player.dash_range_multiplier += 0.1f;
                 spwn::evt::Notification(world, "+DASH RANGE");
                 break;
             }
             case data::loot::PowerupKind::Health: {
-                auto& hp = world.GetComponent<cmpt::Health>(data::player::g_player.id);
+                auto& hp = world.GetComponent<cmpt::Health>(data::g_player.id);
                 if (hp.amount < hp.max) {
                     hp.amount += 10;
                     if (hp.amount > hp.max) hp.amount = hp.max;
@@ -47,7 +47,7 @@ namespace sys::evt {
                 break;
             }
             case data::loot::PowerupKind::MaxHp: {
-                auto& hp = world.GetComponent<cmpt::Health>(data::player::g_player.id);
+                auto& hp = world.GetComponent<cmpt::Health>(data::g_player.id);
                 hp.max += 10;
                 hp.amount += 10;
                 spwn::evt::Notification(world, "+MAX HP");
@@ -66,10 +66,12 @@ namespace sys::evt {
         switch (kind) {
             case data::loot::WeaponKind::Pistol: {
                 spwn::weapon::EquipPistol(world, id);
+                spwn::evt::Notification(world, "+PISTOL");
                 break;
             }
             case data::loot::WeaponKind::Shotgun: {
                 spwn::weapon::EquipShotgun(world, id);
+                spwn::evt::Notification(world, "+SHOTGUN");
                 break;
             }
             case data::loot::WeaponKind::Rifle: {
@@ -112,7 +114,7 @@ namespace sys::evt {
             switch (evt.kind) {
                 case data::loot::LootKind::Exp: {
                     auto& exp = world.GetComponent<cmpt::ExpLoot>(entity);
-                    int levelup = data::player::g_player.AddExp(exp.amount);
+                    int levelup = data::g_player.AddExp(exp.amount);
                     spwn::evt::Notification(world, "+EXP");
                     if (levelup > 0) {
                         spwn::evt::Notification(world, "LVLUP " + std::to_string(levelup));
@@ -121,7 +123,7 @@ namespace sys::evt {
                 }
                 case data::loot::LootKind::Money: {
                     auto& money = world.GetComponent<cmpt::MoneyLoot>(entity);
-                    data::player::g_player.money += money.amount;
+                    data::g_player.money += money.amount;
                     spwn::evt::Notification(world, "+" + std::to_string(money.amount) + " GOLD");
                     break;
                 }
@@ -135,7 +137,6 @@ namespace sys::evt {
                 case data::loot::LootKind::Weapon: {
                     auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(entity);
                     ApplyWeapon(world, wepkind.kind, evt.id);
-                    PRINT("got weapon pickup");
                     break;
                 }
 

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "storage/registry.h"
+#include "data/player/player.h"
 #include "components/components.h"
 #include "spawners/system/events/notification.h"
 #include "resources/asset_loader.h"
@@ -24,7 +25,7 @@ namespace sys::dmg {
 
             if (world.HasComponent<tag::Player>(entity)) {
                 // if god mode enabled, remove all player damage
-                if (data::player::g_player.god_mode) {
+                if (data::g_player.god_mode) {
                     dmg.total = 0;
                 } 
 
@@ -47,9 +48,10 @@ namespace sys::dmg {
                 entity, 
                 cmpt::DamageFlash{ .duration = 0.1f }
             );
-            PRINT("dmg received: ", dmg.total);
+            
             hp.amount -= dmg.total;
             dmg.total = 0;
+
             PlaySound(rsrc::asset::damage_fx);
             SetSoundPitch(rsrc::asset::damage_fx, (float)GetRandomValue(9, 15) * 0.1f);
 

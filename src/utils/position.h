@@ -7,38 +7,65 @@
 
 namespace utils {
     inline Vector3 GetRandomValidPosition() {
-        float enemy_x = 0.0f;
-        float enemy_z = 0.0f;
+        float new_x = 0.0f;
+        float new_z = 0.0f;
+        int attempts = 0;
         while (true) {
-            enemy_x = (float)GetRandomValue(
+            new_x = (float)GetRandomValue(
                 data::size::PLAY_AREA.min.x + 1.0f, 
                 data::size::PLAY_AREA.max.x - 1.0f
             );
-            enemy_z = (float)GetRandomValue(
+            new_z = (float)GetRandomValue(
                 data::size::PLAY_AREA.min.z + 1.0f, 
                 data::size::PLAY_AREA.max.z - 1.0f
             );
             
-            if (!data::game::terrain.IsBlockedWorld(enemy_x, enemy_z)) break;
+            if (!data::g_terrain.IsBlockedWorld(new_x, new_z)) break;
+            attempts += 1;
+            if (attempts > 5) {
+                PRINT("took more than 5 attempts to GetRandomValidPosition()!")
+            }
         }
 
-        return Vector3{enemy_x, 0.0f, enemy_z};
+        return Vector3{new_x, 0.0f, new_z};
+    }
+
+    inline Vector3 GetRandomValidPisitionNearTarget(const Vector3 target, const int offset) {
+        float new_x = 0.0f;
+        float new_z = 0.0f;
+        int attempts = 0;
+        while (true) {
+            new_x = (float)GetRandomValue(
+                (int)std::floor(target.x - offset), 
+                (int)std::ceil(target.x + offset)
+            );
+            new_z = (float)GetRandomValue(
+                (int)std::floor(target.z - offset), 
+                (int)std::ceil(target.z + offset)
+            );
+            
+            if (!data::g_terrain.IsBlockedWorld(new_x, new_z)) break;
+            attempts += 1;
+            if (attempts > 5) return target; // failed, give up!
+        }
+
+        return Vector3{new_x, 0.0f, new_z};
     }
 
     inline void MoveAndSlideTerrain(Vector3& pos, Vector3 delta) {
         Vector3 tryX = pos;
         tryX.x += delta.x;
-        if (!data::game::terrain.IsBlockedWorld(tryX.x, tryX.z)) pos.x = tryX.x;
+        if (!data::g_terrain.IsBlockedWorld(tryX.x, tryX.z)) pos.x = tryX.x;
 
         Vector3 tryZ = pos;
         tryZ.z += delta.z;
-        if (!data::game::terrain.IsBlockedWorld(tryZ.x, tryZ.z)) pos.z = tryZ.z;
+        if (!data::g_terrain.IsBlockedWorld(tryZ.x, tryZ.z)) pos.z = tryZ.z;
     }
 
     // returns false if must be destroyed
     inline bool MoveOverTerrainProjectile(Vector3& pos, Vector3 delta) {
         Vector3 new_pos = Vector3Add(pos, delta);
-        bool terrain_blocked = data::game::terrain.IsProjectileBlockedWorld(new_pos.x, new_pos.z);
+        bool terrain_blocked = data::g_terrain.IsProjectileBlockedWorld(new_pos.x, new_pos.z);
         if (terrain_blocked) {
             return false;
         }

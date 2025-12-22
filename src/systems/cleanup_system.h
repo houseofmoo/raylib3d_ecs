@@ -28,7 +28,7 @@ namespace sys::cleanup {
             //     // world.AddComponent<tag::Destroy>(entity);
             // }
             if (world.HasComponent<tag::Enemy>(entity)) {
-                data::player::g_player.enemies_defeated += 1;
+                data::g_player.enemies_defeated += 1;
             }
 
             world.DestroyEntity(entity);

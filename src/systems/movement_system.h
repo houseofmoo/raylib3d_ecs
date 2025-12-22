@@ -37,7 +37,7 @@ namespace sys::mov {
                 float speed = spd.speed * 
                             spd.speed_multiplier * 
                             spd.dash_multiplier * 
-                            data::player::g_player.move_speed_multiplier;
+                            data::g_player.move_speed_multiplier;
 
                 vel.x = input.direction.x * speed;
                 vel.y = 0.0f;

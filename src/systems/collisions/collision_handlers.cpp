@@ -135,7 +135,7 @@ namespace sys::col {
                             break;
                         }
                         default: {
-                            PRINT("Unknown loot type found in PickupOnCollision()");
+                            PRINT("Unknown loot type found in PickupOnCollision() a->b");
                         }
                     }
                 }
@@ -166,7 +166,7 @@ namespace sys::col {
                             break;
                         }
                         default: {
-                            PRINT("UNKNOWN LOOT KIND ON PICKUP COLLISION");
+                            PRINT("Unknown loot type found in PickupOnCollision() b->a");
                         }
                     }
                 }

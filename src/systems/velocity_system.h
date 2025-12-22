@@ -31,7 +31,7 @@ namespace sys::vel {
             // special case entities that are destroyed on terrain or low terrain contact
             if (world.HasComponent<tag::DestroyOnTerrainCollision>(entity)) {
                 Vector3 new_pos = Vector3Add(trans.position, delta);
-                if (data::game::terrain.IsBlockedWorld(new_pos.x, new_pos.z)) {
+                if (data::g_terrain.IsBlockedWorld(new_pos.x, new_pos.z)) {
                     world.AddComponent<tag::Destroy>(entity);
                     continue;
                 }

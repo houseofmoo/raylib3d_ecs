@@ -41,7 +41,7 @@ namespace sys::atk {
             wep.base_stats.countdown -= delta_time;
             if (wep.base_stats.countdown > 0.0f) continue;
 
-            wep.base_stats.countdown = wep.base_stats.cooldown / data::player::g_player.attack_speed_multiplier;
+            wep.base_stats.countdown = wep.base_stats.cooldown / data::g_player.attack_speed_multiplier;
             if (wep.base_stats.countdown <= 0.1f) wep.base_stats.countdown = 0.1f;
 
             Vector3 direction = utils::DirectionFlattenThenNormalize(
@@ -50,7 +50,7 @@ namespace sys::atk {
             );
 
             direction = Vector3Scale(direction, wep.base_stats.projectile_speed);
-            float dmg = wep.base_stats.damage * data::player::g_player.damage_multiplier;
+            float dmg = wep.base_stats.damage * data::g_player.damage_multiplier;
             spwn::proj::Bullet(world, trans.position, direction, dmg, 1);
             PlaySound(sound_fx);
             SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
@@ -67,7 +67,7 @@ namespace sys::atk {
             wep.base_stats.countdown -= delta_time;
             if (wep.base_stats.countdown > 0.0f) continue;
 
-            wep.base_stats.countdown = wep.base_stats.cooldown / data::player::g_player.attack_speed_multiplier;
+            wep.base_stats.countdown = wep.base_stats.cooldown / data::g_player.attack_speed_multiplier;
             if (wep.base_stats.countdown <= 0.1f) wep.base_stats.countdown = 0.1f;
 
             Vector3 direction = utils::DirectionFlattenThenNormalize(
@@ -76,7 +76,7 @@ namespace sys::atk {
             );
 
             direction = Vector3Scale(direction, wep.base_stats.projectile_speed);
-            float dmg = wep.base_stats.damage * data::player::g_player.damage_multiplier;
+            float dmg = wep.base_stats.damage * data::g_player.damage_multiplier;
             FireSpread(world, trans.position, direction, wep.pellet_count, wep.spread_deg, dmg, 1);
             PlaySound(sound_fx);
             SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
