@@ -7,7 +7,8 @@ namespace data {
     constexpr float MIN_SPAWN_INTERVAL = 0.5f;
 
     enum class GameState_E {
-        StartUp,
+        StartScreen,
+        NewGame,
         Running,
         WeaponSelect,
         StatsScreen,

@@ -105,6 +105,7 @@ namespace sys::input {
                     dir.x += (float)GetRandomValue(-5, 5);
                     dir.z += (float)GetRandomValue(-5, 5);
                     intent.direction = utils::FlattenThenNormalize(dir);
+                    intent.SetSmoothRotation(trans.rotation);
                     // TODO: lazy gets stuck sometimes, add component to indicate stuck?
                     break;
                 }
@@ -118,6 +119,7 @@ namespace sys::input {
                          trans.position,
                         utils::GetRandomValidPosition()
                     );
+                    intent.SetSmoothRotation(trans.rotation);
                     break;
                 }
 

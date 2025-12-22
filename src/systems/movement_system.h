@@ -47,6 +47,8 @@ namespace sys::mov {
         }
     }
 
+ 
+
     inline void ApplyAIMovement(Storage::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyAIMovement()");
         for (auto entity : world.View<cmpt::MoveIntent,
@@ -73,11 +75,36 @@ namespace sys::mov {
                 auto& intent = world.GetComponent<cmpt::MoveIntent>(entity);
                 auto& trans = world.GetComponent<cmpt::Transform>(entity);
                 auto& spd = world.GetComponent<cmpt::Speed>(entity);
-
+           
                 vel.x = intent.direction.x * spd.speed * spd.speed_multiplier * spd.dash_multiplier;
                 vel.y = 0.0f;
                 vel.z = intent.direction.z * spd.speed * spd.speed_multiplier * spd.dash_multiplier;
-                trans.rotation = utils::GetRotationToDirection(trans.position, intent.direction);
+
+                // rotation
+                switch (intent.type) {
+                    case cmpt::MoveIntentType::Lazy: {}
+                    case cmpt::MoveIntentType::Random: {
+                        if (intent.rotation_complete) continue;
+                        
+                        intent.rotation_elapsed += delta_time;
+                        float amount = intent.rotation_elapsed / intent.rotation_duration;
+                        amount = Clamp(amount, 0.0f, 1.0f);
+                        amount = utils::EaseInOutQuad(amount);
+
+                        trans.rotation = QuaternionSlerp(
+                            intent.start_rotation,
+                            utils::GetRotationToDirection(trans.position, intent.direction),
+                            amount
+                        );
+
+                        intent.rotation_complete = intent.rotation_elapsed >= intent.rotation_duration;
+                        break;
+                    }
+                    default: {
+                        trans.rotation = utils::GetRotationToDirection(trans.position, intent.direction);
+                        break;
+                    }
+                }
             }
         }
     }

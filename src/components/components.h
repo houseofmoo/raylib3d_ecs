@@ -69,6 +69,17 @@ namespace cmpt {
     struct MoveIntent { 
         MoveIntentType type;
         Vector3 direction;
+
+        Quaternion start_rotation;
+        bool rotation_complete;
+        float rotation_duration;
+        float rotation_elapsed;
+
+        void SetSmoothRotation(const Quaternion start_rot) {
+            start_rotation = start_rot;
+            rotation_complete = false;
+            rotation_elapsed = 0.0f;
+        }
     };
 
     struct RandomMovement {

@@ -47,7 +47,7 @@ namespace sys {
 
         // spawn additional enemies
         sys::SpawnEnemyInterval(world, delta_time);
-        
+
         // input/move ai move intent
         sys::input::PlayerInput(world, camera);
         sys::input::AIMoveIntent(world, delta_time);

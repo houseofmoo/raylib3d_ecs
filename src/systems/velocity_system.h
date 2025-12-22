@@ -7,6 +7,7 @@
 #include "storage/registry.h"
 #include "components/components.h"
 #include "data/game/game.h"
+#include "utils/rl_utils.h"
 #include "utils/position.h"
 #include "utils/debug.h"
 
@@ -48,13 +49,6 @@ namespace sys::vel {
         }
     }
 
-    inline float EaseInOutQuad(float t) {
-        if (t < 0.5f) {
-            return 2.0f * t * t;
-        }
-        return 1.0f - powf(-2.0f * t + 2.0f, 2.0f) * 0.5f;
-    }
-
     // ApplyArchMovement
     inline void ApplyArch(Storage::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyArch()");
@@ -68,7 +62,7 @@ namespace sys::vel {
 
             arch.elapsed += delta_time;
             float u = Clamp(arch.elapsed, 0.0f, arch.duration);
-            float u_eased = EaseInOutQuad(u);
+            float u_eased = utils::EaseInOutQuad(u);
 
             Vector3 new_pos = Vector3Lerp(arch.start, arch.end, u_eased);
             new_pos.y += 4.0f * arch.height * u * (1.0f - u);

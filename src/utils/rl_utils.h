@@ -82,4 +82,11 @@ namespace utils {
     inline Vector3 DirectionFlattenThenNormalize(const Vector3& me, const Vector3& them) noexcept {
         return FlattenThenNormalize(Direction(me, them));
     }
+
+    inline float EaseInOutQuad(float t) {
+        if (t < 0.5f) {
+            return 2.0f * t * t;
+        }
+        return 1.0f - powf(-2.0f * t + 2.0f, 2.0f) * 0.5f;
+    }
 }

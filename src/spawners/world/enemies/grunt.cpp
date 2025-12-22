@@ -46,7 +46,11 @@ namespace spwn::enemy {
             enemy,
             cmpt::MoveIntent{
                 .type = move_type,
-                .direction = Vector3Zero()
+                .direction = Vector3Zero(),
+                .start_rotation = QuaternionIdentity(),
+                .rotation_complete = true,
+                .rotation_duration = 0.2f,
+                .rotation_elapsed = 0.0f
             }
         );
 

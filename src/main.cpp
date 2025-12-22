@@ -1,34 +1,11 @@
-// #ifndef DEBUG
-// // #pragma windows
-// // #pragma minCRTStartup
-// #pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
-// #endif
+#include "main.h"
 
-#include "raylib.h"
-#include "raymath.h"
-
-#define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
-#include "style_dark.h"
-
-#ifdef DEBUG
-#include "rlImGui.h"
-#include "imgui.h"
-#include "debug/debug_window.h"
-#include "utils/debug.h"
-#endif
-
-#include "data/game/game.h"
-#include "resources/asset_loader.h"
-#include "systems/systems.h"
-#include "components/components.h"
+constexpr int SCREEN_WIDTH = 1920;
+constexpr int SCREEN_HEIGHT = 1080;
 
 int main() {
-    const int screenWidth  = 1920;
-    const int screenHeight = 1080;
-
     SetConfigFlags(FLAG_MSAA_4X_HINT); // anti-aliasing
-    InitWindow(screenWidth, screenHeight, "3D Roguelite");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "3D Roguelite");
     InitAudioDevice();
     SetTargetFPS(240);
 
@@ -54,9 +31,13 @@ int main() {
     sys::InitWorld();
 
     float delta_time = 0.0f;
+    int screen_width = SCREEN_WIDTH;
+    int screen_height = SCREEN_HEIGHT;
 
     while (!WindowShouldClose()) {
         delta_time = GetFrameTime();
+        screen_width = GetScreenWidth();
+        screen_height = GetScreenHeight();
 
         UpdateMusicStream(rsrc::asset::bg_music);
 
@@ -73,13 +54,50 @@ int main() {
         }
 
         switch (data::g_game.state) {
-            case data::GameState_E::StartUp: {
-                // draw startup menu
+            case data::GameState_E::StartScreen: {
+                // start up menu checks
+                // if game started transition to newgame
+                break;
+            }
+            case data::GameState_E::NewGame: {
+                // run inits on new game and transition to running
                 break;
             }
             case data::GameState_E::Running: {
                 // normal ops
                 sys::RunUpdateSystems(delta_time);
+
+                // if player dies transition to death screen?
+                break;
+            }
+            case data::GameState_E::WeaponSelect: {
+                // when player picks up weapon crate, draw that menu
+                // transition back to running
+                break;
+            }
+            case data::GameState_E::StatsScreen: {
+                // when player presses TAB show stats screen
+                // transition back to running
+                break;
+            }
+            case data::GameState_E::Paused: {
+                // draw pause/options menu
+                break;
+            }
+        }
+
+        BeginDrawing();
+        ClearBackground(Color{30,30,30,255});
+        switch (data::g_game.state) {
+            case data::GameState_E::StartScreen: {
+                // draw startup menu
+                break;
+            }
+            case data::GameState_E::Running: {
+                BeginMode3D(sys::camera);
+                sys::RunEntityDrawSystems(delta_time);
+                EndMode3D();
+                sys::RunUIDrawSystems(delta_time);
                 break;
             }
             case data::GameState_E::WeaponSelect: {
@@ -96,41 +114,87 @@ int main() {
             }
         }
 
-        BeginDrawing();
-        ClearBackground(Color{30,30,30,255});
-        BeginMode3D(sys::camera);
-        sys::RunEntityDrawSystems(delta_time);
-        EndMode3D();
-
-        // if (GuiButton(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 120, 30}, GuiIconText(ICON_INFO, "Show Message"))) {
-        //     std::cout << "button pressed" << std::endl;
-        // }
-
-        GuiStatusBar(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 120, 30}, "Test");
-        float val = 5.0f;
-        Color c = Color{0, 0, 0, 100};
-        //::DrawRectangleRec(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 240, 60}, c);
-        ::GuiGroupBox(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 240, 60}, nullptr);
-        ::GuiProgressBar(Rectangle{ (int)screenWidth * 0.5f + 60, (int)screenHeight * 0.5f + 30, 120, 30}, nullptr, nullptr, &val, 1.0f, 10.0f);
-
-        sys::RunUIDrawSystems(delta_time);
-
-        if (data::g_game.state == data::GameState_E::Paused) {
-            // draw dark box over entire screen
-            DrawRectangle(
-                0, 0, 
-                GetScreenWidth(), 
-                GetScreenHeight(), 
-                Color{0,0,0,175}
-            );
-        }
-
-        // imgui ui
         #ifdef DEBUG
+        // imgui ui
         debug::DrawDebugUI(sys::world, io);
         #endif
-   
         EndDrawing();
+
+        // Draw(
+        //     delta_time,
+        //     [](const float dt) {
+        //         sys::RunEntityDrawSystems(dt);
+        //     },
+        //     [](const float dt) {
+        //         sys::RunUIDrawSystems(dt);
+        //     }
+        // );
+
+        // Draw(
+        //     [delta_time]() {
+        //         sys::RunEntityDrawSystems(delta_time);
+        //     },
+        //     [delta_time]() {
+        //         sys::RunUIDrawSystems(delta_time);
+        //     }
+        // );
+
+        // #if DEBUG
+        // Draw(
+        //     [delta_time]() {
+        //         sys::RunEntityDrawSystems(delta_time);
+        //     },
+        //     [delta_time]() {
+        //         sys::RunUIDrawSystems(delta_time);
+        //     },
+        //     io
+        // );
+        // else
+        // Draw(
+        //     [delta_time]() {
+        //         sys::RunEntityDrawSystems(delta_time);
+        //     },
+        //     [delta_time]() {
+        //         sys::RunUIDrawSystems(delta_time);
+        //     }
+        // );
+        // #endif
+
+        // BeginDrawing();
+        // ClearBackground(Color{30,30,30,255});
+        // BeginMode3D(sys::camera);
+        // sys::RunEntityDrawSystems(delta_time);
+        // EndMode3D();
+
+        // // // if (GuiButton(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 120, 30}, GuiIconText(ICON_INFO, "Show Message"))) {
+        // // //     std::cout << "button pressed" << std::endl;
+        // // // }
+
+        // // GuiStatusBar(Rectangle{ (int)screen_width * 0.5f, (int)screen_height * 0.5f, 120, 30}, "Test");
+        // // float val = 5.0f;
+        // // Color c = Color{0, 0, 0, 100};
+        // // //::DrawRectangleRec(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 240, 60}, c);
+        // // ::GuiGroupBox(Rectangle{ (int)screen_width * 0.5f, (int)screen_height * 0.5f, 240, 60}, nullptr);
+        // // ::GuiProgressBar(Rectangle{ (int)screen_width * 0.5f + 60, (int)screen_height * 0.5f + 30, 120, 30}, nullptr, nullptr, &val, 1.0f, 10.0f);
+
+        // sys::RunUIDrawSystems(delta_time);
+
+        // if (data::g_game.state == data::GameState_E::Paused) {
+        //     // draw dark box over entire screen
+        //     DrawRectangle(
+        //         0, 0, 
+        //         GetScreenWidth(), 
+        //         GetScreenHeight(), 
+        //         Color{0,0,0,175}
+        //     );
+        // }
+
+        // // imgui ui
+        // #ifdef DEBUG
+        // debug::DrawDebugUI(sys::world, io);
+        // #endif
+   
+        // EndDrawing();
     }
 
     rsrc::asset::UnloadAssets();
