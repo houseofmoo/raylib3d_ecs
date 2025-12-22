@@ -9,7 +9,7 @@ namespace spwn::enemy {
     void Brute(
             Storage::Registry& world, 
             const Vector3 position, 
-            const cmpt::MoveIntentType move_type, 
+            const cmpt::AIMoveMode move_mode, 
             const int hp) {
 
         auto brute = world.CreateEntity();
@@ -41,17 +41,18 @@ namespace spwn::enemy {
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
-        cmpt::AttachMovementComponent(world, brute, move_type);
+        cmpt::AttachMovementComponent(world, brute, move_mode);
 
-        world.AddComponent<cmpt::MoveIntent>(
+        world.AddComponent<cmpt::AIMoveIntent>(
             brute,
-            cmpt::MoveIntent{
-                .type = move_type,
+            cmpt::AIMoveIntent{
+                .mode = move_mode,
                 .direction = Vector3Zero(),
                 .start_rotation = QuaternionIdentity(),
                 .rotation_complete = true,
                 .rotation_duration = 0.2f,
-                .rotation_elapsed = 0.0f
+                .rotation_elapsed = 0.0f,
+                .stuck = false,
             }
         );
 

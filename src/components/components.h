@@ -58,7 +58,7 @@ namespace cmpt {
     ////////////////////////////////////////////////
     // INPUT
     ////////////////////////////////////////////////
-    enum class MoveIntentType {
+    enum class AIMoveMode {
         Melee,  // heads directly at player
         Ranged, // stays some min/max distance near player
         Lazy,   // moves generally towards player
@@ -66,8 +66,8 @@ namespace cmpt {
     };
 
     // non-player characters have this value for AI movement
-    struct MoveIntent { 
-        MoveIntentType type;
+    struct AIMoveIntent { 
+        AIMoveMode mode;
         Vector3 direction;
 
         Quaternion start_rotation;
@@ -75,11 +75,18 @@ namespace cmpt {
         float rotation_duration;
         float rotation_elapsed;
 
+        bool stuck;
+
         void SetSmoothRotation(const Quaternion start_rot) {
             start_rotation = start_rot;
             rotation_complete = false;
             rotation_elapsed = 0.0f;
         }
+    };
+
+    struct MeleeMovement {
+        Vector3 detour_direction;
+        float detour_countdown;
     };
 
     struct RandomMovement {

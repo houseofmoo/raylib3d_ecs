@@ -7,6 +7,6 @@
 namespace spwn::enemy {
     void Grunt(Storage::Registry& world, 
             const Vector3 position, 
-            const cmpt::MoveIntentType move_type, 
+            const cmpt::AIMoveMode move_mode, 
             const int hp);
 }

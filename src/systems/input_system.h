@@ -57,8 +57,8 @@ namespace sys::input {
 
     inline void AIMoveIntent(Storage::Registry& world, const float delta_time) {
         PROFILE_SCOPE("AIMoveIntent()");
-        for (auto entity : world.View<cmpt::MoveIntent, cmpt::Transform>()) {
-            auto& intent = world.GetComponent<cmpt::MoveIntent>(entity);
+        for (auto entity : world.View<cmpt::AIMoveIntent, cmpt::Transform>()) {
+            auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
 
             if (world.HasComponent<cmpt::SpawnAnimation>(entity)) {
@@ -78,42 +78,60 @@ namespace sys::input {
                 return;
             }
 
-            switch (intent.type) {
-                case cmpt::MoveIntentType::Melee: {
-                    // moves directly at the player
-                    intent.direction = utils::DirectionFlattenThenNormalize(
-                        trans.position,
-                        ptrans->position
-                    );
+            switch (intent.mode) {
+                case cmpt::AIMoveMode::Melee: {
+                    auto& detour = world.GetComponent<cmpt::MeleeMovement>(entity);
+                    if (intent.stuck) {
+                        // detour in a random direction for 3 seconds
+                        detour.detour_countdown = 3.0f;
+                        detour.detour_direction = utils::DirectionFlattenThenNormalize(
+                            trans.position,
+                            utils::GetRandomValidPosition()
+                        );
+                        intent.stuck = false;
+                    }
+
+                    if (detour.detour_countdown > 0.0f) {
+                        detour.detour_countdown -= delta_time;
+                        intent.direction = detour.detour_direction;
+                    } else {
+                        // moves directly at the player
+                        intent.direction = utils::DirectionFlattenThenNormalize(
+                            trans.position,
+                            ptrans->position
+                        );
+                    }
                     break;
                 }
 
-                case cmpt::MoveIntentType::Ranged: {
+                case cmpt::AIMoveMode::Ranged: {
                     // move towards player until theyre some distance from them
                     // move away from player if they're too close
                     break;
                 }
 
-                case cmpt::MoveIntentType::Lazy: {
+                case cmpt::AIMoveMode::Lazy: {
                     // make their way in the general direction of the player
                     auto& lazy = world.GetComponent<cmpt::LazyMovement>(entity);
                     lazy.countdown -= delta_time;
-                    if (lazy.countdown > 0.0f) continue;
-                    lazy.countdown = 3.0f;
+                    if (lazy.countdown > 0.0f && !intent.stuck) continue;
+                    intent.stuck = false;
+                    lazy.countdown = 2.0f;
                     Vector3 dir = utils::Direction(trans.position, ptrans->position);
                     // add a random offset so we dont move directly at the player
                     dir.x += (float)GetRandomValue(-5, 5);
                     dir.z += (float)GetRandomValue(-5, 5);
                     intent.direction = utils::FlattenThenNormalize(dir);
                     intent.SetSmoothRotation(trans.rotation);
-                    // TODO: lazy gets stuck sometimes, add component to indicate stuck?
+                    // TODO: if lazy is stuck on wall, indicate that and change their direction immediately?
                     break;
                 }
 
-                case cmpt::MoveIntentType::Random: {
+                case cmpt::AIMoveMode::Random: {
                     auto& ran_dir = world.GetComponent<cmpt::RandomMovement>(entity);
                     ran_dir.countdown -= delta_time;
-                    if (ran_dir.countdown > 0.0f) continue;
+                    if (ran_dir.countdown > 0.0f && !intent.stuck) continue;
+                    intent.stuck = false;
                     ran_dir.countdown = 5.0f;
                     intent.direction = utils::DirectionFlattenThenNormalize(
                          trans.position,

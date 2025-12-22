@@ -13,14 +13,17 @@ namespace cmpt {
     }
 
     // attach movement system component for AI based on move type
-    inline void AttachMovementComponent(Storage::Registry& world, const Entity id, const cmpt::MoveIntentType move_type) {
+    inline void AttachMovementComponent(Storage::Registry& world, const Entity id, const cmpt::AIMoveMode move_type) {
         switch (move_type) {
-            case cmpt::MoveIntentType::Melee: {
-                // nothing
+            case cmpt::AIMoveMode::Melee: {
+                world.AddComponent<cmpt::MeleeMovement>(
+                    id,
+                    cmpt::MeleeMovement{ Vector3Zero(), 0.0f }
+                );
                 break;
             }
 
-            case cmpt::MoveIntentType::Ranged: {
+            case cmpt::AIMoveMode::Ranged: {
                 world.AddComponent<cmpt::RangedMovement>(
                     id,
                     cmpt::RangedMovement{ 5.0f, 10.0f }
@@ -28,7 +31,7 @@ namespace cmpt {
                 break;
             }
 
-            case cmpt::MoveIntentType::Lazy: {
+            case cmpt::AIMoveMode::Lazy: {
                 world.AddComponent<cmpt::LazyMovement>(
                     id,
                     cmpt::LazyMovement{ 0.0f }
@@ -36,7 +39,7 @@ namespace cmpt {
                 break;
             }
 
-            case cmpt::MoveIntentType::Random: {
+            case cmpt::AIMoveMode::Random: {
                 world.AddComponent<cmpt::RandomMovement>(
                     id,
                     cmpt::RandomMovement{ 0.0f }

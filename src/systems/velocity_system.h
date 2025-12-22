@@ -46,6 +46,15 @@ namespace sys::vel {
 
             // all over units movement handled here
             utils::MoveAndSlideTerrain(trans.position, delta);
+
+            // if direction attempted to move is invalid and AI, flag as stuck
+            if (world.HasComponent<cmpt::AIMoveIntent>(entity)) {
+                Vector3 new_pos = Vector3Add(trans.position, delta);
+                if (data::g_terrain.IsBlockedWorld(new_pos.x, new_pos.z)) {
+                    auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
+                    intent.stuck = true;
+                }
+            }
         }
     }
 

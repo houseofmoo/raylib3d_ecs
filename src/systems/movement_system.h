@@ -51,7 +51,7 @@ namespace sys::mov {
 
     inline void ApplyAIMovement(Storage::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyAIMovement()");
-        for (auto entity : world.View<cmpt::MoveIntent,
+        for (auto entity : world.View<cmpt::AIMoveIntent,
                                         cmpt::Transform, 
                                         cmpt::Velocity,
                                         cmpt::Speed>()) {
@@ -72,7 +72,7 @@ namespace sys::mov {
                 vel = kb.direction;
                 vel.y = 0.0f;
             } else {
-                auto& intent = world.GetComponent<cmpt::MoveIntent>(entity);
+                auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
                 auto& trans = world.GetComponent<cmpt::Transform>(entity);
                 auto& spd = world.GetComponent<cmpt::Speed>(entity);
            
@@ -81,9 +81,9 @@ namespace sys::mov {
                 vel.z = intent.direction.z * spd.speed * spd.speed_multiplier * spd.dash_multiplier;
 
                 // rotation
-                switch (intent.type) {
-                    case cmpt::MoveIntentType::Lazy: {}
-                    case cmpt::MoveIntentType::Random: {
+                switch (intent.mode) {
+                    case cmpt::AIMoveMode::Lazy: {}
+                    case cmpt::AIMoveMode::Random: {
                         if (intent.rotation_complete) continue;
                         
                         intent.rotation_elapsed += delta_time;
