@@ -19,6 +19,7 @@ namespace sys::vel {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& vel = world.GetComponent<cmpt::Velocity>(entity);
 
+            Vector3 org_pos = trans.position;
             Vector3 delta = Vector3Scale(vel, delta_time);
 
             // projectiles are allow it to travel over low terrain
@@ -47,10 +48,12 @@ namespace sys::vel {
             // all over units movement handled here
             utils::MoveAndSlideTerrain(trans.position, delta);
 
+            // TODO: need a better way to detect stuck, right now it fails 
+            // with low terrain (sometimes) and the large brutes seem to ignore it entirely?
             // if direction attempted to move is invalid and AI, flag as stuck
             if (world.HasComponent<cmpt::AIMoveIntent>(entity)) {
-                Vector3 new_pos = Vector3Add(trans.position, delta);
-                if (data::g_terrain.IsBlockedWorld(new_pos.x, new_pos.z)) {
+                Vector3 attempted_pos = Vector3Add(org_pos, delta);
+                if (data::g_terrain.IsBlockedWorld(attempted_pos.x, attempted_pos.z)) {
                     auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
                     intent.stuck = true;
                 }

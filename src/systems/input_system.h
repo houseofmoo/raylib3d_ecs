@@ -123,7 +123,6 @@ namespace sys::input {
                     dir.z += (float)GetRandomValue(-5, 5);
                     intent.direction = utils::FlattenThenNormalize(dir);
                     intent.SetSmoothRotation(trans.rotation);
-                    // TODO: if lazy is stuck on wall, indicate that and change their direction immediately?
                     break;
                 }
 
