@@ -32,6 +32,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/debug)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/resources)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/raylib_styles)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip/weapon)

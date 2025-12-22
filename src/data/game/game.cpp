@@ -15,8 +15,8 @@ namespace data {
     );
 
     GameState g_game {
-        .prev_state = GameState_E::Running,
-        .state = GameState_E::Running,
+        .prev_state = GameState_E::StartScreen,
+        .state = GameState_E::StartScreen,
         .difficulty = 0,
         .enemy_spawn_countdown = 0.0f,
         .enemy_spawn_interval = MAX_SPAWN_INTERVAL,

@@ -7,8 +7,9 @@ namespace sys {
     extern Camera3D camera;
     extern Storage::Registry world;
 
-    void InitWorld() noexcept;
-    void RunUpdateSystems(const float delta_time) noexcept;
-    void RunEntityDrawSystems(const float delta_time) noexcept;
-    void RunUIDrawSystems(const float delta_time) noexcept;
+    void InitWorld();
+    void StartGame();
+    void RunUpdateSystems(const float delta_time);
+    void RunEntityDrawSystems(const float delta_time);
+    void RunUIDrawSystems(const float delta_time);
 }

@@ -34,15 +34,22 @@ namespace sys {
     Camera3D camera;
     Storage::Registry world;
 
-    void InitWorld() noexcept {
+    void InitWorld() {
         camera = spwn::camera::Camera();
+
+
+     }
+
+    void StartGame() {
+        // TODO: clear out world components
+        // anything else that needs to be cleared?
 
         spwn::map::GenerateMap(world, data::size::PLAY_AREA);
         data::g_player.id = spwn::player::Player(world);
         spwn::weapon::EquipPistol(world, data::g_player.id);
-     }
+    }
 
-    void RunUpdateSystems(const float delta_time) noexcept {
+    void RunUpdateSystems(const float delta_time) {
         // TODO: re-add the sound for pickups
 
         // spawn additional enemies
@@ -105,7 +112,7 @@ namespace sys {
         //sys::ConstraintToWorld(world, data::size::PLAY_AREA);
     }
 
-    void RunEntityDrawSystems(const float delta_time) noexcept {
+    void RunEntityDrawSystems(const float delta_time) {
         PROFILE_SCOPE("RunEntityDrawSystems()");
         // draw all drawable entities
         int entities_count = 0;
@@ -184,7 +191,7 @@ namespace sys {
         data::g_game.enemy_count = enemies_count;
     }
 
-    void RunUIDrawSystems(const float delta_time) noexcept {
+    void RunUIDrawSystems(const float delta_time) {
         PROFILE_SCOPE("RunUIDrawSystems()");
         int player_hp = 0;
         int player_max_hp = 0;

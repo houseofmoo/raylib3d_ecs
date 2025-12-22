@@ -4,17 +4,18 @@ constexpr int SCREEN_WIDTH = 1920;
 constexpr int SCREEN_HEIGHT = 1080;
 
 int main() {
-    SetConfigFlags(FLAG_MSAA_4X_HINT); // anti-aliasing
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "3D Roguelite");
-    InitAudioDevice();
-    SetTargetFPS(240);
+    ::SetConfigFlags(FLAG_MSAA_4X_HINT); // anti-aliasing
+    ::InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "3D Roguelite");
+    ::InitAudioDevice();
+    ::SetTargetFPS(240);
 
     // raygui
-    ::GuiLoadStyleDark();
+    //::GuiLoadStyleDark();
+    ::GuiLoadStyleBoxOnBox();
 
     #ifdef DEBUG
     //rlImGuiBeginInitImGui();
-    rlImGuiSetup(true);
+    ::rlImGuiSetup(true);
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     ImFont* font = io.Fonts->AddFontFromFileTTF("assets/fonts/consola.ttf", 16.0f);
@@ -34,12 +35,12 @@ int main() {
     int screen_width = SCREEN_WIDTH;
     int screen_height = SCREEN_HEIGHT;
 
-    while (!WindowShouldClose()) {
+    while (!::WindowShouldClose()) {
         delta_time = GetFrameTime();
         screen_width = GetScreenWidth();
         screen_height = GetScreenHeight();
 
-        UpdateMusicStream(rsrc::asset::bg_music);
+        ::UpdateMusicStream(rsrc::asset::bg_music);
 
         // check for pause key
         if (IsKeyPressed(KEY_GRAVE)) {
@@ -90,13 +91,39 @@ int main() {
         ClearBackground(Color{30,30,30,255});
         switch (data::g_game.state) {
             case data::GameState_E::StartScreen: {
-                // draw startup menu
+                // draw dark box over entire screen
+                ::DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175} );
+
+                // draw title
+                Font font = ::GuiGetFont();
+                int width = ::MeasureText("BOX ON BOX CRIME", font.baseSize);
+                ::GuiDrawText(
+                    "BOX ON BOX CRIME", 
+                    Rectangle{ 
+                        (screen_width * 0.5f) - (width * 0.5f), 
+                        100, 
+                        (float)width, 
+                        50 
+                    }, 
+                    TEXT_ALIGN_CENTER, WHITE
+                );
+
+                if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Start")) {
+                    data::g_game.prev_state = data::g_game.state;
+                    data::g_game.state = data::GameState_E::NewGame;
+                }
+                break;
+            }
+            case data::GameState_E::NewGame: {
+                sys::StartGame();
+                data::g_game.prev_state = data::g_game.state;
+                data::g_game.state = data::GameState_E::Running;
                 break;
             }
             case data::GameState_E::Running: {
-                BeginMode3D(sys::camera);
+                ::BeginMode3D(sys::camera);
                 sys::RunEntityDrawSystems(delta_time);
-                EndMode3D();
+                ::EndMode3D();
                 sys::RunUIDrawSystems(delta_time);
                 break;
             }
@@ -118,7 +145,7 @@ int main() {
         // imgui ui
         debug::DrawDebugUI(sys::world, io);
         #endif
-        EndDrawing();
+        ::EndDrawing();
 
         // Draw(
         //     delta_time,
@@ -198,11 +225,11 @@ int main() {
     }
 
     rsrc::asset::UnloadAssets();
-    CloseAudioDevice();
+    ::CloseAudioDevice();
     #ifdef DEBUG
-    rlImGuiShutdown();
+    ::rlImGuiShutdown();
     #endif
-    CloseWindow();
+    ::CloseWindow();
 
     #ifdef DEBUG
     PRINT("\tdebug build")

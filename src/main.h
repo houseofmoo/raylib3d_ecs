@@ -5,7 +5,7 @@
 
 #define RAYGUI_IMPLEMENTATION
 #include "raygui.h"
-#include "style_dark.h"
+#include "raylib_styles/boxonbox.h"
 
 #ifdef DEBUG
 #include "rlImGui.h"
