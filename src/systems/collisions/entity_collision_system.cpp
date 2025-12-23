@@ -27,6 +27,7 @@ namespace sys::col {
         grid.clear();
         broad.count = 0;
 
+        // build grid
         for (auto e : world.View<cmpt::Transform, cmpt::Collider>()) {
             if (broad.count >= BroadphaseIDs::kMax) {
                 PRINT("too many entities for Grid2D to handle");
@@ -60,47 +61,5 @@ namespace sys::col {
                 collision_cache.current.insert(strg::CollisionPair{a, b});
             }
         });
-    }
-
-    void EntityCollision_old(Storage::Registry& world) {
-        PROFILE_SCOPE("EntityCollision_old()");
-
-        // set up for next collision check
-        std::swap(collision_cache.previous, collision_cache.current);
-        collision_cache.current.clear();
-
-        // get all entities into one vector
-        std::vector<Entity> entities;
-        entities.reserve(world.Count<cmpt::Transform, cmpt::Collider>());
-        for (auto entity : world.View<cmpt::Transform, cmpt::Collider>()) {
-            entities.push_back(entity);
-        }
-
-        // iterate over all entites without redoing checks (A -> B without B -> A)
-        for (int i = 0; i < entities.size(); ++i) {
-            Entity a = entities[i];
-
-            auto& atrans = world.GetComponent<cmpt::Transform>(a);
-            auto& acol = world.GetComponent<cmpt::Collider>(a);
-            auto abox = utils::GetBoundingBox(atrans, acol);
-
-            for (int j = i + 1; j < entities.size(); ++j) {
-                Entity b = entities[j];
-
-                // do these layer interact?
-                auto& bcol = world.GetComponent<cmpt::Collider>(b);
-                bool interacts = data::layer::InteractsBoth(acol.layer, acol.mask, bcol.layer, bcol.mask);
-                //bool interacts = data::layer::InteractsOneWay(acol.layer, acol.mask, bcol.layer, bcol.mask);
-                if (!interacts) continue;
-                
-                // are these colliding?
-                auto& btrans = world.GetComponent<cmpt::Transform>(b);
-                auto bbox = utils::GetBoundingBox(btrans, bcol);
-                if (!CheckCollisionBoxes(abox, bbox)) continue;
-
-                // new collision
-                collision_cache.current.insert(strg::CollisionPair{ a, b });
-            }
-        }
     }
 }

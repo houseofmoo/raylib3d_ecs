@@ -1,19 +1,24 @@
 #pragma once
 
+#include "raylib.h"
+#include "raymath.h"
 #include "storage/registry.h"
 #include "data/entity.h"
 #include "components/components.h"
+#include "utils/rl_utils.h"
 #include "utils/debug.h"
 
 namespace cmpt {
     // attaches collider to entity after ensuring collider is at least a minimum size
-    inline void AttachColliderComponent(Storage::Registry& world, const Entity id, cmpt::Collider col) noexcept {
-        col.size = data::size::MinColldierSize(col.size);
-        world.AddComponent<cmpt::Collider>(id, col);
+    inline Vector3 MinLootColliderSize(Vector3 col_size) noexcept {
+        if (utils::Vector3Area(col_size) < utils::Vector3Area(data::cnst::MIN_LOOT_COLLIDER)) {
+            return data::cnst::MIN_LOOT_COLLIDER;
+        }
+        return col_size;
     }
 
     // attach movement system component for AI based on move type
-    inline void AttachMovementComponent(Storage::Registry& world, const Entity id, const cmpt::AIMoveMode move_type) {
+    inline void AttachAIMovementComponent(Storage::Registry& world, const Entity id, const cmpt::AIMoveMode move_type) {
         switch (move_type) {
             case cmpt::AIMoveMode::Melee: {
                 world.AddComponent<cmpt::MeleeMovement>(

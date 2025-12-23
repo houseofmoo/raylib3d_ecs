@@ -87,9 +87,17 @@ namespace sys::col {
                 if (auto* b = world.TryGetComponent<tag::Enemy>(col.entity_b)) {
                     auto& ptrans = world.GetComponent<cmpt::Transform>(col.entity_a);
                     auto& etrans = world.GetComponent<cmpt::Transform>(col.entity_b);
-                    auto dir = Vector3Subtract(etrans.position, ptrans.position);
-                    dir = Vector3Scale(Vector3Normalize({dir.x, 0.0f, dir.z}), -20.0f);
-                    world.AddComponent<cmpt::Knockback>(col.entity_a, cmpt::Knockback{ dir, 0.1f });
+                    auto dir = Vector3Scale(
+                        utils::DirectionFlattenThenNormalize(ptrans.position, etrans.position),
+                        data::cnst::PLAYER_KNOCKBACK_SCALE
+                    );
+                    world.AddComponent<cmpt::Knockback>(
+                        col.entity_a, 
+                        cmpt::Knockback{ 
+                            .direction = dir, 
+                            .countdown = data::cnst::PLAYER_KNOCKBACK_DURATION 
+                        }
+                    );
                 }
             }
 
@@ -97,9 +105,17 @@ namespace sys::col {
                 if (auto* b = world.TryGetComponent<tag::Player>(col.entity_b)) {
                     auto& ptrans = world.GetComponent<cmpt::Transform>(col.entity_b);
                     auto& etrans = world.GetComponent<cmpt::Transform>(col.entity_a);
-                    auto dir = Vector3Subtract(etrans.position, ptrans.position);
-                    dir = Vector3Scale(Vector3Normalize({dir.x, 0.0f, dir.z}), -20.0f);
-                    world.AddComponent<cmpt::Knockback>(col.entity_b, cmpt::Knockback{ dir, 0.1f });
+                    auto dir = Vector3Scale(
+                        utils::DirectionFlattenThenNormalize(ptrans.position, etrans.position),
+                        data::cnst::PLAYER_KNOCKBACK_SCALE
+                    );
+                    world.AddComponent<cmpt::Knockback>(
+                        col.entity_a, 
+                        cmpt::Knockback{ 
+                            .direction = dir, 
+                            .countdown = data::cnst::PLAYER_KNOCKBACK_DURATION 
+                        }
+                    );
                 }
             }
         }

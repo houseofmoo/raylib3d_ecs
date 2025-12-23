@@ -1,11 +1,9 @@
 #pragma once
 #include "raylib.h"
+#include "data/entity.h"
 #include "storage/tilemap.h"
 
 namespace data {
-    constexpr float MAX_SPAWN_INTERVAL = 2.5f;
-    constexpr float MIN_SPAWN_INTERVAL = 0.5f;
-
     enum class GameState_E {
         StartScreen,
         NewGame,
@@ -17,7 +15,6 @@ namespace data {
     };
 
     struct GameState {
-        GameState_E prev_state;
         GameState_E state;
         int difficulty;
         float enemy_spawn_countdown;
@@ -37,9 +34,9 @@ namespace data {
             difficulty += 1;
             
             // reduce spawn interval
-            enemy_spawn_interval = MAX_SPAWN_INTERVAL - (difficulty * 0.005f);
-            if (enemy_spawn_interval < MIN_SPAWN_INTERVAL) { 
-                enemy_spawn_interval = MIN_SPAWN_INTERVAL;
+            enemy_spawn_interval = data::cnst::MAX_SPAWN_INTERVAL - (difficulty * 0.005f);
+            if (enemy_spawn_interval < data::cnst::MIN_SPAWN_INTERVAL) { 
+                enemy_spawn_interval = data::cnst::MIN_SPAWN_INTERVAL;
             }
             enemy_spawn_countdown = enemy_spawn_interval;
 
@@ -50,15 +47,15 @@ namespace data {
             return (difficulty / 100) + 1;
         }
 
-        int GetEnemBaseHp(const float multiplier) const {
-            int base_hp = static_cast<int>((difficulty / 10) + 20);
-            return static_cast<int>(base_hp * multiplier);
+        int GetModifiedHp(const int base_hp, const float multiplier) const {
+            int mod_hp = static_cast<int>((difficulty / 10) + base_hp);
+            return static_cast<int>(mod_hp * multiplier);
         }
         
         void Reset() {
             difficulty = 0;
             enemy_spawn_countdown = 0.0f;
-            enemy_spawn_interval = MAX_SPAWN_INTERVAL;
+            enemy_spawn_interval =data::cnst::MAX_SPAWN_INTERVAL;
             enemy_count = 0;
             entity_count = 0;
         }

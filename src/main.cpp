@@ -36,148 +36,36 @@ int main() {
     int screen_height = SCREEN_HEIGHT;
 
     while (!::WindowShouldClose()) {
-        delta_time = GetFrameTime();
-        screen_width = GetScreenWidth();
-        screen_height = GetScreenHeight();
+        delta_time = ::GetFrameTime();
+        screen_width = ::GetScreenWidth();
+        screen_height = ::GetScreenHeight();
 
         ::UpdateMusicStream(rsrc::asset::bg_music);
 
         // check for pause key
-        if (IsKeyPressed(KEY_GRAVE)) {
-            if (data::g_game.state == data::GameState_E::Paused) {
+        HandlePause(false);
+
+        if (IsKeyPressed(KEY_ONE)) {
+            static data::GameState_E temp_prev_state;
+            if (data::g_game.state == data::GameState_E::WeaponSelect) {
                 // unpausing restores previous game state
-                data::g_game.state = data::g_game.prev_state;
+                data::g_game.state = temp_prev_state;
             } else {
                 // pausing stores current gmae state and sets pause state
-                data::g_game.prev_state = data::g_game.state;
-                data::g_game.state = data::GameState_E::Paused;
+                temp_prev_state = data::g_game.state;
+                data::g_game.state = data::GameState_E::WeaponSelect;
             }
         }
 
-        switch (data::g_game.state) {
-            case data::GameState_E::StartScreen: {
-                // start up menu checks
-                // if game started transition to newgame
-                break;
-            }
-            case data::GameState_E::NewGame: {
-                sys::StartGame();
-                data::g_game.prev_state = data::g_game.state;
-                data::g_game.state = data::GameState_E::Running;
-                break;
-            }
-            case data::GameState_E::Running: {
-                // normal ops
-                sys::RunUpdateSystems(delta_time);
-                // if player dies transition to death screen?
-                break;
-            }
-            case data::GameState_E::WeaponSelect: {
-                // when player picks up weapon crate, draw that menu
-                // transition back to running
-                break;
-            }
-            case data::GameState_E::StatsScreen: {
-                // when player presses TAB show stats screen
-                // transition back to running
-                break;
-            }
-            case data::GameState_E::Paused: {
-                // draw pause/options menu
-                break;
-            }
-            case data::GameState_E::Dead: {
-                // show death UI
-                break;
-            }
-        }
-
+        StateSystems(delta_time);
+       
         // DRAWING ONLY BELOW HERE
-        BeginDrawing();
-        ClearBackground(Color{30,30,30,255});
-        switch (data::g_game.state) {
-            case data::GameState_E::StartScreen: {
-                // draw dark box over entire screen
-                ::DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175} );
-
-                // draw title
-                Font font = ::GuiGetFont();
-                int width = ::MeasureText("BOX ON BOX CRIME", font.baseSize);
-                ::GuiDrawText(
-                    "BOX ON BOX CRIME", 
-                    Rectangle{ 
-                        (screen_width * 0.5f) - (width * 0.5f), 
-                        100, 
-                        (float)width, 
-                        50 
-                    }, 
-                    TEXT_ALIGN_CENTER, WHITE
-                );
-
-                if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Start")) {
-                    data::g_game.prev_state = data::g_game.state;
-                    data::g_game.state = data::GameState_E::NewGame;
-                }
-                break;
-            }
-            case data::GameState_E::NewGame: {
-                // nothing to draw here
-                break;
-            }
-            case data::GameState_E::Running: {
-                ::BeginMode3D(sys::camera);
-                sys::RunEntityDrawSystems(delta_time);
-                ::EndMode3D();
-                sys::RunUIDrawSystems(delta_time);
-                break;
-            }
-            case data::GameState_E::WeaponSelect: {
-                // draw weapon selection
-                break;
-            }
-            case data::GameState_E::StatsScreen: {
-                // draw stats screen menu
-                break;
-            }
-            case data::GameState_E::Paused: {
-                // draw dark box over entire screen
-                DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175});
-
-                if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Unpause")) {
-                    data::g_game.state = data::g_game.prev_state;
-                    data::g_game.prev_state = data::GameState_E::Paused;
-                }
-                break;
-            }
-            case data::GameState_E::Dead: {
-                // draw dark box over entire screen
-                ::DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175} );
-
-                // draw title
-                Font font = ::GuiGetFont();
-                int width = ::MeasureText("YOU DIED! PLAY AGAIN?", font.baseSize);
-                ::GuiDrawText(
-                    "YOU DIED! PLAY AGAIN?", 
-                    Rectangle{ 
-                        (screen_width * 0.5f) - (width * 0.5f), 
-                        100, 
-                        (float)width, 
-                        50 
-                    }, 
-                    TEXT_ALIGN_CENTER, WHITE
-                );
-
-                if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Start")) {
-                    data::g_game.prev_state = data::g_game.state;
-                    data::g_game.state = data::GameState_E::NewGame;
-                }
-                break;
-            }
-        }
-
+        ::BeginDrawing();
+        ::ClearBackground(Color{30,30,30,255});
+        StateDraws(delta_time, screen_width, screen_height);
         #ifdef DEBUG
-        // imgui ui
-        debug::DrawDebugUI(sys::world, io);
+            // imgui ui
+            debug::DrawDebugUI(sys::world, io);
         #endif
         ::EndDrawing();
     }
@@ -197,4 +85,157 @@ int main() {
     PRINT("\tprofiler enabled")
     #endif
     return 0;
+}
+
+void HandlePause(bool clicked) {
+    static data::GameState_E prev_state;
+    if (::IsKeyPressed(KEY_GRAVE) || clicked) {
+        if (data::g_game.state == data::GameState_E::Paused) {
+            // unpausing restores previous game state
+            data::g_game.state = prev_state;
+        } else {
+            // pausing stores current gmae state and sets pause state
+            prev_state = data::g_game.state;
+            data::g_game.state = data::GameState_E::Paused;
+        }
+    }
+}
+
+void StateSystems(const float delta_time) {
+     switch (data::g_game.state) {
+        case data::GameState_E::StartScreen: {
+            // start up menu checks
+            // if game started transition to newgame
+            break;
+        }
+
+        case data::GameState_E::NewGame: {
+            sys::StartGame();
+            data::g_game.state = data::GameState_E::Running;
+            break;
+        }
+
+        case data::GameState_E::Running: {
+            // normal ops
+            sys::RunUpdateSystems(delta_time);
+            // if player dies transition to death screen?
+            break;
+        }
+
+        case data::GameState_E::WeaponSelect: {
+            // when player picks up weapon crate, draw that menu
+            // transition back to running
+            break;
+        }
+
+        case data::GameState_E::StatsScreen: {
+            // when player presses TAB show stats screen
+            // transition back to running
+            break;
+        }
+
+        case data::GameState_E::Paused: {
+            // draw pause/options menu
+            break;
+        }
+        
+        case data::GameState_E::Dead: {
+            // show death UI
+            break;
+        }
+    }
+}
+
+void StateDraws(const float delta_time, const int screen_width, const int screen_height) {
+    switch (data::g_game.state) {
+        case data::GameState_E::StartScreen: {
+            // draw dark box over entire screen
+            ::DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175} );
+
+            // draw title
+            Font font = ::GuiGetFont();
+            int width = ::MeasureText("BOX ON BOX CRIME", font.baseSize);
+            ::GuiDrawText(
+                "BOX ON BOX CRIME", 
+                Rectangle{ 
+                    (screen_width * 0.5f) - (width * 0.5f), 
+                    100, 
+                    (float)width, 
+                    50 
+                }, 
+                TEXT_ALIGN_CENTER, WHITE
+            );
+
+            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Start")) {
+                data::g_game.state = data::GameState_E::NewGame;
+            }
+            break;
+        }
+
+        case data::GameState_E::NewGame: {
+            // nothing to draw here
+            break;
+        }
+
+        case data::GameState_E::Running: {
+            ::BeginMode3D(sys::camera);
+            sys::RunEntityDrawSystems(delta_time);
+            ::EndMode3D();
+            sys::RunUIDrawSystems(delta_time);
+            break;
+        }
+
+        case data::GameState_E::WeaponSelect: {
+            std::string long_text = "SHOTGUN\nUpgrade to level 5\ngiving +1 damage and +1 pellet count";
+            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 150.0f, 150.0f, 300.0f, 100.0f }, long_text.c_str())) {
+                HandlePause(true);
+            }
+            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 300.0f, 100.0f, 50.0f }, "SMG")) {
+                HandlePause(true);
+            }
+            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 400.0f, 100.0f, 50.0f }, "Pistol")) {
+                HandlePause(true);
+            }
+            break;
+        }
+
+        case data::GameState_E::StatsScreen: {
+            // draw stats screen menu
+            break;
+        }
+
+        case data::GameState_E::Paused: {
+            // draw dark box over entire screen
+            DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175});
+
+            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Unpause")) {
+                HandlePause(true);
+            }
+            break;
+        }
+
+        case data::GameState_E::Dead: {
+            // draw dark box over entire screen
+            ::DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175} );
+
+            // draw title
+            Font font = ::GuiGetFont();
+            int width = ::MeasureText("YOU DIED! PLAY AGAIN?", font.baseSize);
+            ::GuiDrawText(
+                "YOU DIED! PLAY AGAIN?", 
+                Rectangle{ 
+                    (screen_width * 0.5f) - (width * 0.5f), 
+                    100, 
+                    (float)width, 
+                    50 
+                }, 
+                TEXT_ALIGN_CENTER, WHITE
+            );
+
+            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Start")) {
+                data::g_game.state = data::GameState_E::NewGame;
+            }
+            break;
+        }
+    }
 }

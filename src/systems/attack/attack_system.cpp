@@ -1,6 +1,7 @@
 #include "systems/attack/attack_system.h"
 #include "raymath.h"
 #include "data/player/player.h"
+#include "data/entity.h"
 #include "spawners/world/projectile/bullet.h"
 #include "components/components.h"
 #include "utils/rl_utils.h"
@@ -42,7 +43,9 @@ namespace sys::atk {
             if (wep.base_stats.countdown > 0.0f) continue;
 
             wep.base_stats.countdown = wep.base_stats.cooldown / data::g_player.attack_speed_multiplier;
-            if (wep.base_stats.countdown <= 0.1f) wep.base_stats.countdown = 0.1f;
+            if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+            } 
 
             Vector3 direction = utils::DirectionFlattenThenNormalize(
                 trans.position, 
@@ -68,7 +71,9 @@ namespace sys::atk {
             if (wep.base_stats.countdown > 0.0f) continue;
 
             wep.base_stats.countdown = wep.base_stats.cooldown / data::g_player.attack_speed_multiplier;
-            if (wep.base_stats.countdown <= 0.1f) wep.base_stats.countdown = 0.1f;
+            if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+            } 
 
             Vector3 direction = utils::DirectionFlattenThenNormalize(
                 trans.position, 

@@ -10,16 +10,15 @@ namespace data {
     // bool g_paused = false;
 
     strg::Tilemap g_terrain(
-        data::size::PLAY_AREA.min,
-        data::size::PLAY_AREA.max
+        data::cnst::PLAY_AREA.min,
+        data::cnst::PLAY_AREA.max
     );
 
     GameState g_game {
-        .prev_state = GameState_E::StartScreen,
         .state = GameState_E::StartScreen,
         .difficulty = 0,
         .enemy_spawn_countdown = 0.0f,
-        .enemy_spawn_interval = MAX_SPAWN_INTERVAL,
+        .enemy_spawn_interval = data::cnst::MAX_SPAWN_INTERVAL,
         .enemy_count = 0,
         .entity_count = 0
     };

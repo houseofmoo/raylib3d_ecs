@@ -14,9 +14,6 @@ namespace sys {
         
         data::g_game.Tick(delta_time);
 
-        // increase enemy hp based on difficulty
-        int enemy_hp = data::g_game.GetEnemBaseHp(1.0f);
-
         // after difficulty 100, start spawning multiple enemies
         int num_to_spawn = data::g_game.GetSpawnEnemies();
 
@@ -26,15 +23,40 @@ namespace sys {
             // 10% chance to spawn brutes
             int roll = GetRandomValue(0, 99);
             if (roll < 50) {
-                spwn::enemy::Grunt(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::AIMoveMode::Random, enemy_hp);
+                spwn::enemy::Grunt(
+                    world, 
+                    Vector3{ pos.x, 0.0f, pos.z }, 
+                    cmpt::AIMoveMode::Random, 
+                    data::g_game.GetModifiedHp(data::cnst::GRUNT_MIN_HP, 1.0f)
+                );
             } else if (roll >= 50 && roll < 80) {
-                spwn::enemy::Grunt(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::AIMoveMode::Lazy, enemy_hp);
+                spwn::enemy::Grunt(
+                    world, 
+                    Vector3{ pos.x, 0.0f, pos.z }, 
+                    cmpt::AIMoveMode::Lazy, 
+                    data::g_game.GetModifiedHp(data::cnst::GRUNT_MIN_HP, 1.0f)
+                );
             } else if (roll >= 80 && roll < 90) {
-                spwn::enemy::Grunt(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::AIMoveMode::Melee, enemy_hp);
+                spwn::enemy::Grunt(
+                    world, 
+                    Vector3{ pos.x, 0.0f, pos.z }, 
+                    cmpt::AIMoveMode::Melee, 
+                    data::g_game.GetModifiedHp(data::cnst::GRUNT_MIN_HP, 1.0f)
+                );
             } else if (roll >= 90 && roll < 97) {
-                spwn::enemy::Brute(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::AIMoveMode::Lazy, enemy_hp);
+                spwn::enemy::Brute(
+                    world, 
+                    Vector3{ pos.x, 0.0f, pos.z }, 
+                    cmpt::AIMoveMode::Lazy, 
+                    data::g_game.GetModifiedHp(data::cnst::BRUTE_MIN_HP, 1.0f)
+                );
             } else {
-                spwn::enemy::Brute(world, Vector3{ pos.x, 0.0f, pos.z }, cmpt::AIMoveMode::Melee, enemy_hp);
+                spwn::enemy::Brute(
+                    world, 
+                    Vector3{ pos.x, 0.0f, pos.z }, 
+                    cmpt::AIMoveMode::Melee, 
+                    data::g_game.GetModifiedHp(data::cnst::BRUTE_MIN_HP, 1.0f)
+                );
             }
         }
     }

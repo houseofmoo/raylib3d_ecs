@@ -2,7 +2,7 @@
 
 #include "raymath.h"
 #include "data/entity.h"
-#include "components/attach.h"
+#include "components/cmpt_helpers.h"
 #include "resources/asset_loader.h"
 
 namespace spwn::enemy {
@@ -16,7 +16,7 @@ namespace spwn::enemy {
 
         // for drop in animation
         Vector3 start_position = Vector3{ position.x, 50.0f, position.z };
-        Vector3 end_position = Vector3{ position.x, data::size::GRUNT.y * 0.5f, position.z };
+        Vector3 end_position = Vector3{ position.x, data::cnst::GRUNT_SIZE.y * 0.5f, position.z };
         
         world.AddComponent<tag::Enemy>(
             enemy,
@@ -25,7 +25,7 @@ namespace spwn::enemy {
 
         world.AddComponent<cmpt::DropsLoot>(
             enemy,
-            cmpt::DropsLoot{ 1.0f }
+            cmpt::DropsLoot{ data::cnst::GRUNT_LOOT_MULTIPLIER }
         );
         
         world.AddComponent<cmpt::Transform>(
@@ -41,7 +41,8 @@ namespace spwn::enemy {
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
-        cmpt::AttachMovementComponent(world, enemy, move_mode);
+        cmpt::AttachAIMovementComponent(world, enemy, move_mode);
+
         world.AddComponent<cmpt::AIMoveIntent>(
             enemy,
             cmpt::AIMoveIntent{
@@ -49,20 +50,19 @@ namespace spwn::enemy {
                 .direction = Vector3Zero(),
                 .start_rotation = QuaternionIdentity(),
                 .rotation_complete = true,
-                .rotation_duration = 0.2f,
+                .rotation_duration = data::cnst::ENEMY_ROTATION_DURATION,
                 .rotation_elapsed = 0.0f,
                 .stuck = false,
             }
         );
 
-        cmpt::AttachColliderComponent(
-            world,
+        world.AddComponent<cmpt::Collider>(
             enemy,
             cmpt::Collider{
-                .layer = data::layer::ENEMY,
-                .mask = data::layer::PLAYER | data::layer::ENEMY | data::layer::PROJECTILE,
+                .layer = data::cnst::GRUNT_LAYER,
+                .mask = data::cnst::GRUNT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = data::size::MinColldierSize(data::size::GRUNT)
+                .size = data::cnst::GRUNT_SIZE
             }
         );
 
@@ -79,7 +79,7 @@ namespace spwn::enemy {
         world.AddComponent<cmpt::Speed>(
             enemy,
             cmpt::Speed{ 
-                .speed = 5.0f, 
+                .speed = data::cnst::GRUNT_SPEED, 
                 .speed_multiplier = 1.0f, 
                 .dash_multiplier = 1.0f,
             }
@@ -87,7 +87,7 @@ namespace spwn::enemy {
 
         world.AddComponent<cmpt::DamageDealer>(
             enemy,
-            cmpt::DamageDealer{5}
+            cmpt::DamageDealer{ data::cnst::GRUNT_MELEE_DMG }
         );
 
         world.AddComponent<cmpt::SpawnAnimation>(
@@ -101,8 +101,8 @@ namespace spwn::enemy {
         world.AddComponent<cmpt::Draw>(
             enemy,
             cmpt::Draw{ 
-                .size = data::size::GRUNT, 
-                .color = MAGENTA, 
+                .size = data::cnst::GRUNT_SIZE, 
+                .color = data::cnst::BRUTE_COLOR, 
                 .model = &rsrc::asset::grunt_model,
             }
         );

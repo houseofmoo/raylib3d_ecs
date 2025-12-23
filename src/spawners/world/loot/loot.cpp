@@ -4,18 +4,10 @@
 #include "data/player/player.h"
 #include "resources/asset_loader.h"
 #include "components/components.h"
-#include "components/attach.h"
+#include "components/cmpt_helpers.h"
 #include "utils/position.h"
 
 namespace spwn::loot {
-    // Vector3 FuzzPosition(Vector3 position) {
-    //     return GetRandomValidPisitionNearTarget()
-    //     // fuzz position x/z by -1,1
-    //     float offset_x = (float)GetRandomValue(-10, 10) * 0.1f;
-    //     float offset_z = (float)GetRandomValue(-10, 10) * 0.1f;
-    //     return Vector3 { position.x + offset_x, position.y, position.z + offset_z};
-    // }
-
     void Exp(Storage::Registry& world, const Vector3 position, int exp_amount) {
         Entity exp = world.CreateEntity();
 
@@ -33,7 +25,7 @@ namespace spwn::loot {
             exp,
             cmpt::Transform{ 
                 .position = utils::GetRandomValidPisitionNearTarget(
-                    Vector3{ position.x, data::size::EXP.y * 0.5f, position.z },
+                    Vector3{ position.x, data::cnst::EXP_SIZE.y * 0.5f, position.z },
                     1
                 ),
                 .rotation = QuaternionIdentity()
@@ -42,18 +34,17 @@ namespace spwn::loot {
 
         world.AddComponent<cmpt::RotateInPlace>(
             exp,
-            cmpt::RotateInPlace{ .speed = 2.5f }
+            cmpt::RotateInPlace{ .speed = data::cnst::LOOT_ROTATION_SPEED }
         );
 
-        cmpt::AttachColliderComponent(
-            world,
+        world.AddComponent<cmpt::Collider>(
             exp,
             cmpt::Collider{
-                .layer = data::layer::LOOT,
-                .mask = data::layer::PLAYER,
+                .layer = data::cnst::LOOT_LAYER,
+                .mask = data::cnst::LOOT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = Vector3Scale(
-                    data::size::MinColldierSize(data::size::EXP),
+                    cmpt::MinLootColliderSize(data::cnst::EXP_SIZE),
                     data::g_player.pickup_range_multiplier
                 )
             }
@@ -63,15 +54,15 @@ namespace spwn::loot {
             exp,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
-                .countdown = 15.0f 
+                .countdown = data::cnst::LOOT_LIFETIME 
             }
         );
 
         world.AddComponent<cmpt::Draw>(
             exp,
             cmpt::Draw{
-                .size = data::size::EXP, 
-                .color = SKYBLUE, 
+                .size = data::cnst::EXP_SIZE, 
+                .color = data::cnst::EXP_COLOR, 
                 .model = &rsrc::asset::exp_model,
             }
         );
@@ -94,7 +85,7 @@ namespace spwn::loot {
             money,
             cmpt::Transform{ 
                 .position = utils::GetRandomValidPisitionNearTarget(
-                    Vector3{ position.x, data::size::MONEY.y * 0.5f, position.z },
+                    Vector3{ position.x, data::cnst::MONEY_SIZE.y * 0.5f, position.z },
                     1
                 ),
                 .rotation = QuaternionIdentity()
@@ -103,18 +94,17 @@ namespace spwn::loot {
 
         world.AddComponent<cmpt::RotateInPlace>(
             money,
-            cmpt::RotateInPlace{ .speed = 2.5f }
+            cmpt::RotateInPlace{ .speed = data::cnst::LOOT_ROTATION_SPEED }
         );
 
-        cmpt::AttachColliderComponent(
-            world,
+        world.AddComponent<cmpt::Collider>(
             money,
             cmpt::Collider{
-                .layer = data::layer::LOOT,
-                .mask = data::layer::PLAYER,
+                .layer = data::cnst::LOOT_LAYER,
+                .mask = data::cnst::LOOT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = Vector3Scale(
-                    data::size::MinColldierSize(data::size::MONEY),
+                    cmpt::MinLootColliderSize(data::cnst::MONEY_SIZE),
                     data::g_player.pickup_range_multiplier
                 )
             }
@@ -124,14 +114,14 @@ namespace spwn::loot {
             money,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
-                .countdown = 15.0f 
+                .countdown = data::cnst::LOOT_LIFETIME 
             }
         );
 
         world.AddComponent<cmpt::Draw>(
             money,
             cmpt::Draw{
-                .size = data::size::MONEY, 
+                .size = data::cnst::MONEY_SIZE, 
                 .color = GOLD, 
                 .model = &rsrc::asset::money_model,
             }
@@ -155,7 +145,7 @@ namespace spwn::loot {
             powerup,
             cmpt::Transform{ 
                 .position = utils::GetRandomValidPisitionNearTarget(
-                    Vector3{ position.x, data::size::POWERUP.y * 0.5f, position.z },
+                    Vector3{ position.x, data::cnst::POWERUP_SIZE.y * 0.5f, position.z },
                     1
                 ),
                 .rotation = QuaternionIdentity()
@@ -164,18 +154,17 @@ namespace spwn::loot {
 
         world.AddComponent<cmpt::RotateInPlace>(
             powerup,
-            cmpt::RotateInPlace{ .speed = 2.5f }
+            cmpt::RotateInPlace{ .speed = data::cnst::LOOT_ROTATION_SPEED }
         );
 
-        cmpt::AttachColliderComponent(
-            world,
+        world.AddComponent<cmpt::Collider>(
             powerup,
             cmpt::Collider{
-                .layer = data::layer::LOOT,
-                .mask = data::layer::PLAYER,
+                .layer = data::cnst::LOOT_LAYER,
+                .mask = data::cnst::LOOT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = Vector3Scale(
-                    data::size::MinColldierSize(data::size::POWERUP),
+                    cmpt::MinLootColliderSize(data::cnst::POWERUP_SIZE),
                     data::g_player.pickup_range_multiplier
                 )
             }
@@ -185,15 +174,15 @@ namespace spwn::loot {
             powerup,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
-                .countdown = 15.0f 
+                .countdown = data::cnst::LOOT_LIFETIME 
             }
         );
 
         world.AddComponent<cmpt::Draw>(
             powerup,
             cmpt::Draw{
-                .size = data::size::POWERUP, 
-                .color = data::loot::g_powerup_colors[kind],
+                .size = data::cnst::POWERUP_SIZE, 
+                .color = data::cnst::POWERUP_COLORS[(int)kind],
                 .model = &rsrc::asset::powerup_model,
             }
         );
@@ -216,7 +205,7 @@ namespace spwn::loot {
             weapon,
             cmpt::Transform{
                 .position = utils::GetRandomValidPisitionNearTarget(
-                    Vector3{ position.x, data::size::WEAPON.y * 0.5f, position.z },
+                    Vector3{ position.x, data::cnst::WEAPON_SIZE.y * 0.5f, position.z },
                     1
                 ),
                 .rotation = QuaternionIdentity()
@@ -225,18 +214,17 @@ namespace spwn::loot {
 
         world.AddComponent<cmpt::RotateInPlace>(
             weapon,
-            cmpt::RotateInPlace{ .speed = 2.5f }
+            cmpt::RotateInPlace{ .speed = data::cnst::LOOT_ROTATION_SPEED }
         );
 
-        cmpt::AttachColliderComponent(
-            world,
+        world.AddComponent<cmpt::Collider>(
             weapon,
             cmpt::Collider{
-                .layer = data::layer::LOOT,
-                .mask = data::layer::PLAYER,
+                .layer = data::cnst::LOOT_LAYER,
+                .mask = data::cnst::LOOT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = Vector3Scale(
-                    data::size::MinColldierSize(data::size::WEAPON),
+                    cmpt::MinLootColliderSize(data::cnst::WEAPON_SIZE),
                     data::g_player.pickup_range_multiplier
                 )
             }
@@ -246,15 +234,15 @@ namespace spwn::loot {
             weapon,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
-                .countdown = 15.0f 
+                .countdown = data::cnst::LOOT_LIFETIME
             }
         );
 
         world.AddComponent<cmpt::Draw>(
             weapon,
             cmpt::Draw{
-                .size = data::size::WEAPON, 
-                .color = data::loot::g_weapon_colors[kind],
+                .size = data::cnst::WEAPON_SIZE, 
+                .color = data::cnst::WEAPON_COLORS[(int)kind],
                 .model = &rsrc::asset::weapon_model,
             }
         );

@@ -7,6 +7,7 @@
 #include "components/components.h"
 #include "spawners/world/loot/loot.h"
 #include "data/player/player.h"
+#include "data/entity.h"
 #include "utils/debug.h"
 
 namespace sys::loot {
@@ -22,7 +23,7 @@ namespace sys::loot {
             auto& etrans = world.GetComponent<cmpt::Transform>(enemy);
 
             // all enemies that drop loot always drop exp
-            spwn::loot::Exp(world, etrans.position, 1);
+            spwn::loot::Exp(world, etrans.position, data::cnst::EXP_VALUE);
 
             if (data::g_player.always_drop_loot) {
                 int roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last - 1);
@@ -62,7 +63,7 @@ namespace sys::loot {
             roll = GetRandomValue(0, 99);
 
             if (roll < 40) {
-                spwn::loot::Money(world, etrans.position, 1);
+                spwn::loot::Money(world, etrans.position, data::cnst::MONEY_VALUE);
             } else if (roll >= 40 && roll < 80) {
                 roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last - 1);
                 spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);

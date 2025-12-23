@@ -3,31 +3,31 @@
 #include "data/loot.h"
 
 namespace spwn::weapon {
-    void Pistol(Storage::Registry& world, Entity parent) {
-        auto weapon = world.CreateEntity();
+    // void Pistol(Storage::Registry& world, Entity parent) {
+    //     auto weapon = world.CreateEntity();
         
-        world.AddComponent<cmpt::Weapon>(
-            weapon,
-            cmpt::Weapon{ 
-                .parent = parent,
-                .kind = data::loot::WeaponKind::Pistol 
-            }
-        );
+    //     world.AddComponent<cmpt::Weapon>(
+    //         weapon,
+    //         cmpt::Weapon{ 
+    //             .parent = parent,
+    //             .kind = data::loot::WeaponKind::Pistol 
+    //         }
+    //     );
 
-        world.AddComponent<cmpt::Pistol>(
-            weapon,
-            cmpt::Pistol{
-                .base_stats = cmpt::WeaponBaseStats {
-                    .parent = parent,
-                    .kind = data::loot::WeaponKind::Pistol,
-                    .cooldown = 1.0f, 
-                    .countdown = 1.0f,
-                    .projectile_speed = 25.0f,
-                    .damage = 10,
-                }
-            }
-        );
-    }
+    //     world.AddComponent<cmpt::Pistol>(
+    //         weapon,
+    //         cmpt::Pistol{
+    //             .base_stats = cmpt::WeaponBaseStats {
+    //                 .parent = parent,
+    //                 .kind = data::loot::WeaponKind::Pistol,
+    //                 .cooldown = 1.0f, 
+    //                 .countdown = 1.0f,
+    //                 .projectile_speed = 25.0f,
+    //                 .damage = 10,
+    //             }
+    //         }
+    //     );
+    // }
 
     void EquipPistol(Storage::Registry& world, Entity id) {
         if (!world.HasComponent<cmpt::Pistol>(id)) {
@@ -37,18 +37,17 @@ namespace spwn::weapon {
                     .base_stats = cmpt::WeaponBaseStats {
                         .parent = id,
                         .kind = data::loot::WeaponKind::Pistol,
-                        .cooldown = 1.0f, 
-                        .countdown = 1.0f,
-                        .projectile_speed = 25.0f,
-                        .damage = 10,
+                        .cooldown = data::cnst::PISTOL_COOLDOWN, 
+                        .countdown = data::cnst::PISTOL_COOLDOWN,
+                        .projectile_speed = data::cnst::PISTOL_PROJECTILE_SPEED,
+                        .damage = data::cnst::PISTOL_DAMAGE,
                     },
                 }
             );
-            return;
+        } else {
+            // TODO: upgrade random stat
+            auto& wep = world.GetComponent<cmpt::Pistol>(id);
+            wep.base_stats.damage += 1;
         }
-
-        // upgrade random stat on the shotgun
-        auto& wep = world.GetComponent<cmpt::Pistol>(id);
-        wep.base_stats.damage += 1;
     }
 }

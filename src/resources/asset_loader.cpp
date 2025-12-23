@@ -39,31 +39,31 @@ namespace rsrc::asset {
     }
 
     void LoadModelAssets() {
-        Mesh player_mesh = GenMeshCube(data::size::PLAYER.x, data::size::PLAYER.y, data::size::PLAYER.z);
+        Mesh player_mesh = GenMeshCube(data::cnst::PLAYER_SIZE.x, data::cnst::PLAYER_SIZE.y, data::cnst::PLAYER_SIZE.z);
         player_model = LoadModelFromMesh(player_mesh);
         //player_model = LoadModel("assets/models/robot.glb");
         //player_model = LoadModel("assets/models/robot1.gltf");
 
-        Mesh grunt_mesh = GenMeshCube(data::size::GRUNT.x, data::size::GRUNT.y, data::size::GRUNT.z);
+        Mesh grunt_mesh = GenMeshCube(data::cnst::GRUNT_SIZE.x, data::cnst::GRUNT_SIZE.y, data::cnst::GRUNT_SIZE.z);
         grunt_model = LoadModelFromMesh(grunt_mesh);
 
-        Mesh brute_mesh = GenMeshCube(data::size::BRUTE.x, data::size::BRUTE.y, data::size::BRUTE.z);
+        Mesh brute_mesh = GenMeshCube(data::cnst::BRUTE_SIZE.x, data::cnst::BRUTE_SIZE.y, data::cnst::BRUTE_SIZE.z);
         brute_model = LoadModelFromMesh(brute_mesh);
 
-        Mesh bullet_mesh = GenMeshCube(data::size::PROJECTILE.x, data::size::PROJECTILE.y, data::size::PROJECTILE.z);
+        Mesh bullet_mesh = GenMeshCube(data::cnst::PROJECTILE_SIZE.x, data::cnst::PROJECTILE_SIZE.y, data::cnst::PROJECTILE_SIZE.z);
         bullet_model = LoadModelFromMesh(bullet_mesh);
 
-        Mesh exp_mesh = GenMeshCube(data::size::EXP.x, data::size::EXP.y, data::size::EXP.z);
+        Mesh exp_mesh = GenMeshCube(data::cnst::EXP_SIZE.x, data::cnst::EXP_SIZE.y, data::cnst::EXP_SIZE.z);
         exp_model = LoadModelFromMesh(exp_mesh);
 
-        Mesh money_mesh = GenMeshCube(data::size::MONEY.x, data::size::MONEY.y, data::size::MONEY.z);
+        Mesh money_mesh = GenMeshCube(data::cnst::MONEY_SIZE.x, data::cnst::MONEY_SIZE.y, data::cnst::MONEY_SIZE.z);
         money_model = LoadModelFromMesh(money_mesh);
 
-        Mesh powerup_mesh = GenMeshCube(data::size::POWERUP.x, data::size::POWERUP.y, data::size::POWERUP.z);
+        Mesh powerup_mesh = GenMeshCube(data::cnst::POWERUP_SIZE.x, data::cnst::POWERUP_SIZE.y, data::cnst::POWERUP_SIZE.z);
         powerup_model = LoadModelFromMesh(powerup_mesh);
         //powerup_model = LoadModel("assets/models/powerup.glb");
 
-        Mesh weapon_mesh = GenMeshCube(data::size::WEAPON.x, data::size::WEAPON.y, data::size::WEAPON.z);
+        Mesh weapon_mesh = GenMeshCube(data::cnst::WEAPON_SIZE.x, data::cnst::WEAPON_SIZE.y, data::cnst::WEAPON_SIZE.z);
         weapon_model = LoadModelFromMesh(weapon_mesh);
     }
     

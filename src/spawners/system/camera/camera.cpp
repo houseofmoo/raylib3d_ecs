@@ -1,14 +1,15 @@
 #include "spawners/system/camera/camera.h"
+#include "data/entity.h"
 
 namespace spwn::camera {
     Camera3D camera;
 
     Camera3D& Camera() {
         camera = {};
-        camera.position   = { 5.0f, 3.0f, 5.0f };  // will be overridden
-        camera.target     = { 0.0f, 1.0f, 0.0f };  // look at cube center
-        camera.up         = { 0.0f, 1.0f, 0.0f };
-        camera.fovy       = 60.0f;
+        camera.position   = data::cnst::CAMERA_START_POSITION;
+        camera.target     = data::cnst::CAMERA_TARGET;
+        camera.up         = data::cnst::CAMERA_UP;
+        camera.fovy       = data::cnst::CAMERA_FOVY;
         camera.projection = CAMERA_PERSPECTIVE;
         return camera;
     }

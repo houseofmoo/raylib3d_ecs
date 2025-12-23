@@ -42,13 +42,22 @@ namespace sys {
         world.Reset();
         data::g_game.Reset();
         data::g_player.Reset();
-        spwn::map::GenerateMap(world, data::size::PLAY_AREA);
+        spwn::map::GenerateMap(world, data::cnst::PLAY_AREA);
         data::g_player.id = spwn::player::Player(world);
         spwn::weapon::EquipPistol(world, data::g_player.id);
     }
 
     void RunUpdateSystems(const float delta_time) {
         // TODO: re-add the sound for pickups
+        if (world.HasComponent<cmpt::FreezeTime>(data::g_player.id)) {
+            auto& ft = world.GetComponent<cmpt::FreezeTime>(data::g_player.id);
+            ft.countdown -= delta_time;
+            if (ft.countdown <= 0.0f) {
+                world.RemoveComponent<cmpt::FreezeTime>(data::g_player.id);
+            }
+            sys::cam::CameraMovement(world, camera, delta_time, true);
+            return;
+        }
 
         // spawn additional enemies
         sys::SpawnEnemyInterval(world, delta_time);
@@ -61,7 +70,7 @@ namespace sys {
         sys::se::ApplyStatusEffects(world);
         sys::mov::ApplyPlayerMovement(world, delta_time);
         sys::mov::ApplyAIMovement(world, delta_time);
-        sys::cam::CameraMovement(world, camera, delta_time);
+        sys::cam::CameraMovement(world, camera, delta_time, false);
 
         // // apply velocity to position
         // sys::vel::ApplyVelocity(world, delta_time);
@@ -155,8 +164,8 @@ namespace sys {
         }
         
         // ground
-        float width = data::size::PLAY_AREA.max.x - data::size::PLAY_AREA.min.x;
-        float length = data::size::PLAY_AREA.max.z - data::size::PLAY_AREA.min.z; 
+        float width = data::cnst::PLAY_AREA.max.x - data::cnst::PLAY_AREA.min.x;
+        float length = data::cnst::PLAY_AREA.max.z - data::cnst::PLAY_AREA.min.z; 
         DrawCube(Vector3{0.0f, -0.51f, 0.0f}, width, 1.0f, length, GRAY);
 
         DrawGrid(60, 1.0f);
@@ -165,23 +174,23 @@ namespace sys {
         //DrawBoundingBox(data::size::PLAY_AREA, GREEN);
 
         // draw play area walls
-        Vector3 position = { data::size::PLAY_AREA.min.x - 0.5f, 3.0f, 0.0f };
-        Vector3 size = { 1.0f, 6.0f, data::size::PLAY_AREA.max.z - data::size::PLAY_AREA.min.z };
+        Vector3 position = { data::cnst::PLAY_AREA.min.x - 0.5f, 3.0f, 0.0f };
+        Vector3 size = { 1.0f, 6.0f, data::cnst::PLAY_AREA.max.z - data::cnst::PLAY_AREA.min.z };
         DrawCubeV(position, size, DARKGRAY);
         DrawCubeWiresV(position, size, BLACK);
 
-        position = { data::size::PLAY_AREA.max.x + 0.5f, 3.0f, 0.0f };
-        size = { 1.0f, 6.0f, data::size::PLAY_AREA.max.z - data::size::PLAY_AREA.min.z };
+        position = { data::cnst::PLAY_AREA.max.x + 0.5f, 3.0f, 0.0f };
+        size = { 1.0f, 6.0f, data::cnst::PLAY_AREA.max.z - data::cnst::PLAY_AREA.min.z };
         DrawCubeV(position, size, DARKGRAY);
         DrawCubeWiresV(position, size, BLACK);
 
-        position = {  0.0f, 3.0f, data::size::PLAY_AREA.min.z - 0.5f };
-        size = { data::size::PLAY_AREA.max.x - data::size::PLAY_AREA.min.x, 6.0f, 1.0f };
+        position = {  0.0f, 3.0f, data::cnst::PLAY_AREA.min.z - 0.5f };
+        size = { data::cnst::PLAY_AREA.max.x - data::cnst::PLAY_AREA.min.x, 6.0f, 1.0f };
         DrawCubeV(position, size, DARKGRAY);
         DrawCubeWiresV(position, size, BLACK);
 
-        position = {   0.0f, 3.0f, data::size::PLAY_AREA.max.z + 0.5f };
-        size = { data::size::PLAY_AREA.max.x - data::size::PLAY_AREA.min.x, 6.0f, 1.0f };
+        position = {   0.0f, 3.0f, data::cnst::PLAY_AREA.max.z + 0.5f };
+        size = { data::cnst::PLAY_AREA.max.x - data::cnst::PLAY_AREA.min.x, 6.0f, 1.0f };
         //DrawCubeV(position, size, DARKGRAY);
         //DrawCubeWiresV(position, size, BLACK);
 

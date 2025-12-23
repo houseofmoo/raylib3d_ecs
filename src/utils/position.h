@@ -4,6 +4,7 @@
 #include "raymath.h"
 #include "storage/registry.h"
 #include "data/game/game.h"
+#include "data/entity.h"
 
 namespace utils {
     inline Vector3 GetRandomValidPosition() {
@@ -12,12 +13,12 @@ namespace utils {
         int attempts = 0;
         while (true) {
             new_x = (float)GetRandomValue(
-                data::size::PLAY_AREA.min.x + 1.0f, 
-                data::size::PLAY_AREA.max.x - 1.0f
+                data::cnst::PLAY_AREA.min.x + 1.0f, 
+                data::cnst::PLAY_AREA.max.x - 1.0f
             );
             new_z = (float)GetRandomValue(
-                data::size::PLAY_AREA.min.z + 1.0f, 
-                data::size::PLAY_AREA.max.z - 1.0f
+                data::cnst::PLAY_AREA.min.z + 1.0f, 
+                data::cnst::PLAY_AREA.max.z - 1.0f
             );
             
             if (!data::g_terrain.IsBlockedWorld(new_x, new_z)) break;

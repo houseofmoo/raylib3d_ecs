@@ -136,6 +136,10 @@ namespace cmpt {
         double countdown;
     };
 
+    struct FreezeTime {
+        float countdown;
+    };
+
     ////////////////////////////////////////////////
     // ENTITY STATS
     ////////////////////////////////////////////////

@@ -48,7 +48,6 @@ namespace debug {
         ImGui::Text("entities:   %d", data::g_game.entity_count);
         ImGui::Text("enemies:    %d", data::g_game.enemy_count);
         ImGui::Text("spawn time: %.2f", data::g_game.enemy_spawn_interval);
-        ImGui::Text("enemy hp:   %d", data::g_game.GetEnemBaseHp(1.0f));
         ImGui::Text("difficulty: %d", data::g_game.difficulty);
         if (ImGui::SliderInt("##diff_slider", &data::g_game.difficulty, 0, 2000)) {}
         ImGui::Separator();

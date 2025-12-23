@@ -18,5 +18,8 @@
 #include "resources/asset_loader.h"
 #include "systems/systems.h"
 #include "components/components.h"
-#include "draw.h"
+
+void HandlePause(bool pressed);
+void StateSystems(const float delta_time);
+void StateDraws(const float delta_time, const int screen_width, const int screen_height);
 

@@ -13,43 +13,41 @@ namespace sys::evt {
     void ApplyPowerup(Storage::Registry& world, data::loot::PowerupKind kind, Entity id) {
         switch (kind) {
             case data::loot::PowerupKind::Damage: {
-                data::g_player.damage_multiplier += 0.1f;
+                data::g_player.damage_multiplier += data::cnst::DAMAGE_POWERUP_VALUE;
                 spwn::evt::Notification(world, "+DAMGE");
                 break;
             }
             case data::loot::PowerupKind::AttackSpeed: {
-                data::g_player.attack_speed_multiplier += 0.1f;
+                data::g_player.attack_speed_multiplier += data::cnst::ATTACK_SPEED_POWERUP_VALUE;
                 spwn::evt::Notification(world, "+ATTACK SPEED");
                 break;
             }
             case data::loot::PowerupKind::MoveSpeed: {
-                data::g_player.move_speed_multiplier += 0.1f;
+                data::g_player.move_speed_multiplier += data::cnst::MOVE_SPEED_POWERUP_VALUE;
                 spwn::evt::Notification(world, "+MOVE SPEED");
                 break;
             }
             case data::loot::PowerupKind::PickupRange: {
-                data::g_player.pickup_range_multiplier += 0.1f;
+                data::g_player.pickup_range_multiplier += data::cnst::PICKUP_RANGE_POWERUP_VALUE;
                 spwn::evt::Notification(world, "+PICKUP RANGE");
                 break;
             }
             case data::loot::PowerupKind::DashDistance: {
-                data::g_player.dash_range_multiplier += 0.1f;
+                data::g_player.dash_range_multiplier += data::cnst::DASH_DISTANCE_POWERUP_VALUE;
                 spwn::evt::Notification(world, "+DASH RANGE");
                 break;
             }
             case data::loot::PowerupKind::Health: {
                 auto& hp = world.GetComponent<cmpt::Health>(data::g_player.id);
-                if (hp.amount < hp.max) {
-                    hp.amount += 10;
-                    if (hp.amount > hp.max) hp.amount = hp.max;
-                }
+                hp.amount += data::cnst::HP_POWERUP_VALUE;
+                if (hp.amount > hp.max) hp.amount = hp.max;
                 spwn::evt::Notification(world, "+HP");
                 break;
             }
             case data::loot::PowerupKind::MaxHp: {
                 auto& hp = world.GetComponent<cmpt::Health>(data::g_player.id);
-                hp.max += 10;
-                hp.amount += 10;
+                hp.max += data::cnst::HPMAX_POWERUP_VALUE;
+                hp.amount += data::cnst::HPMAX_POWERUP_VALUE;
                 spwn::evt::Notification(world, "+MAX HP");
                 break;
             }

@@ -36,10 +36,10 @@ namespace spwn::proj {
         world.AddComponent<cmpt::Collider>(
             bullet,
             cmpt::Collider{
-                .layer = data::layer::PROJECTILE,
-                .mask = data::layer::ENEMY,
+                .layer = data::cnst::PROJECTILE_LAYER,
+                .mask = data::cnst::PROJECTILE_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = data::size::PROJECTILE
+                .size = data::cnst::PROJECTILE_SIZE
             }
         );
 
@@ -47,7 +47,7 @@ namespace spwn::proj {
             bullet,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
-                .countdown = 10.0f 
+                .countdown = data::cnst::PROJECTILE_LIFETIME
             }
         );
 
@@ -64,8 +64,8 @@ namespace spwn::proj {
         world.AddComponent<cmpt::Draw>(
             bullet,
             cmpt::Draw{ 
-                .size = data::size::PROJECTILE, 
-                .color = RED,
+                .size = data::cnst::PROJECTILE_SIZE, 
+                .color = data::cnst::PROJECTILE_COLOR,
                 .model = &rsrc::asset::bullet_model,
             }
         );

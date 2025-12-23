@@ -3,6 +3,7 @@
 
 #include "storage/registry.h"
 #include "data/player/player.h"
+#include "data/entity.h"
 #include "components/components.h"
 #include "spawners/system/events/notification.h"
 #include "resources/asset_loader.h"
@@ -23,30 +24,38 @@ namespace sys::dmg {
                 continue;
             }
 
+            // player taking damage is special
             if (world.HasComponent<tag::Player>(entity)) {
                 // if god mode enabled, remove all player damage
                 if (data::g_player.god_mode) {
                     dmg.total = 0;
                 } 
 
+                // add invulnerability to player
                 auto& col = world.GetComponent<cmpt::Collider>(entity);
                 world.AddComponent<cmpt::Invulnerable>(
                     entity, 
-                    cmpt::Invulnerable{ .mask = col.mask, .countdown = 1.0f}
+                    cmpt::Invulnerable{ 
+                        .mask = col.mask, 
+                        .countdown = data::cnst::INVULNRABILITY_CD
+                    }
                 );
-                
+
                 // while invulnerable do not interact with enemies
                 col.mask = col.mask & ~data::layer::ENEMY;
 
-                spwn::evt::Notification(
-                    world, 
-                    std::string("- " + std::to_string(dmg.total) + " HP, GAIN INVUL")
+                // pause game loop for a short time to add "impact"
+                world.AddComponent<cmpt::FreezeTime>(
+                    entity,
+                    cmpt::FreezeTime{ .countdown = data::cnst::IMPACT_FREZE }
                 );
+
+                spwn::evt::Notification(world, std::string("-" + std::to_string(dmg.total) + " HP"));
             }
             
             world.AddComponent<cmpt::DamageFlash>(
                 entity, 
-                cmpt::DamageFlash{ .duration = 0.1f }
+                cmpt::DamageFlash{ .duration = data::cnst::DAMAGE_FLASH }
             );
             
             hp.amount -= dmg.total;

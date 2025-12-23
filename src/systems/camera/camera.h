@@ -7,6 +7,7 @@ namespace sys::cam {
     void CameraMovement(
         Storage::Registry& world, 
         Camera3D& camera, 
-        const float delta_time
+        const float delta_time,
+        const bool shake_cam
     );
 }

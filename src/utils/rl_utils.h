@@ -89,4 +89,8 @@ namespace utils {
         }
         return 1.0f - powf(-2.0f * t + 2.0f, 2.0f) * 0.5f;
     }
+
+    inline float Vector3Area(Vector3 vec) {
+        return vec.x*vec.y*vec.z;
+    }
 }

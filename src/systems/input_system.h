@@ -3,6 +3,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "data/player/player.h"
+#include "data/entity.h"
 #include "storage/registry.h"
 #include "systems/player/player_input.h"
 #include "components/components.h"
@@ -49,8 +50,13 @@ namespace sys::input {
             if (IsKeyPressed(KEY_SPACE) && 
                 !world.HasComponent<cmpt::Dash>(entity) && 
                 !world.HasComponent<cmpt::DashExhausted>(entity)) {
-                float dash_range = 3.0f * data::g_player.dash_range_multiplier;
-                world.AddComponent<cmpt::Dash>(entity, cmpt::Dash{ dash_range, 0.11f });
+                world.AddComponent<cmpt::Dash>(
+                    entity, 
+                    cmpt::Dash{ 
+                        .multiplier = data::cnst::PLAYER_DASH_RANGE * data::g_player.dash_range_multiplier,
+                        .countdown = data::cnst::PLAYER_DASH_LENGTH
+                     }
+                );
             }
         }
     }
@@ -83,7 +89,7 @@ namespace sys::input {
                     auto& detour = world.GetComponent<cmpt::MeleeMovement>(entity);
                     if (intent.stuck) {
                         // detour in a random direction for 3 seconds
-                        detour.detour_countdown = 3.0f;
+                        detour.detour_countdown = data::cnst::ENEMY_DETOUR_LENGTH;
                         detour.detour_direction = utils::DirectionFlattenThenNormalize(
                             trans.position,
                             utils::GetRandomValidPosition()
@@ -116,7 +122,7 @@ namespace sys::input {
                     lazy.countdown -= delta_time;
                     if (lazy.countdown > 0.0f && !intent.stuck) continue;
                     intent.stuck = false;
-                    lazy.countdown = 2.0f;
+                    lazy.countdown = data::cnst::ENEMY_LAZY_RETARGET_TIME;
                     Vector3 dir = utils::Direction(trans.position, ptrans->position);
                     // add a random offset so we dont move directly at the player
                     dir.x += (float)GetRandomValue(-5, 5);
@@ -131,7 +137,7 @@ namespace sys::input {
                     ran_dir.countdown -= delta_time;
                     if (ran_dir.countdown > 0.0f && !intent.stuck) continue;
                     intent.stuck = false;
-                    ran_dir.countdown = 5.0f;
+                    ran_dir.countdown = data::cnst::ENEMY_RANDOM_RETARGET_TIME;
                     intent.direction = utils::DirectionFlattenThenNormalize(
                          trans.position,
                         utils::GetRandomValidPosition()

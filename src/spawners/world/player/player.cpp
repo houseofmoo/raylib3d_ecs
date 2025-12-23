@@ -3,7 +3,6 @@
 #include "data/entity.h"
 #include "resources/asset_loader.h"
 #include "components/components.h"
-#include "components/attach.h"
 
 namespace spwn::player {
     Entity Player(Storage::Registry& world) {
@@ -23,7 +22,7 @@ namespace spwn::player {
         world.AddComponent<cmpt::Transform>(
             player,
             cmpt::Transform{ 
-                Vector3{ 0.0f, data::size::PLAYER.y * 0.5f, 0.0f },
+                Vector3{ 0.0f, data::cnst::PLAYER_SIZE.y * 0.5f, 0.0f },
                 QuaternionIdentity()
             }
         );
@@ -33,20 +32,19 @@ namespace spwn::player {
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
-        cmpt::AttachColliderComponent(
-            world,
+        world.AddComponent<cmpt::Collider>(
             player,
             cmpt::Collider{
-                .layer = data::layer::PLAYER,
-                .mask = data::layer::ENEMY | data::layer::LOOT,
+                .layer = data::cnst::PLAYER_LAYER,
+                .mask = data::cnst::PLAYER_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = data::size::MinColldierSize(data::size::PLAYER)
+                .size = data::cnst::PLAYER_SIZE
             }
         );
 
         world.AddComponent<cmpt::Health>(
             player,
-            cmpt::Health{ 50, 50 }
+            cmpt::Health{ data::cnst::PLAYER_START_HP, data::cnst::PLAYER_START_HP }
         );
 
         world.AddComponent<cmpt::DamageReceiver>(
@@ -57,7 +55,7 @@ namespace spwn::player {
         world.AddComponent<cmpt::Speed>(
             player,
             cmpt::Speed{ 
-                .speed = 10.0f, 
+                .speed = data::cnst::PLAYER_SPEED, 
                 .speed_multiplier = 1.0f, 
                 .dash_multiplier = 1.0f,
             }
@@ -74,8 +72,8 @@ namespace spwn::player {
         world.AddComponent<cmpt::Draw>(
             player,
             cmpt::Draw{ 
-                .size = data::size::PLAYER,
-                .color = BLUE,
+                .size = data::cnst::PLAYER_SIZE,
+                .color = data::cnst::PLAYER_COLOR,
                 .model = &rsrc::asset::player_model
             }
         );
