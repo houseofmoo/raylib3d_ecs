@@ -12,6 +12,7 @@ namespace rsrc::asset {
     extern Model brute_model;
 
     extern Model bullet_model;
+    extern Model grenade_model;
     
     extern Model exp_model;
     extern Model money_model;

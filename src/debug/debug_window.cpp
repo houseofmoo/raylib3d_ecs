@@ -100,6 +100,14 @@ namespace debug {
             ImGui::Text("  plt cnt: %d", wep->pellet_count);
             ImGui::Separator();
         }
+
+        if (auto* wep = world.TryGetComponent<cmpt::Grenade>(data::g_player.id)) {
+            ImGui::Text("grenade:");
+            ImGui::Text("  dmg:     %d", wep->base_stats.damage);
+            ImGui::Text("  pjk spd: %.2f", wep->base_stats.projectile_speed);
+            ImGui::Text("  cd:      %.2f", wep->base_stats.cooldown);
+            ImGui::Separator();
+        }
     }
 
     void DrawDebugUI(Storage::Registry& world, ImGuiIO& io) {

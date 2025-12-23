@@ -3,6 +3,7 @@
 #include "data/player/player.h"
 #include "data/entity.h"
 #include "spawners/world/projectile/bullet.h"
+#include "spawners/world/projectile/grenade.h"
 #include "components/components.h"
 #include "utils/rl_utils.h"
 #include "utils/debug.h"
@@ -88,8 +89,36 @@ namespace sys::atk {
         }
     }
 
+    void GrenadeAttack(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
+        PROFILE_SCOPE("ShotgunAttack()");
+        for (auto entity : world.View<cmpt::Grenade>()) {
+            auto& trans = world.GetComponent<cmpt::Transform>(entity);
+            auto& input = world.GetComponent<cmpt::Input>(entity);
+            auto& wep = world.GetComponent<cmpt::Grenade>(entity);
+     
+            wep.base_stats.countdown -= delta_time;
+            if (wep.base_stats.countdown > 0.0f) continue;
+
+            wep.base_stats.countdown = wep.base_stats.cooldown / data::g_player.attack_speed_multiplier;
+            if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+            } 
+
+            float dmg = wep.base_stats.damage * data::g_player.damage_multiplier;
+            spwn::proj::Grenade(
+                world, 
+                trans.position, 
+                input.mouse_world_position,
+                dmg
+            );
+            PlaySound(sound_fx);
+            SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
+        }
+    }
+
     void WeaponAttacks(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
         PistolAttack(world, delta_time, sound_fx);
         ShotgunAttack(world, delta_time, sound_fx);
+        GrenadeAttack(world, delta_time, sound_fx);
     }
 }

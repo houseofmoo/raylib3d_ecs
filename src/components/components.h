@@ -245,6 +245,10 @@ namespace cmpt {
         int penetration;
     };
 
+    struct Grenade {
+        WeaponBaseStats base_stats;
+    };
+
     // struct WeaponStats {
     //     Entity parent;
     //     data::loot::WeaponKind kind;

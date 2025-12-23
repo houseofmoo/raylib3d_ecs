@@ -46,7 +46,7 @@ namespace spwn::proj {
                 .layer = data::cnst::PROJECTILE_LAYER,
                 .mask = data::cnst::PROJECTILE_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = data::cnst::PROJECTILE_SIZE
+                .size = data::cnst::GRENADE_SIZE
             }
         );
 
@@ -69,9 +69,9 @@ namespace spwn::proj {
         world.AddComponent<cmpt::Draw>(
             grenade,
             cmpt::Draw{ 
-                .size = data::cnst::PROJECTILE_SIZE, 
+                .size = data::cnst::GRENADE_SIZE, 
                 .color = data::cnst::PROJECTILE_COLOR,
-                .model = &rsrc::asset::bullet_model,
+                .model = &rsrc::asset::grenade_model,
             }
         );
     }

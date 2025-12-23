@@ -92,6 +92,7 @@ namespace data {
         constexpr float   CAMERA_FOLLOW_SHARPNESS = 14.0f;                   // bigger = tighter
         constexpr float   CAMERA_SHAKE_STR        = 5.0f;
         constexpr float   CAMERA_SHAKE_FREQ       = 30.0f;
+        
         // general
         constexpr BoundingBox PLAY_AREA = {
             .min = Vector3{-60.0f, 0.0f, -30.0f},
@@ -157,7 +158,7 @@ namespace data {
             YELLOW,     // sniper
             ORANGE,     // rail gun
             PINK,       // smg
-            RED,        // grenade launcher
+            RED,        // grenade
             MAROON,     // rocket launcher
         };
 
@@ -174,6 +175,11 @@ namespace data {
         constexpr float SHOTGUN_SPREAD           = 30.0f;
         constexpr int   SHOTGUN_PELLET_COUNT     = 3;
 
+        constexpr int     GRENADE_DAMAGE           = 25;
+        constexpr float   GRENADE_COOLDOWN         = 2.0f;
+        constexpr float   GRENADE_PROJECTILE_SPEED = 25.0f;
+        constexpr Vector3 GRENADE_SIZE             = { 0.5f, 0.5f, 0.5f };
+
         // projectiles
         constexpr Color   PROJECTILE_COLOR      = Color{ 230, 41, 55, 255 };
         constexpr Vector3 PROJECTILE_SIZE       = { 0.25f, 0.25f, 0.25f };
@@ -182,7 +188,7 @@ namespace data {
         constexpr float   PROJECTILE_LIFETIME   = 10.0f;
 
         // arch projectiles
-        constexpr float ARCH_MAX_HEIGHT = 5.0f;
+        constexpr float ARCH_MAX_HEIGHT = 10.0f;
         constexpr float ARCH_DURATION = 1.0f;
         constexpr float ARCH_LIFETIME = 1.0f;
 

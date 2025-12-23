@@ -1,6 +1,5 @@
 #include "spawners/equip/weapon/pistol.h"
 #include "components/components.h"
-#include "data/loot.h"
 
 namespace spwn::weapon {
     // void Pistol(Storage::Registry& world, Entity parent) {

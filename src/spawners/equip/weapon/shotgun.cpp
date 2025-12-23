@@ -1,6 +1,5 @@
 #include "spawners/equip/weapon/shotgun.h"
 #include "components/components.h"
-#include "data/loot.h"
 #include "utils/debug.h"
 
 namespace spwn::weapon {

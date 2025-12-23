@@ -8,6 +8,7 @@ namespace rsrc::asset {
     Model brute_model;
 
     Model bullet_model;
+    Model grenade_model;
 
     Model exp_model;
     Model money_model;
@@ -53,6 +54,9 @@ namespace rsrc::asset {
         Mesh bullet_mesh = GenMeshCube(data::cnst::PROJECTILE_SIZE.x, data::cnst::PROJECTILE_SIZE.y, data::cnst::PROJECTILE_SIZE.z);
         bullet_model = LoadModelFromMesh(bullet_mesh);
 
+        Mesh grenade_mesh = GenMeshCube(data::cnst::GRENADE_SIZE.x, data::cnst::GRENADE_SIZE.y, data::cnst::GRENADE_SIZE.z);
+        grenade_model = LoadModelFromMesh(grenade_mesh);
+
         Mesh exp_mesh = GenMeshCube(data::cnst::EXP_SIZE.x, data::cnst::EXP_SIZE.y, data::cnst::EXP_SIZE.z);
         exp_model = LoadModelFromMesh(exp_mesh);
 
@@ -85,6 +89,7 @@ namespace rsrc::asset {
         UnloadModel(brute_model);
 
         UnloadModel(bullet_model);
+        UnloadModel(grenade_model);
 
         UnloadModel(exp_model);
         UnloadModel(money_model);
