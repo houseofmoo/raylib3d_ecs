@@ -54,7 +54,7 @@ namespace spwn::proj {
             grenade,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
-                .countdown = data::cnst::ARCH_LIFETIME 
+                .countdown = data::cnst::ARCH_DURATION 
             }
         );
 

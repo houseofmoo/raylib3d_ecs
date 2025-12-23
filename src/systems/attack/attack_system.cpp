@@ -9,23 +9,26 @@
 #include "utils/debug.h"
 
 namespace sys::atk {
-    inline void FireSpread(Storage::Registry& world, Vector3 origin, Vector3 baseDir, int pelletCount,
-                    float totalSpreadDegrees, const int damage, const int penetration) {
+    inline void FireSpread(
+        Storage::Registry& world, 
+        Vector3 origin, 
+        Vector3 base_dir, 
+        int pellet_count,
+        float totalSpreadDegrees, 
+        const int damage, 
+        const int penetration) {
         
         // Convert to radians
-        float totalSpread = totalSpreadDegrees * (PI / 180.0f);
-        float half = totalSpread * 0.5f;
+        float spread_rad = totalSpreadDegrees * (PI / 180.0f);
+        float half = spread_rad * 0.5f;
 
-        for (int i = 0; i < pelletCount; i++) {
-            float t = (float)i / (float)(pelletCount - 1);     // 0..1
-            float angle = Lerp(-half, +half, t);               // -half..+half
-            Vector3 dir = utils::RotateDirYaw(baseDir, angle);
-            //dir = Vector3Scale(Vector3Normalize(dir), speed);
-            //dir = Vector3Scale(dir, speed);
-
+        for (int i = 0; i < pellet_count; i++) {
+            float t = (float)i / (float)(pellet_count - 1);
+            float angle = Lerp(-half, +half, t);
+            Vector3 dir = utils::RotateDirYaw(base_dir, angle);
             spwn::proj::Bullet(
                 world, 
-                origin, 
+                origin,
                 dir, 
                 damage,
                 penetration
@@ -90,7 +93,7 @@ namespace sys::atk {
     }
 
     void GrenadeAttack(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
-        PROFILE_SCOPE("ShotgunAttack()");
+        PROFILE_SCOPE("GrenadeAttack()");
         for (auto entity : world.View<cmpt::Grenade>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& input = world.GetComponent<cmpt::Input>(entity);

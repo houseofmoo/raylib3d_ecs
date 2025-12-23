@@ -189,8 +189,7 @@ namespace data {
 
         // arch projectiles
         constexpr float ARCH_MAX_HEIGHT = 10.0f;
-        constexpr float ARCH_DURATION = 1.0f;
-        constexpr float ARCH_LIFETIME = 1.0f;
+        constexpr float ARCH_DURATION = 1.0f; // doubles as lifetime since the ground does not destroy projectiles
 
         // status effects
         constexpr float INVULNRABILITY_CD = 1.0f;
