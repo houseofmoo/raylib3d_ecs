@@ -4,17 +4,29 @@
     {
       "name": "debug",
       "displayName": "Debug build",
-      "description": "Builds in the 'build' directory using Ninja",
+      "description": "Builds in the 'build' directory using MinGW",
       "generator": "MinGW Makefiles",
       "binaryDir": "${sourceDir}/build/debug",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "PROFILER_ENABLED": "false"
+      }
+    },
+    {
+      "name": "profile",
+      "displayName": "Debug build with profiler",
+      "description": "Builds in the 'build' directory using MinGW",
+      "generator": "MinGW Makefiles",
+      "binaryDir": "${sourceDir}/build/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "PROFILER_ENABLED": "true"
       }
     },
     {
       "name": "release",
       "displayName": "Release build",
-      "description": "Builds in the 'build' directory using Ninja",
+      "description": "Builds in the 'build' directory using MinGW",
       "generator": "MinGW Makefiles",
       "binaryDir": "${sourceDir}/build/release",
       "cacheVariables": {
@@ -36,6 +48,13 @@
       "name": "debug",
       "displayName": "Build Debug",
       "configurePreset": "debug",
+      "configuration": "Debug",
+      "jobs": 0
+    },
+    {
+      "name": "profile",
+      "displayName": "Build Debug Profiler",
+      "configurePreset": "profile",
       "configuration": "Debug",
       "jobs": 0
     },

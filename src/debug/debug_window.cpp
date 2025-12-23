@@ -146,7 +146,7 @@ namespace debug {
             #ifdef PROFILER_ENABLED
             // Profiler Tab
             if (ImGui::BeginTabItem("profiler")) {
-                if (ImGui::Checkbox("enable profiler: ", &data::player::g_player.profiler_enabled)) {
+                if (ImGui::Checkbox("enable profiler: ", &data::g_player.profiler_enabled)) {
                     PRINT("Profiler contents cleared");
                     PROFILER_CLEAR;
                 }

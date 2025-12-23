@@ -13,12 +13,10 @@
 
 namespace sys::input {
     inline bool RayPlaneIntersection(const Ray& ray, float planeY, Vector3& outPoint) {
-        if (fabs(ray.direction.y) < 0.0001f)
-            return false; // Parallel
+        if (fabs(ray.direction.y) < 0.0001f) return false; // Parallel
 
         float t = (planeY - ray.position.y) / ray.direction.y;
-        if (t < 0.0f)
-            return false; // Behind camera
+        if (t < 0.0f) return false; // Behind camera
 
         outPoint = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
         return true;

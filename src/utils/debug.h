@@ -59,7 +59,7 @@
                     : name(n), start(clock::now()) {}
 
                 ~ProfileScope() {
-                    if (!data::player::g_player.profiler_enabled) return;
+                    if (!data::g_player.profiler_enabled) return;
                     auto end = clock::now();
                     auto us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 

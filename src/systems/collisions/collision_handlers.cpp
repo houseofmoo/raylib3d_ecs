@@ -40,43 +40,46 @@ namespace sys::col {
                     rcv->total += dmg->amount;
                 }
             }
-
-            // if A has a penetration value decrement that on collision
-            if (auto* pen = world.TryGetComponent<cmpt::Penetration>(col.entity_a)) {
-                pen->amount -= 1;
-                if (pen->amount <= 0) {
-                    world.AddComponent<tag::Destroy>(col.entity_a);
-                }
-            }
-
-            // if B has a penetration value decrement that on collision
-            if (auto* pen = world.TryGetComponent<cmpt::Penetration>(col.entity_b)) {
-                pen->amount -= 1;
-                if (pen->amount <= 0) {
-                    world.AddComponent<tag::Destroy>(col.entity_b);
-                }
-            }
         }
     }
 
     void DestroyOnCollision(Storage::Registry& world) {
         PROFILE_SCOPE("DestroyOnCollision()");
-        // // TODO: since only terrain causes destruction on collision
-        // // without thought, we just do this in the movement system
-        // for (auto& col : sys::col::collision_cache.current) {
-        //     // only terrain destroys cmpt::DestroyOnContact elements
-        //     if (auto* a = world.TryGetComponent<tag::Terrain>(col.entity_a)) {
-        //         if (auto* b = world.TryGetComponent<cmpt::DestroyOnContact>(col.entity_b)) {
-        //             world.AddComponent<tag::Destroy>(col.entity_b);
-        //         }
-        //     }
+         for (auto& col : sys::col::collision_cache.current) {
+            // if A is a projectile
+            if (world.HasComponent<tag::Projectile>(col.entity_a)) {
+                // penetration -> destroy once penetration value is 0
+                if (auto* pen = world.TryGetComponent<cmpt::Penetration>(col.entity_a)) {
+                    pen->amount -= 1;
+                    if (pen->amount <= 0) {
+                        world.AddComponent<tag::Destroy>(col.entity_a);
+                    }
+                }
 
-        //     if (auto* b = world.TryGetComponent<tag::Terrain>(col.entity_b)) {
-        //         if (auto* a = world.TryGetComponent<cmpt::DestroyOnContact>(col.entity_a)) {
-        //             world.AddComponent<tag::Destroy>(col.entity_a);
-        //         }
-        //     }
-        // }
+                // explosive -> destroy and spawn damage area
+                if (auto exp = world.TryGetComponent<cmpt::ExplodeOnImpact>(col.entity_a)) {
+                    //world.AddComponent<tag::Destroy>(col.entity_a);
+                    // TODO: spawn area damage request
+                }
+            }
+
+            // if B is a projectile
+            if (world.HasComponent<tag::Projectile>(col.entity_b)) {
+                // penetration -> destroy once penetration value is 0
+                if (auto* pen = world.TryGetComponent<cmpt::Penetration>(col.entity_b)) {
+                    pen->amount -= 1;
+                    if (pen->amount <= 0) {
+                        world.AddComponent<tag::Destroy>(col.entity_b);
+                    }
+                }
+
+                // explosive -> destroy and spawn damage  area
+                if (auto exp = world.TryGetComponent<cmpt::ExplodeOnImpact>(col.entity_b)) {
+                    //world.AddComponent<tag::Destroy>(col.entity_b);
+                    // TODO: spawn area damage request
+                }
+            }
+        }
     }
 
     void KnockbackOnCollision(Storage::Registry& world) {

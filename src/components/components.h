@@ -50,10 +50,6 @@ namespace cmpt {
         Vector3 offset;
         Vector3 size;
     };
-    
-    // struct DestroyOnContact {
-    //     int penetration;
-    // };
 
     ////////////////////////////////////////////////
     // INPUT
@@ -263,6 +259,11 @@ namespace cmpt {
     ////////////////////////////////////////////////
     struct Penetration {
         int amount;
+    };
+
+    struct ExplodeOnImpact {
+        float radius;
+        float duration;
     };
 
     ////////////////////////////////////////////////
