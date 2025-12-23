@@ -36,14 +36,12 @@ namespace sys {
 
     void InitWorld() {
         camera = spwn::camera::Camera();
-
-
      }
 
     void StartGame() {
-        // TODO: clear out world components
-        // anything else that needs to be cleared?
-
+        world.Reset();
+        data::g_game.Reset();
+        data::g_player.Reset();
         spwn::map::GenerateMap(world, data::size::PLAY_AREA);
         data::g_player.id = spwn::player::Player(world);
         spwn::weapon::EquipPistol(world, data::g_player.id);

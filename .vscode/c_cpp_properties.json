@@ -4,7 +4,9 @@
             "name": "Win32",
             "includePath": [
                 "${default}",
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/src/**"
             ],
             "windowsSdkVersion": "10.0.26100.0",
             "intelliSenseMode": "windows-msvc-x64"

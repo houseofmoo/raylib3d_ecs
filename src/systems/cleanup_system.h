@@ -31,6 +31,10 @@ namespace sys::cleanup {
                 data::g_player.enemies_defeated += 1;
             }
 
+            if (world.HasComponent<tag::Player>(entity)) {
+                data::g_game.state = data::GameState_E::Dead;
+            }
+
             world.DestroyEntity(entity);
         }
     }

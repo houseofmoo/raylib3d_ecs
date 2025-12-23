@@ -18,6 +18,7 @@ namespace Storage {
         struct IStorage {
             virtual ~IStorage() = default;
             virtual void Remove(Entity e) noexcept = 0;
+            virtual void Clear() noexcept = 0;
         };
 
         template <typename T>
@@ -26,6 +27,10 @@ namespace Storage {
 
             void Remove(Entity e) noexcept override {
                 storage.Remove(e);
+            }
+
+            void Clear() noexcept override {
+                storage.Clear();
             }
         };
 
@@ -89,6 +94,23 @@ namespace Storage {
             }
         }
 
+        void Reset() noexcept {
+            // wipe all components everywhere
+            for (auto& [_, storage] : m_storages) {
+                storage->Clear();
+            }
+
+            // entity id allocator back to initial state
+            m_next_entity.store(0, std::memory_order_relaxed);
+
+            {
+                std::lock_guard lock(m_free_ids_mtx);
+                m_free_entity_ids.clear();
+            }
+
+            m_storages.clear();
+        }
+        
         // ---------- Component API ----------
 
         template <typename T, typename... Args>

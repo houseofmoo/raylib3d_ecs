@@ -11,7 +11,7 @@ namespace Storage {
 
         std::vector<Entity> m_entity_id;
         std::vector<T> m_components;
-        std::vector<int> m_indices;
+        std::vector<int> m_indices; // m_indices[ENTITY_ID] returns ENTITY_INDEX into components/entity_id array
 
         void Add(Entity entity_id, const T& component) noexcept {
             // if this entity already has this component, do nothing
@@ -45,6 +45,12 @@ namespace Storage {
             m_entity_id.pop_back();
             m_components.pop_back();
             m_indices[entity_id] = -1;
+        }
+
+        void Clear() noexcept {
+            m_entity_id.clear();
+            m_components.clear();
+            m_indices.clear();
         }
 
         bool Has(Entity entity_id) const noexcept {

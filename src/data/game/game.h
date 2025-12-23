@@ -13,6 +13,7 @@ namespace data {
         WeaponSelect,
         StatsScreen,
         Paused,
+        Dead,
     };
 
     struct GameState {
@@ -52,6 +53,14 @@ namespace data {
         int GetEnemBaseHp(const float multiplier) const {
             int base_hp = static_cast<int>((difficulty / 10) + 20);
             return static_cast<int>(base_hp * multiplier);
+        }
+        
+        void Reset() {
+            difficulty = 0;
+            enemy_spawn_countdown = 0.0f;
+            enemy_spawn_interval = MAX_SPAWN_INTERVAL;
+            enemy_count = 0;
+            entity_count = 0;
         }
     };
 

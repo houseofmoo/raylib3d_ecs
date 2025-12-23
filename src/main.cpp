@@ -61,13 +61,14 @@ int main() {
                 break;
             }
             case data::GameState_E::NewGame: {
-                // run inits on new game and transition to running
+                sys::StartGame();
+                data::g_game.prev_state = data::g_game.state;
+                data::g_game.state = data::GameState_E::Running;
                 break;
             }
             case data::GameState_E::Running: {
                 // normal ops
                 sys::RunUpdateSystems(delta_time);
-
                 // if player dies transition to death screen?
                 break;
             }
@@ -85,8 +86,13 @@ int main() {
                 // draw pause/options menu
                 break;
             }
+            case data::GameState_E::Dead: {
+                // show death UI
+                break;
+            }
         }
 
+        // DRAWING ONLY BELOW HERE
         BeginDrawing();
         ClearBackground(Color{30,30,30,255});
         switch (data::g_game.state) {
@@ -115,9 +121,7 @@ int main() {
                 break;
             }
             case data::GameState_E::NewGame: {
-                sys::StartGame();
-                data::g_game.prev_state = data::g_game.state;
-                data::g_game.state = data::GameState_E::Running;
+                // nothing to draw here
                 break;
             }
             case data::GameState_E::Running: {
@@ -136,7 +140,37 @@ int main() {
                 break;
             }
             case data::GameState_E::Paused: {
-                // draw pause/options menu
+                // draw dark box over entire screen
+                DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175});
+
+                if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Unpause")) {
+                    data::g_game.state = data::g_game.prev_state;
+                    data::g_game.prev_state = data::GameState_E::Paused;
+                }
+                break;
+            }
+            case data::GameState_E::Dead: {
+                // draw dark box over entire screen
+                ::DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175} );
+
+                // draw title
+                Font font = ::GuiGetFont();
+                int width = ::MeasureText("YOU DIED! PLAY AGAIN?", font.baseSize);
+                ::GuiDrawText(
+                    "YOU DIED! PLAY AGAIN?", 
+                    Rectangle{ 
+                        (screen_width * 0.5f) - (width * 0.5f), 
+                        100, 
+                        (float)width, 
+                        50 
+                    }, 
+                    TEXT_ALIGN_CENTER, WHITE
+                );
+
+                if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Start")) {
+                    data::g_game.prev_state = data::g_game.state;
+                    data::g_game.state = data::GameState_E::NewGame;
+                }
                 break;
             }
         }
@@ -146,82 +180,6 @@ int main() {
         debug::DrawDebugUI(sys::world, io);
         #endif
         ::EndDrawing();
-
-        // Draw(
-        //     delta_time,
-        //     [](const float dt) {
-        //         sys::RunEntityDrawSystems(dt);
-        //     },
-        //     [](const float dt) {
-        //         sys::RunUIDrawSystems(dt);
-        //     }
-        // );
-
-        // Draw(
-        //     [delta_time]() {
-        //         sys::RunEntityDrawSystems(delta_time);
-        //     },
-        //     [delta_time]() {
-        //         sys::RunUIDrawSystems(delta_time);
-        //     }
-        // );
-
-        // #if DEBUG
-        // Draw(
-        //     [delta_time]() {
-        //         sys::RunEntityDrawSystems(delta_time);
-        //     },
-        //     [delta_time]() {
-        //         sys::RunUIDrawSystems(delta_time);
-        //     },
-        //     io
-        // );
-        // else
-        // Draw(
-        //     [delta_time]() {
-        //         sys::RunEntityDrawSystems(delta_time);
-        //     },
-        //     [delta_time]() {
-        //         sys::RunUIDrawSystems(delta_time);
-        //     }
-        // );
-        // #endif
-
-        // BeginDrawing();
-        // ClearBackground(Color{30,30,30,255});
-        // BeginMode3D(sys::camera);
-        // sys::RunEntityDrawSystems(delta_time);
-        // EndMode3D();
-
-        // // // if (GuiButton(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 120, 30}, GuiIconText(ICON_INFO, "Show Message"))) {
-        // // //     std::cout << "button pressed" << std::endl;
-        // // // }
-
-        // // GuiStatusBar(Rectangle{ (int)screen_width * 0.5f, (int)screen_height * 0.5f, 120, 30}, "Test");
-        // // float val = 5.0f;
-        // // Color c = Color{0, 0, 0, 100};
-        // // //::DrawRectangleRec(Rectangle{ (int)screenWidth * 0.5f, (int)screenHeight * 0.5f, 240, 60}, c);
-        // // ::GuiGroupBox(Rectangle{ (int)screen_width * 0.5f, (int)screen_height * 0.5f, 240, 60}, nullptr);
-        // // ::GuiProgressBar(Rectangle{ (int)screen_width * 0.5f + 60, (int)screen_height * 0.5f + 30, 120, 30}, nullptr, nullptr, &val, 1.0f, 10.0f);
-
-        // sys::RunUIDrawSystems(delta_time);
-
-        // if (data::g_game.state == data::GameState_E::Paused) {
-        //     // draw dark box over entire screen
-        //     DrawRectangle(
-        //         0, 0, 
-        //         GetScreenWidth(), 
-        //         GetScreenHeight(), 
-        //         Color{0,0,0,175}
-        //     );
-        // }
-
-        // // imgui ui
-        // #ifdef DEBUG
-        // debug::DrawDebugUI(sys::world, io);
-        // #endif
-   
-        // EndDrawing();
     }
 
     rsrc::asset::UnloadAssets();
@@ -238,6 +196,5 @@ int main() {
     #ifdef PROFILER_ENABLED
     PRINT("\tprofiler enabled")
     #endif
-
     return 0;
 }
