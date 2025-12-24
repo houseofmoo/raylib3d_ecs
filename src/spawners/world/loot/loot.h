@@ -9,4 +9,6 @@ namespace spwn::loot {
     void Money(Storage::Registry& world, const Vector3 position, int exp_amount);
     void Powerup(Storage::Registry& world, const Vector3 position, data::loot::PowerupKind kind);
     void Weapon(Storage::Registry& world, const Vector3 position, data::loot::WeaponKind kind);
+    void WeaponCrate(Storage::Registry& world, const Vector3 position);
+
 }

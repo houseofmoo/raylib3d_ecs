@@ -247,4 +247,60 @@ namespace spwn::loot {
             }
         );
     }
+
+    void WeaponCrate(Storage::Registry& world, const Vector3 position) {
+        Entity entity = world.CreateEntity();
+
+        world.AddComponent<cmpt::Loot>(
+            entity, 
+            cmpt::Loot{ .kind = data::loot::LootKind::WeaponCrate }
+        );
+
+        world.AddComponent<cmpt::Transform>(
+            entity,
+            cmpt::Transform{
+                .position = utils::GetRandomValidPisitionNearTarget(
+                    Vector3{ position.x, data::cnst::WEAPON_CRATE_SIZE.y * 0.5f, position.z },
+                    1
+                ),
+                .rotation = QuaternionIdentity()
+            }
+        );
+
+        world.AddComponent<cmpt::RotateInPlace>(
+            entity,
+            cmpt::RotateInPlace{ .speed = data::cnst::LOOT_ROTATION_SPEED }
+        );
+
+        world.AddComponent<cmpt::Collider>(
+            entity,
+            cmpt::Collider{
+                .layer = data::cnst::LOOT_LAYER,
+                .mask = data::cnst::LOOT_LAYER_MASK,
+                .offset = { 0.0f, 0.0f, 0.0f },
+                .size = Vector3Scale(
+                    cmpt::MinLootColliderSize(data::cnst::WEAPON_CRATE_SIZE),
+                    data::g_player.pickup_range_multiplier
+                )
+            }
+        );
+
+        world.AddComponent<cmpt::Lifetime>(
+            entity,
+            cmpt::Lifetime{ 
+                .start_time = GetTime(),
+                .countdown = data::cnst::LOOT_LIFETIME
+            }
+        );
+
+        world.AddComponent<cmpt::Draw>(
+            entity,
+            cmpt::Draw{
+                .size = data::cnst::WEAPON_CRATE_SIZE, 
+                .color = data::cnst::WEAPON_CRATE_COLOR,
+                .model = &rsrc::asset::weapon_crate_model,
+            }
+        );
+
+    }
 }

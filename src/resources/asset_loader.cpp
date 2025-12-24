@@ -14,6 +14,7 @@ namespace rsrc::asset {
     Model money_model;
     Model powerup_model;
     Model weapon_model;
+    Model weapon_crate_model;
 
     Music bg_music;
 
@@ -69,6 +70,9 @@ namespace rsrc::asset {
 
         Mesh weapon_mesh = GenMeshCube(data::cnst::WEAPON_SIZE.x, data::cnst::WEAPON_SIZE.y, data::cnst::WEAPON_SIZE.z);
         weapon_model = LoadModelFromMesh(weapon_mesh);
+
+        Mesh weapon_crate_mesh = GenMeshCube(data::cnst::WEAPON_CRATE_SIZE.x, data::cnst::WEAPON_CRATE_SIZE.y, data::cnst::WEAPON_CRATE_SIZE.z);
+        weapon_crate_model = LoadModelFromMesh(weapon_crate_mesh);
     }
     
     void LoadAssets() {
@@ -95,5 +99,6 @@ namespace rsrc::asset {
         UnloadModel(money_model);
         UnloadModel(powerup_model);
         UnloadModel(weapon_model);
+        UnloadModel(weapon_crate_model);
     }
 }

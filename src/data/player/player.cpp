@@ -1,7 +1,7 @@
 #include "data/player/player.h"
 
 namespace data {
-    Player g_player = {
+    constinit Player g_player = {
         .id = 0,
         .level = 1,
         .money = 0,

@@ -9,7 +9,7 @@
 #include "storage/collision_pairs.h"
 #include "systems/collisions/entity_collision_system.h"
 #include "components/components.h"
-#include "spawners/system/events/loot_received_event.h"
+#include "spawners/system/events/loot_pickedup_event.h"
 #include "spawners/system/events/notification.h"
 #include "utils/rl_utils.h"
 #include "utils/position.h"
@@ -157,6 +157,9 @@ namespace sys::col {
                             spwn::evt::LootPickedupEvent(world, col.entity_a, loot->kind, wepkind.kind);
                             break;
                         }
+                        case data::loot::LootKind::WeaponCrate: {
+                            spwn::evt::WeaponCratePickedupEvent(world, col.entity_a);
+                        }
                         default: {
                             PRINT("Unknown loot type found in PickupOnCollision() a->b");
                         }
@@ -187,6 +190,9 @@ namespace sys::col {
                             auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(col.entity_a);
                             spwn::evt::LootPickedupEvent(world, col.entity_b, loot->kind, wepkind.kind);
                             break;
+                        }
+                        case data::loot::LootKind::WeaponCrate: {
+                            spwn::evt::WeaponCratePickedupEvent(world, col.entity_b);
                         }
                         default: {
                             PRINT("Unknown loot type found in PickupOnCollision() b->a");

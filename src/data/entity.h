@@ -16,6 +16,7 @@ namespace data {
             Money,
             Powerup,
             Weapon,
+            WeaponCrate,
         };
 
         enum class PowerupKind {
@@ -128,6 +129,8 @@ namespace data {
         constexpr Color   MONEY_COLOR             = Color{ 255, 203, 0, 255 }; // GOLD
         constexpr Vector3 POWERUP_SIZE            = { 0.5f, 0.5f, 0.5f };
         constexpr Vector3 WEAPON_SIZE             = { 1.25f, 0.35f, 0.35f };
+        constexpr Vector3 WEAPON_CRATE_SIZE       = { 1.25f, 1.5f, 0.75f };
+        constexpr Color   WEAPON_CRATE_COLOR      = Color{ 211, 176, 131, 255 };
 
         constexpr int   EXP_VALUE                   = 1; 
         constexpr int   MONEY_VALUE                 = 1;

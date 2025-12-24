@@ -18,6 +18,7 @@ namespace rsrc::asset {
     extern Model money_model;
     extern Model powerup_model;
     extern Model weapon_model;
+    extern Model weapon_crate_model;
 
     extern Music bg_music;
     extern Sound powerup_fx;

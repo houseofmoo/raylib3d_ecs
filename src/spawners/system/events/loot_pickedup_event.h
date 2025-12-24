@@ -9,9 +9,9 @@
 namespace spwn::evt {
     inline void LootPickedupEvent(
             Storage::Registry& world, 
-            Entity id, 
-            data::loot::LootKind kind,
-            int amount) {
+            const Entity id, 
+            const data::loot::LootKind kind,
+            const int amount) {
             Entity event = world.CreateEntity();
 
             switch (kind) {
@@ -34,9 +34,9 @@ namespace spwn::evt {
 
     inline void LootPickedupEvent(
             Storage::Registry& world, 
-            Entity id, 
-            data::loot::LootKind kind,
-            data::loot::PowerupKind pukind) noexcept {
+            const Entity id, 
+            const data::loot::LootKind kind,
+            const data::loot::PowerupKind pukind) noexcept {
         Entity event = world.CreateEntity();
         world.AddComponent<cmpt::LootEvent>(event, cmpt::LootEvent{.id = id, .kind = kind});
         world.AddComponent<cmpt::PowerupLoot>(event, cmpt::PowerupLoot{ .kind = pukind });
@@ -44,11 +44,16 @@ namespace spwn::evt {
 
     inline void LootPickedupEvent(
             Storage::Registry& world, 
-            Entity id, 
-            data::loot::LootKind kind,
-            data::loot::WeaponKind wkind) noexcept {
+            const Entity id, 
+            const data::loot::LootKind kind,
+            const data::loot::WeaponKind wkind) noexcept {
         Entity event = world.CreateEntity();
         world.AddComponent<cmpt::LootEvent>(event, cmpt::LootEvent{.id = id, .kind = kind});
         world.AddComponent<cmpt::WeaponLoot>(event, cmpt::WeaponLoot{ .kind = wkind });
+    }
+
+    inline void WeaponCratePickedupEvent(Storage::Registry& world, const Entity id) noexcept {
+        Entity event = world.CreateEntity();
+        world.AddComponent<cmpt::LootEvent>(event, cmpt::LootEvent{.id = id, .kind = data::loot::LootKind::WeaponCrate});
     }
 }

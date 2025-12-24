@@ -19,7 +19,7 @@ namespace sys::loot {
                                         cmpt::Transform>()) {
             
             
-            auto& chance = world.GetComponent<cmpt::DropsLoot>(enemy);                                   
+            auto& drop = world.GetComponent<cmpt::DropsLoot>(enemy);                                   
             auto& etrans = world.GetComponent<cmpt::Transform>(enemy);
 
             // all enemies that drop loot always drop exp
@@ -27,25 +27,28 @@ namespace sys::loot {
 
             if (data::g_player.always_drop_loot) {
                 spwn::loot::Powerup(world, etrans.position, data::loot::GetRandomPowerupKind());
-                spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
+                //spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
+                spwn::loot::WeaponCrate(world, etrans.position);
                 continue;
             }
 
-            // if 10 enemies die and no loot has dropped, drop loot
             int roll = GetRandomValue(0, 99);
-            if (enemies_since_loot_dropped > data::cnst::LOOT_BADLUCK_PROTECTION) {
+            
+            // if 10 enemies die and no loot has dropped, drop loot
+            if (enemies_since_loot_dropped >= data::cnst::LOOT_BADLUCK_PROTECTION) {
                 if (roll < 50) {
                     spwn::loot::Powerup(world, etrans.position, data::loot::GetRandomPowerupKind());
                 } else {
-                    spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
+                    //spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
+                    spwn::loot::WeaponCrate(world, etrans.position);
                 }
                 enemies_since_loot_dropped = 0;
                 continue;
             }
 
             // check if loot roll was success
-            if (roll < data::cnst::LOOT_CHANCE && 
-                roll * chance.loot_chance < data::cnst::LOOT_CHANCE) {
+            roll = static_cast<int>((float)roll * drop.loot_chance);
+            if (roll < data::cnst::LOOT_CHANCE) {
                 enemies_since_loot_dropped += 1;
                 continue;
             }
@@ -59,7 +62,8 @@ namespace sys::loot {
                 spwn::loot::Powerup(world, etrans.position, data::loot::GetRandomPowerupKind());
                 enemies_since_loot_dropped = 0;
             } else if (roll >= 80) {
-                spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
+                //spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
+                spwn::loot::WeaponCrate(world, etrans.position);
                 enemies_since_loot_dropped = 0;
             }
         }

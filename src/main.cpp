@@ -45,18 +45,6 @@ int main() {
         // check for pause key
         HandlePause(false);
 
-        if (IsKeyPressed(KEY_ONE)) {
-            static data::GameState_E temp_prev_state;
-            if (data::g_game.state == data::GameState_E::WeaponSelect) {
-                // unpausing restores previous game state
-                data::g_game.state = temp_prev_state;
-            } else {
-                // pausing stores current gmae state and sets pause state
-                temp_prev_state = data::g_game.state;
-                data::g_game.state = data::GameState_E::WeaponSelect;
-            }
-        }
-
         StateSystems(delta_time);
        
         // DRAWING ONLY BELOW HERE
@@ -122,12 +110,6 @@ void StateSystems(const float delta_time) {
             break;
         }
 
-        case data::GameState_E::WeaponSelect: {
-            // when player picks up weapon crate, draw that menu
-            // transition back to running
-            break;
-        }
-
         case data::GameState_E::StatsScreen: {
             // when player presses TAB show stats screen
             // transition back to running
@@ -182,19 +164,9 @@ void StateDraws(const float delta_time, const int screen_width, const int screen
             sys::RunEntityDrawSystems(delta_time);
             ::EndMode3D();
             sys::RunUIDrawSystems(delta_time);
-            break;
-        }
 
-        case data::GameState_E::WeaponSelect: {
-            std::string long_text = "SHOTGUN\nUpgrade to level 5\ngiving +1 damage and +1 pellet count";
-            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 150.0f, 150.0f, 300.0f, 100.0f }, long_text.c_str())) {
-                HandlePause(true);
-            }
-            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 300.0f, 100.0f, 50.0f }, "SMG")) {
-                HandlePause(true);
-            }
-            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 400.0f, 100.0f, 50.0f }, "Pistol")) {
-                HandlePause(true);
+            if (data::g_game.show_weapon_crate_menu) {
+                sys::RunWeaponSelectDrawSystem(screen_width, screen_height);
             }
             break;
         }

@@ -7,6 +7,7 @@
 #include "spawners/equip/weapon/pistol.h"
 #include "spawners/equip/weapon/grenade.h"
 #include "data/player/player.h"
+#include "data/game/game.h"
 #include "data/entity.h"
 #include "utils/debug.h"
 
@@ -137,6 +138,12 @@ namespace sys::evt {
                 case data::loot::LootKind::Weapon: {
                     auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(entity);
                     ApplyWeapon(world, wepkind.kind, evt.id);
+                    break;
+                }
+
+                case data::loot::LootKind::WeaponCrate: {
+                    data::g_game.show_weapon_crate_menu = true;
+                    PRINT("+wep crate");
                     break;
                 }
 

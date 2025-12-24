@@ -7,7 +7,8 @@
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/src/**",
-                "${workspaceFolder}/libs/**"
+                "${workspaceFolder}/libs/**",
+                "${workspaceFolder}/libs/raylib/src"
             ],
             "windowsSdkVersion": "10.0.26100.0",
             "intelliSenseMode": "windows-msvc-x64"

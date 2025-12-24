@@ -8,7 +8,6 @@ namespace data {
         StartScreen,
         NewGame,
         Running,
-        WeaponSelect,
         StatsScreen,
         Paused,
         Dead,
@@ -21,6 +20,8 @@ namespace data {
         float enemy_spawn_interval;
         int enemy_count;
         int entity_count;
+
+        bool show_weapon_crate_menu;
 
         void Tick(float delta_time) {
             enemy_spawn_countdown -= delta_time;
@@ -60,8 +61,6 @@ namespace data {
             entity_count = 0;
         }
     };
-
-
 
     extern strg::Tilemap g_terrain;
     extern GameState g_game;

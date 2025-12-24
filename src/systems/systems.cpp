@@ -2,6 +2,7 @@
 
 #include <format>
 #include "rlgl.h"
+#include "raygui.h"
 
 #include "data/player/player.h"
 #include "data/game/game.h"
@@ -11,6 +12,8 @@
 #include "spawners/system/camera/camera.h"
 #include "spawners/system/map/map.h"
 #include "spawners/equip/weapon/pistol.h"
+#include "spawners/equip/weapon/shotgun.h"
+#include "spawners/equip/weapon/grenade.h"
 #include "spawners/world/player/player.h"
 
 #include "systems/animation_system.h"
@@ -48,6 +51,11 @@ namespace sys {
     }
 
     void RunUpdateSystems(const float delta_time) {
+        // TODO: temp for crate menu testing
+        if (data::g_game.show_weapon_crate_menu) {
+            return;
+        }
+
         // TODO: re-add the sound for pickups
         if (world.HasComponent<cmpt::FreezeTime>(data::g_player.id)) {
             auto& ft = world.GetComponent<cmpt::FreezeTime>(data::g_player.id);
@@ -167,11 +175,16 @@ namespace sys {
         float width = data::cnst::PLAY_AREA.max.x - data::cnst::PLAY_AREA.min.x;
         float length = data::cnst::PLAY_AREA.max.z - data::cnst::PLAY_AREA.min.z; 
         DrawCube(Vector3{0.0f, -0.51f, 0.0f}, width, 1.0f, length, GRAY);
-
-        DrawGrid(60, 1.0f);
-
-        // draw play area
-        //DrawBoundingBox(data::size::PLAY_AREA, GREEN);
+        for (int x = (int)data::cnst::PLAY_AREA.min.x; x < data::cnst::PLAY_AREA.max.x; x+=2) {
+            Vector3 top =    { (float)x, 0.0f, data::cnst::PLAY_AREA.min.z };
+            Vector3 bottom = { (float)x, 0.0f, data::cnst::PLAY_AREA.max.z };
+            DrawLine3D(top, bottom, BLACK);
+        }
+        for (int z = (int)data::cnst::PLAY_AREA.min.z; z < data::cnst::PLAY_AREA.max.z; z+=2) {
+            Vector3 top =    { data::cnst::PLAY_AREA.min.x, 0.0f, (float)z };
+            Vector3 bottom = { data::cnst::PLAY_AREA.max.x, 0.0f, (float)z };
+            DrawLine3D(top, bottom, BLACK);
+        }
 
         // draw play area walls
         Vector3 position = { data::cnst::PLAY_AREA.min.x - 0.5f, 3.0f, 0.0f };
@@ -189,10 +202,16 @@ namespace sys {
         DrawCubeV(position, size, DARKGRAY);
         DrawCubeWiresV(position, size, BLACK);
 
-        position = {   0.0f, 3.0f, data::cnst::PLAY_AREA.max.z + 0.5f };
-        size = { data::cnst::PLAY_AREA.max.x - data::cnst::PLAY_AREA.min.x, 6.0f, 1.0f };
-        //DrawCubeV(position, size, DARKGRAY);
-        //DrawCubeWiresV(position, size, BLACK);
+        DrawLine3D(
+            Vector3{ data::cnst::PLAY_AREA.min.x + 0.01f, 6.0f, data::cnst::PLAY_AREA.min.z + 0.01f },
+            Vector3{ data::cnst::PLAY_AREA.min.x + 0.01f, 0.0f, data::cnst::PLAY_AREA.min.z + 0.01f },
+            BLACK
+        );
+        DrawLine3D(
+            Vector3{ data::cnst::PLAY_AREA.max.x - 0.01f, 6.0f, data::cnst::PLAY_AREA.min.z + 0.01f },
+            Vector3{ data::cnst::PLAY_AREA.max.x - 0.01f, 0.0f, data::cnst::PLAY_AREA.min.z + 0.01f },
+            BLACK
+        );
 
         data::g_game.entity_count = entities_count;
         data::g_game.enemy_count = enemies_count;
@@ -215,5 +234,29 @@ namespace sys {
         DrawText(std::format("Difficulty : {}", data::g_game.difficulty).c_str(), 30, 140, 20, RAYWHITE);
         DrawText(std::format("Enemies Defeated: {}", data::g_player.enemies_defeated).c_str(), 30, 160, 20, RAYWHITE);
         sys::evt::DrawNotifications(world, delta_time);
+    }
+
+    void RunWeaponSelectDrawSystem(const int screen_width, const int screen_height) {
+        // darken background
+        DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175});
+
+        // display choices
+        auto rec = Rectangle{ (screen_width * 0.5f) - 50.0f, 300.0f, 100.0f, 50.0f };
+        if (::GuiButton(rec, "Pistol")) {
+            spwn::weapon::EquipPistol(world, data::g_player.id);
+            data::g_game.show_weapon_crate_menu = false;
+        }
+
+        rec.y += 50.0f;
+        if (::GuiButton(rec, "Shotgun")) {
+            spwn::weapon::EquipShotgun(world, data::g_player.id);
+            data::g_game.show_weapon_crate_menu = false;
+        }
+
+        rec.y += 50.0f;
+        if (::GuiButton(rec, "Grenade")) {
+            spwn::weapon::EquipGrenade(world, data::g_player.id);
+            data::g_game.show_weapon_crate_menu = false;
+        }
     }
 }

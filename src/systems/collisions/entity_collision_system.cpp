@@ -36,7 +36,7 @@ namespace sys::col {
             broad.dense_to_entity[broad.count] = (uint32_t)e;
 
             auto& t = world.GetComponent<cmpt::Transform>(e);
-            grid.insert((Entity)broad.count, t.position.x, t.position.z); // <--- dense id
+            grid.insert((Entity)broad.count, t.position.x, t.position.z);
             broad.count++;
         }
 
