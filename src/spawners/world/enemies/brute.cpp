@@ -12,24 +12,24 @@ namespace spwn::enemy {
             const cmpt::AIMoveMode move_mode, 
             const int hp) {
 
-        auto brute = world.CreateEntity();
+        auto entity = world.CreateEntity();
 
         // for drop in animation
         Vector3 start_position = Vector3{ position.x, 50.0f, position.z };
         Vector3 end_position = Vector3{ position.x, data::cnst::BRUTE_SIZE.y * 0.5f, position.z };
         
         world.AddComponent<tag::Enemy>(
-            brute,
+            entity,
             tag::Enemy{}
         );
 
         world.AddComponent<cmpt::DropsLoot>(
-            brute,
+            entity,
             cmpt::DropsLoot{ data::cnst::BRUTE_LOOT_MULTIPLIER }
         );
         
         world.AddComponent<cmpt::Transform>(
-            brute,
+            entity,
             cmpt::Transform{ 
                 .position = start_position,
                 .rotation = QuaternionIdentity()
@@ -37,14 +37,14 @@ namespace spwn::enemy {
         );
         
         world.AddComponent<cmpt::Velocity>(
-            brute,
+            entity,
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
-        cmpt::AttachAIMovementComponent(world, brute, move_mode);
+        cmpt::AttachAIMovementComponent(world, entity, move_mode);
 
         world.AddComponent<cmpt::AIMoveIntent>(
-            brute,
+            entity,
             cmpt::AIMoveIntent{
                 .mode = move_mode,
                 .direction = Vector3Zero(),
@@ -57,7 +57,7 @@ namespace spwn::enemy {
         );
 
         world.AddComponent<cmpt::Collider>(
-            brute,
+            entity,
             cmpt::Collider{
                 .layer = data::cnst::BRUTE_LAYER,
                 .mask = data::cnst::BRUTE_LAYER_MASK,
@@ -67,17 +67,17 @@ namespace spwn::enemy {
         );
 
         world.AddComponent<cmpt::Health>(
-            brute,
+            entity,
             cmpt::Health{ hp,  hp }
         );
 
         world.AddComponent<cmpt::DamageReceiver>(
-            brute,
+            entity,
             cmpt::DamageReceiver{ 0 }
         );
 
         world.AddComponent<cmpt::Speed>(
-            brute,
+            entity,
             cmpt::Speed{ 
                 .speed = data::cnst::BRUTE_SPEED, 
                 .speed_multiplier = 1.0f, 
@@ -86,12 +86,20 @@ namespace spwn::enemy {
         );
 
         world.AddComponent<cmpt::DamageDealer>(
-            brute,
+            entity,
             cmpt::DamageDealer{ data::cnst::BRUTE_MELEE_DMG }
         );
 
+        world.AddComponent<cmpt::AppliesKnockback>(
+            entity,
+            cmpt::AppliesKnockback{
+                .scale = data::cnst::BRUTE_KNOCKBACK_SCALE,
+                .duration = data::cnst::BRUTE_KNOCKBACK_DURATION
+            }
+        );
+
         world.AddComponent<cmpt::SpawnAnimation>(
-            brute,
+            entity,
             cmpt::SpawnAnimation{
                 .start_position = start_position,
                 .end_position = end_position
@@ -99,7 +107,7 @@ namespace spwn::enemy {
         );
         
         world.AddComponent<cmpt::Draw>(
-            brute,
+            entity,
             cmpt::Draw{ 
                 .size = data::cnst::BRUTE_SIZE, 
                 .color = data::cnst::BRUTE_COLOR, 

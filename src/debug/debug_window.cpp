@@ -5,6 +5,9 @@
 #include "data/player/player.h"
 #include "utils/debug.h"
 #include "components/components.h"
+#include "spawners/equip/weapon/pistol.h"
+#include "spawners/equip/weapon/shotgun.h"
+#include "spawners/equip/weapon/grenade.h"
 
 namespace debug {
     static bool show_demo_window = false;
@@ -70,6 +73,48 @@ namespace debug {
         ImGui::Checkbox(" loot mode", &data::g_player.always_drop_loot);
         ImGui::Separator();
 
+        // add stats
+        if (ImGui::Button("+dmg")) {
+            data::g_player.damage_multiplier += data::cnst::DAMAGE_POWERUP_VALUE;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("-dmg")) {
+            data::g_player.damage_multiplier -= data::cnst::DAMAGE_POWERUP_VALUE;
+        }
+
+        if (ImGui::Button("+atkspd")) {
+            data::g_player.attack_speed_multiplier += data::cnst::ATTACK_SPEED_POWERUP_VALUE;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("-atkspd")) {
+            data::g_player.attack_speed_multiplier -= data::cnst::ATTACK_SPEED_POWERUP_VALUE;
+        }
+
+        if (ImGui::Button("+mspd")) {
+            data::g_player.move_speed_multiplier += data::cnst::MOVE_SPEED_POWERUP_VALUE;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("-mspd")) {
+            data::g_player.move_speed_multiplier -= data::cnst::MOVE_SPEED_POWERUP_VALUE;
+        }
+
+        if (ImGui::Button("+prng")) {
+            data::g_player.pickup_range_multiplier += data::cnst::PICKUP_RANGE_POWERUP_VALUE;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("-prng")) {
+            data::g_player.pickup_range_multiplier -= data::cnst::PICKUP_RANGE_POWERUP_VALUE;
+        }
+
+        if (ImGui::Button("+dash")) {
+            data::g_player.dash_range_multiplier += data::cnst::DASH_DISTANCE_POWERUP_VALUE;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("-dash")) {
+            data::g_player.dash_range_multiplier -= data::cnst::DASH_DISTANCE_POWERUP_VALUE;
+        }
+        ImGui::Separator();
+        
         // tilemap testing
         if (ImGui::Button("draw tilemap")) {
             data::g_terrain.DrawTileMap();
@@ -83,7 +128,21 @@ namespace debug {
     }
 
     void DrawWeapsTab(Storage::Registry& world) {
-         if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::g_player.id)) {
+        if (ImGui::Button("+pistol")) {
+            spwn::weapon::EquipPistol(world, data::g_player.id);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+shotgun")) {
+            spwn::weapon::EquipShotgun(world, data::g_player.id);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+grenade")) {
+            spwn::weapon::EquipGrenade(world, data::g_player.id);
+        }
+
+        ImGui::Separator();
+
+        if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::g_player.id)) {
             ImGui::Text("pistol:");
             ImGui::Text("  dmg:     %d", wep->base_stats.damage);
             ImGui::Text("  pjk spd: %.2f", wep->base_stats.projectile_speed);

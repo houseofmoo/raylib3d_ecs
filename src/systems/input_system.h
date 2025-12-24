@@ -52,7 +52,7 @@ namespace sys::input {
                     entity, 
                     cmpt::Dash{ 
                         .multiplier = data::cnst::PLAYER_DASH_RANGE * data::g_player.dash_range_multiplier,
-                        .countdown = data::cnst::PLAYER_DASH_LENGTH
+                        .countdown = data::cnst::PLAYER_DASH_DURATION
                      }
                 );
             }
@@ -87,7 +87,7 @@ namespace sys::input {
                     auto& detour = world.GetComponent<cmpt::MeleeMovement>(entity);
                     if (intent.stuck) {
                         // detour in a random direction for 3 seconds
-                        detour.detour_countdown = data::cnst::ENEMY_DETOUR_LENGTH;
+                        detour.detour_countdown = data::cnst::ENEMY_DETOUR_DURATION;
                         detour.detour_direction = utils::DirectionFlattenThenNormalize(
                             trans.position,
                             utils::GetRandomValidPosition()

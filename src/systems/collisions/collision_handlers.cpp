@@ -23,7 +23,8 @@ namespace sys::col {
             if (sys::col::collision_cache.previous.contains(col)) continue;
 
             // if a and b are enemies, they cannot damage eachother
-            if (world.HasComponent<tag::Enemy>(col.entity_a) && world.HasComponent<tag::Enemy>(col.entity_b)) {
+            if (world.HasComponent<tag::Enemy>(col.entity_a) && 
+                world.HasComponent<tag::Enemy>(col.entity_b)) {
                 continue;
             }
 
@@ -85,41 +86,44 @@ namespace sys::col {
     void KnockbackOnCollision(Storage::Registry& world) {
         PROFILE_SCOPE("KnockbackOnCollision()");
         for (auto& col : sys::col::collision_cache.current) {
-            // players knocked back when collided with enemy
-            if (auto* a = world.TryGetComponent<tag::Player>(col.entity_a)) {
-                if (auto* b = world.TryGetComponent<tag::Enemy>(col.entity_b)) {
-                    auto& ptrans = world.GetComponent<cmpt::Transform>(col.entity_a);
-                    auto& etrans = world.GetComponent<cmpt::Transform>(col.entity_b);
-                    auto dir = Vector3Scale(
-                        utils::DirectionFlattenThenNormalize(ptrans.position, etrans.position),
-                        data::cnst::PLAYER_KNOCKBACK_SCALE
-                    );
-                    world.AddComponent<cmpt::Knockback>(
-                        col.entity_a, 
-                        cmpt::Knockback{ 
-                            .direction = dir, 
-                            .countdown = data::cnst::PLAYER_KNOCKBACK_DURATION 
-                        }
-                    );
-                }
+            // if a and b are enemies, they do not knock eachother back
+            if (world.HasComponent<tag::Enemy>(col.entity_a) && 
+                world.HasComponent<tag::Enemy>(col.entity_b)) {
+                continue;
             }
 
-            if (auto* a = world.TryGetComponent<tag::Enemy>(col.entity_a)) {
-                if (auto* b = world.TryGetComponent<tag::Player>(col.entity_b)) {
-                    auto& ptrans = world.GetComponent<cmpt::Transform>(col.entity_b);
-                    auto& etrans = world.GetComponent<cmpt::Transform>(col.entity_a);
-                    auto dir = Vector3Scale(
-                        utils::DirectionFlattenThenNormalize(ptrans.position, etrans.position),
-                        data::cnst::PLAYER_KNOCKBACK_SCALE
-                    );
-                    world.AddComponent<cmpt::Knockback>(
-                        col.entity_a, 
-                        cmpt::Knockback{ 
-                            .direction = dir, 
-                            .countdown = data::cnst::PLAYER_KNOCKBACK_DURATION 
-                        }
-                    );
-                }
+            // A applies knockback to B
+            if (auto* a = world.TryGetComponent<cmpt::AppliesKnockback>(col.entity_a)) {
+                auto& atrans = world.GetComponent<cmpt::Transform>(col.entity_a);
+                auto& btrans = world.GetComponent<cmpt::Transform>(col.entity_b);
+
+                world.AddComponent<cmpt::Knockback>(
+                    col.entity_b, 
+                    cmpt::Knockback{ 
+                        .direction = Vector3Scale(
+                            utils::DirectionFlattenThenNormalize(atrans.position, btrans.position),
+                            a->scale
+                        ), 
+                        .countdown = a->duration 
+                    }
+                );
+            }
+
+            // B applies knockback to A
+            if (auto* b = world.TryGetComponent<cmpt::AppliesKnockback>(col.entity_b)) {
+                auto& atrans = world.GetComponent<cmpt::Transform>(col.entity_a);
+                auto& btrans = world.GetComponent<cmpt::Transform>(col.entity_b);
+
+                world.AddComponent<cmpt::Knockback>(
+                    col.entity_a, 
+                    cmpt::Knockback{ 
+                        .direction = Vector3Scale(
+                            utils::DirectionFlattenThenNormalize(btrans.position, atrans.position),
+                            b->scale
+                        ),
+                        .countdown = b->duration 
+                    }
+                );
             }
         }
     }
@@ -201,25 +205,26 @@ namespace sys::col {
         PROFILE_SCOPE("RepositionOnCollision()");
         for (auto& col : sys::col::collision_cache.current) {
             // enemies cannot overlap
-            if (auto* a = world.TryGetComponent<tag::Enemy>(col.entity_a)) {
-                if (auto* b = world.TryGetComponent<tag::Enemy>(col.entity_b)) {
-                    // push enenmies out of each other
-                    auto& btrans = world.GetComponent<cmpt::Transform>(col.entity_b);
-                    auto& bcol = world.GetComponent<cmpt::Collider>(col.entity_b);
+            if (!world.HasComponent<tag::Enemy>(col.entity_a) ||
+                !world.HasComponent<tag::Enemy>(col.entity_b)) {
+                continue;
+            }
+                
+            // push enenmies out of each other
+            auto& btrans = world.GetComponent<cmpt::Transform>(col.entity_b);
+            auto& bcol = world.GetComponent<cmpt::Collider>(col.entity_b);
 
-                    auto& atrans = world.GetComponent<cmpt::Transform>(col.entity_a);
-                    auto& acol = world.GetComponent<cmpt::Collider>(col.entity_a);
-                    auto direction = utils::PushbackMTV_XZ(
-                        utils::GetBoundingBox(atrans, acol),
-                        utils::GetBoundingBox(btrans, bcol)
-                    );
+            auto& atrans = world.GetComponent<cmpt::Transform>(col.entity_a);
+            auto& acol = world.GetComponent<cmpt::Collider>(col.entity_a);
+            auto direction = utils::PushbackMTV_XZ(
+                utils::GetBoundingBox(atrans, acol),
+                utils::GetBoundingBox(btrans, bcol)
+            );
 
-                    // other than velocity system, this should be the only place that modifies transforms position directly
-                    if (direction.x != 0.0f || direction.z != 0) {
-                        utils::MoveAndSlideTerrain(atrans.position, Vector3Scale(direction,  0.5f));
-                        utils::MoveAndSlideTerrain(btrans.position, Vector3Scale(direction, -0.5f));
-                    }
-                }
+            // other than velocity system, this should be the only place that modifies transforms
+            if (direction.x != 0.0f || direction.z != 0) {
+                utils::MoveAndSlideTerrain(atrans.position, Vector3Scale(direction,  0.5f));
+                utils::MoveAndSlideTerrain(btrans.position, Vector3Scale(direction, -0.5f));
             }
         }
     }

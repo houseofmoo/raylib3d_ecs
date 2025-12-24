@@ -65,22 +65,6 @@ namespace data {
         }
     }
 
-    // temp sizing info
-    namespace size {
-        // constexpr Vector3 PLAYER = { 1.0f, 2.0f, 1.0f };
-        // constexpr Vector3 PROJECTILE = { 0.25f, 0.25f, 0.25f };
-        // constexpr Vector3 EXP = { 0.3f, 0.3f, 0.3f };
-        // constexpr Vector3 MONEY = { 0.3f, 0.3f, 0.3f };
-        // constexpr Vector3 POWERUP = { 0.5f, 0.5f, 0.5f };
-        // constexpr Vector3 WEAPON = { 1.25f, 0.35f, 0.35f };
-        // constexpr Vector3 MIN_COLLIDER = { 0.5f, 0.5f, 0.5f }; // to prevent loot from being so small it is hard to collect
-
-        // constexpr BoundingBox PLAY_AREA = {
-        //     .min = Vector3{-60.0f, 0.0f, -30.0f},
-        //     .max = Vector3{60.0f, 55.0f, 30.0f}
-        // };
-    }
-
     namespace cnst {
         // camera
         constexpr Vector3 CAMERA_START_POSITION   = { 5.0f, 3.0f, 5.0f };
@@ -110,10 +94,8 @@ namespace data {
         constexpr float   PLAYER_SPEED              = 10.0f;
         constexpr Layer   PLAYER_LAYER              = data::layer::PLAYER;
         constexpr Layer   PLAYER_LAYER_MASK         = data::layer::ENEMY | data::layer::LOOT;
-        constexpr float   PLAYER_KNOCKBACK_SCALE    = -20.0f;
-        constexpr float   PLAYER_KNOCKBACK_DURATION = 0.1f;
         constexpr float   PLAYER_DASH_RANGE         = 3.0f;
-        constexpr float   PLAYER_DASH_LENGTH        = 0.11f;
+        constexpr float   PLAYER_DASH_DURATION      = 0.11f;
 
 
         // loot
@@ -165,15 +147,21 @@ namespace data {
         // weapons
         constexpr float MIN_WEAPON_COOLDOWN     = 0.1f;
 
-        constexpr int   PISTOL_DAMAGE           = 5;
-        constexpr float PISTOL_COOLDOWN         = 0.5f;
-        constexpr float PISTOL_PROJECTILE_SPEED = 25.0f;
+        constexpr int   PISTOL_DAMAGE             = 5;
+        constexpr float PISTOL_COOLDOWN           = 0.5f;
+        constexpr float PISTOL_PROJECTILE_SPEED   = 25.0f;
+        constexpr int   PISTOL_PENETRATION        = 1;
+        constexpr float PISTOL_KNOCKBACK_SCALE    = 5.0f;
+        constexpr float PISTOL_KNOCKBACK_DURATION = 0.10f;
 
-        constexpr int   SHOTGUN_DAMAGE           = 9;
-        constexpr float SHOTGUN_COOLDOWN         = 2.5f;
-        constexpr float SHOTGUN_PROJECTILE_SPEED = 20.0f;
-        constexpr float SHOTGUN_SPREAD           = 30.0f;
-        constexpr int   SHOTGUN_PELLET_COUNT     = 3;
+        constexpr int   SHOTGUN_DAMAGE             = 9;
+        constexpr float SHOTGUN_COOLDOWN           = 2.5f;
+        constexpr float SHOTGUN_PROJECTILE_SPEED   = 20.0f;
+        constexpr int   SHOTGUNL_PENETRATION       = 1;
+        constexpr float SHOTGUN_SPREAD             = 30.0f;
+        constexpr int   SHOTGUN_PELLET_COUNT       = 3;
+        constexpr float SHOTGUN_KNOCKBACK_SCALE    = 10.0f;
+        constexpr float SHOTGUN_KNOCKBACK_DURATION = 0.10f;
 
         constexpr int     GRENADE_DAMAGE           = 25;
         constexpr float   GRENADE_COOLDOWN         = 2.0f;
@@ -198,29 +186,33 @@ namespace data {
         constexpr float MAX_SPAWN_INTERVAL         = 2.5f;
         constexpr float MIN_SPAWN_INTERVAL         = 0.5f;
         const float     ENEMY_ROTATION_DURATION    = 0.2f;
-        const float     ENEMY_DETOUR_LENGTH        = 3.0f;
+        const float     ENEMY_DETOUR_DURATION      = 3.0f;
         const float     ENEMY_LAZY_RETARGET_TIME   = 2.0f;
         const float     ENEMY_RANDOM_RETARGET_TIME = 2.0f;
 
         // grunt
-        constexpr Color   GRUNT_COLOR           = Color{ 255, 0, 255, 255 };
-        constexpr Vector3 GRUNT_SIZE            = { 1.0f, 1.5f, 1.0f };
-        constexpr int     GRUNT_MIN_HP          = 20;
-        const float       GRUNT_SPEED           = 5.0f;
-        const int         GRUNT_MELEE_DMG       = 5;
-        constexpr float   GRUNT_LOOT_MULTIPLIER = 1.0f;
-        constexpr Layer   GRUNT_LAYER           = ENEMY_LAYER;
-        constexpr Layer   GRUNT_LAYER_MASK      = ENEMY_LAYER_MASK;
+        constexpr Color   GRUNT_COLOR              = Color{ 255, 0, 255, 255 };
+        constexpr Vector3 GRUNT_SIZE               = { 1.0f, 1.5f, 1.0f };
+        constexpr int     GRUNT_MIN_HP             = 20;
+        const float       GRUNT_SPEED              = 5.0f;
+        const int         GRUNT_MELEE_DMG          = 5;
+        constexpr float   GRUNT_LOOT_MULTIPLIER    = 1.0f;
+        constexpr float   GRUNT_KNOCKBACK_SCALE    = 20.0f;
+        constexpr float   GRUNT_KNOCKBACK_DURATION = 0.1f;
+        constexpr Layer   GRUNT_LAYER              = ENEMY_LAYER;
+        constexpr Layer   GRUNT_LAYER_MASK         = ENEMY_LAYER_MASK;
 
         // brute
-        constexpr Color   BRUTE_COLOR           = Color{ 255, 100, 255, 255 };
-        constexpr Vector3 BRUTE_SIZE            = { 1.5f, 2.5f, 1.5f };
-        constexpr int     BRUTE_MIN_HP          = 50;
-        constexpr float   BRUTE_SPEED           = 3.5f;
-        constexpr int     BRUTE_MELEE_DMG       = 10;
-        constexpr float   BRUTE_LOOT_MULTIPLIER = 1.5f;
-        constexpr Layer   BRUTE_LAYER           = ENEMY_LAYER;
-        constexpr Layer   BRUTE_LAYER_MASK      = ENEMY_LAYER_MASK;
+        constexpr Color   BRUTE_COLOR              = Color{ 255, 100, 255, 255 };
+        constexpr Vector3 BRUTE_SIZE               = { 1.5f, 2.5f, 1.5f };
+        constexpr int     BRUTE_MIN_HP             = 50;
+        constexpr float   BRUTE_SPEED              = 3.5f;
+        constexpr int     BRUTE_MELEE_DMG          = 10;
+        constexpr float   BRUTE_LOOT_MULTIPLIER    = 1.5f;
+        constexpr float   BRUTE_KNOCKBACK_SCALE    = 30.0f;
+        constexpr float   BRUTE_KNOCKBACK_DURATION = 0.15f;
+        constexpr Layer   BRUTE_LAYER              = ENEMY_LAYER;
+        constexpr Layer   BRUTE_LAYER_MASK         = ENEMY_LAYER_MASK;
 
 
 

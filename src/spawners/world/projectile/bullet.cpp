@@ -5,36 +5,35 @@
 #include "components/components.h"
 
 namespace spwn::proj {
-    void Bullet(Storage::Registry& world, const Vector3 position, const Vector3 direction,
-                const int damage, const int penetration) {
+    void Bullet(Storage::Registry& world, const BulletConfig config) {
         
-        auto bullet = world.CreateEntity();
+        auto entity = world.CreateEntity();
         
         world.AddComponent<tag::Projectile>(
-            bullet,
+            entity,
             tag::Projectile{}
         );
 
         world.AddComponent<tag::DestroyOnTerrainCollision>(
-            bullet,
+            entity,
             tag::DestroyOnTerrainCollision{}
         );
 
         world.AddComponent<cmpt::Transform>(
-            bullet,
+            entity,
             cmpt::Transform{ 
-                position,
+                config.position,
                 QuaternionIdentity()
             }
         );
 
         world.AddComponent<cmpt::Velocity>(
-            bullet,
-            cmpt::Velocity{ direction.x, 0.0f, direction.z }
+            entity,
+            cmpt::Velocity{ config.direction.x, 0.0f, config.direction.z }
         );
 
         world.AddComponent<cmpt::Collider>(
-            bullet,
+            entity,
             cmpt::Collider{
                 .layer = data::cnst::PROJECTILE_LAYER,
                 .mask = data::cnst::PROJECTILE_LAYER_MASK,
@@ -44,7 +43,7 @@ namespace spwn::proj {
         );
 
         world.AddComponent<cmpt::Lifetime>(
-            bullet,
+            entity,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
                 .countdown = data::cnst::PROJECTILE_LIFETIME
@@ -52,17 +51,25 @@ namespace spwn::proj {
         );
 
         world.AddComponent<cmpt::DamageDealer>(
-            bullet,
-            cmpt::DamageDealer{ damage }
+            entity,
+            cmpt::DamageDealer{ config.damage }
+        );
+
+        world.AddComponent<cmpt::AppliesKnockback>(
+            entity,
+            cmpt::AppliesKnockback { 
+                .scale = config.knockback_scale, 
+                .duration = config.knockback_duration
+            }
         );
 
         world.AddComponent<cmpt::Penetration>(
-            bullet,
-            cmpt::Penetration { penetration }
+            entity,
+            cmpt::Penetration { config.penetration }
         );
 
         world.AddComponent<cmpt::Draw>(
-            bullet,
+            entity,
             cmpt::Draw{ 
                 .size = data::cnst::PROJECTILE_SIZE, 
                 .color = data::cnst::PROJECTILE_COLOR,

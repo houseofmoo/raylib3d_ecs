@@ -10,31 +10,52 @@
 
 namespace sys::atk {
     inline void FireSpread(
-        Storage::Registry& world, 
-        Vector3 origin, 
-        Vector3 base_dir, 
+        Storage::Registry& world,
         int pellet_count,
-        float totalSpreadDegrees, 
-        const int damage, 
-        const int penetration) {
-        
+        float spread_degrees,
+        spwn::proj::BulletConfig config) {
+            
+        Vector3 base_dir = config.direction;
+
         // Convert to radians
-        float spread_rad = totalSpreadDegrees * (PI / 180.0f);
+        float spread_rad = spread_degrees * (PI / 180.0f);
         float half = spread_rad * 0.5f;
 
         for (int i = 0; i < pellet_count; i++) {
             float t = (float)i / (float)(pellet_count - 1);
             float angle = Lerp(-half, +half, t);
             Vector3 dir = utils::RotateDirYaw(base_dir, angle);
-            spwn::proj::Bullet(
-                world, 
-                origin,
-                dir, 
-                damage,
-                penetration
-            );
+            config.direction = dir;
+            spwn::proj::Bullet(world, config);
         }
     }
+
+    // inline void FireSpread(
+    //     Storage::Registry& world, 
+    //     Vector3 origin, 
+    //     Vector3 base_dir, 
+    //     int pellet_count,
+    //     float totalSpreadDegrees, 
+    //     const int damage, 
+    //     const int penetration) {
+        
+    //     // Convert to radians
+    //     float spread_rad = totalSpreadDegrees * (PI / 180.0f);
+    //     float half = spread_rad * 0.5f;
+
+    //     for (int i = 0; i < pellet_count; i++) {
+    //         float t = (float)i / (float)(pellet_count - 1);
+    //         float angle = Lerp(-half, +half, t);
+    //         Vector3 dir = utils::RotateDirYaw(base_dir, angle);
+    //         spwn::proj::Bullet(
+    //             world, 
+    //             origin,
+    //             dir, 
+    //             damage,
+    //             penetration
+    //         );
+    //     }
+    // }
 
     void PistolAttack(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("PistolAttack()");
@@ -57,8 +78,17 @@ namespace sys::atk {
             );
 
             direction = Vector3Scale(direction, wep.base_stats.projectile_speed);
-            float dmg = wep.base_stats.damage * data::g_player.damage_multiplier;
-            spwn::proj::Bullet(world, trans.position, direction, dmg, 1);
+            spwn::proj::Bullet(
+                world,
+                spwn::proj::BulletConfig{
+                    .position = trans.position,
+                    .direction = direction,
+                    .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
+                    .penetration = data::cnst::PISTOL_PENETRATION,
+                    .knockback_scale = data::cnst::PISTOL_KNOCKBACK_SCALE,
+                    .knockback_duration = data::cnst::PISTOL_KNOCKBACK_DURATION
+                }
+            );
             PlaySound(sound_fx);
             SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
         }
@@ -79,14 +109,27 @@ namespace sys::atk {
                 wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
             } 
 
-            Vector3 direction = utils::DirectionFlattenThenNormalize(
-                trans.position, 
-                input.mouse_world_position
+            Vector3 direction = Vector3Scale(
+                utils::DirectionFlattenThenNormalize(
+                    trans.position, 
+                    input.mouse_world_position
+                ),
+                wep.base_stats.projectile_speed
             );
 
-            direction = Vector3Scale(direction, wep.base_stats.projectile_speed);
-            float dmg = wep.base_stats.damage * data::g_player.damage_multiplier;
-            FireSpread(world, trans.position, direction, wep.pellet_count, wep.spread_deg, dmg, 1);
+            FireSpread(
+                world, 
+                wep.pellet_count, 
+                wep.spread_deg,
+                spwn::proj::BulletConfig{
+                    .position = trans.position,
+                    .direction = direction,
+                    .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
+                    .penetration = data::cnst::SHOTGUNL_PENETRATION,
+                    .knockback_scale = data::cnst::SHOTGUN_KNOCKBACK_SCALE,
+                    .knockback_duration = data::cnst::SHOTGUN_KNOCKBACK_DURATION
+                }
+            );
             PlaySound(sound_fx);
             SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
         }

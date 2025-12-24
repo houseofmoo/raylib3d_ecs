@@ -172,9 +172,13 @@ namespace cmpt {
         float countdown;
     };
 
-
     struct DashExhausted { // not allowed to dash until some time
         float countdown;
+    };
+
+    struct AppliesKnockback {
+        float scale;
+        float duration;
     };
 
     struct Knockback {

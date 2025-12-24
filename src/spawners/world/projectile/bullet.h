@@ -4,11 +4,14 @@
 #include "storage/registry.h"
 
 namespace spwn::proj {
-    void Bullet(
-        Storage::Registry& world, 
-        const Vector3 position, 
-        const Vector3 direction, 
-        const int damage,
-        const int penetration
-    );
+    struct BulletConfig {
+        Vector3 position;
+        Vector3 direction;
+        int damage;
+        int penetration;
+        float knockback_scale;
+        float knockback_duration;
+    };
+
+    void Bullet(Storage::Registry& world, const BulletConfig config);
 }
