@@ -2,7 +2,7 @@
 #include "components/components.h"
 
 namespace spwn::weapon {
-    void EquipGrenade(Storage::Registry& world, Entity id) {
+    void EquipGrenade(Storage::Registry& world, const Entity id) {
          if (!world.HasComponent<cmpt::Grenade>(id)) {
             world.AddComponent<cmpt::Grenade>(
                 id,
@@ -21,6 +21,12 @@ namespace spwn::weapon {
             // TODO: upgrade random stat
             auto& wep = world.GetComponent<cmpt::Grenade>(id);
             wep.base_stats.damage += 1;
+        }
+    }
+    
+    void DequipGrenade(Storage::Registry& world, const Entity id) {
+        if (world.HasComponent<cmpt::Grenade>(id)) {
+           world.RemoveComponent<cmpt::Grenade>(id);
         }
     }
 }

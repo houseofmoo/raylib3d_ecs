@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cinttypes>
-
+#include <array>
+#include <string_view>
 #include "raylib.h"
 #include "data/entity.h"
 #include "data/loot.h"
@@ -106,7 +107,6 @@ namespace cmpt {
     ////////////////////////////////////////////////
     // ANIMATION-ISH
     ////////////////////////////////////////////////
-    // rotates in place
     struct RotateInPlace { 
         float speed;
     };
@@ -216,9 +216,8 @@ namespace cmpt {
     ////////////////////////////////////////////////
     // WEAPONS
     ////////////////////////////////////////////////
-    struct Weapon {
-        Entity parent;
-        data::loot::WeaponKind kind;
+    struct EquippedWeapons {
+        std::array<data::loot::WeaponKind, 4> weapons;
     };
 
     struct WeaponBaseStats { 
@@ -249,15 +248,6 @@ namespace cmpt {
         WeaponBaseStats base_stats;
     };
 
-    // struct WeaponStats {
-    //     Entity parent;
-    //     data::loot::WeaponKind kind;
-    //     float cooldown;
-    //     float countdown;
-    //     float projectile_speed;
-    //     int damage;
-    // };
-
     ////////////////////////////////////////////////
     // PROJECTILE SPECIFIC
     ////////////////////////////////////////////////
@@ -274,7 +264,7 @@ namespace cmpt {
     // EVENTS
     ////////////////////////////////////////////////
     struct Notification {
-        int notification_index;
+        std::string_view msg;
     };
 
     struct LootEvent {

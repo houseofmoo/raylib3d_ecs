@@ -3,7 +3,7 @@
 #include "utils/debug.h"
 
 namespace spwn::weapon {
-    // void Shotgun(Storage::Registry& world, Entity parent) {
+    // void Shotgun(Storage::Registry& world, const Entity parent) {
     //     auto weapon = world.CreateEntity();
     //     world.AddComponent<cmpt::Weapon>(
     //         weapon,
@@ -30,7 +30,7 @@ namespace spwn::weapon {
     //     );
     // }
 
-    void EquipShotgun(Storage::Registry& world, Entity id) {
+    void EquipShotgun(Storage::Registry& world, const Entity id) {
         // if entity does not have a shotgun, give them one
         if (!world.HasComponent<cmpt::Shotgun>(id)) {
             world.AddComponent<cmpt::Shotgun>(
@@ -52,6 +52,13 @@ namespace spwn::weapon {
             // upgrade random stat on the shotgun
             auto& wep = world.GetComponent<cmpt::Shotgun>(id);
             wep.base_stats.damage += 1;
+        }
+    }
+
+    void DequipShotgun(Storage::Registry& world, const Entity id) {
+        // if entity does not have a shotgun, give them one
+        if (world.HasComponent<cmpt::Shotgun>(id)) {
+            world.RemoveComponent<cmpt::Shotgun>(id);
         }
     }
 }

@@ -15,41 +15,41 @@ namespace sys::evt {
         switch (kind) {
             case data::loot::PowerupKind::Damage: {
                 data::g_player.damage_multiplier += data::cnst::DAMAGE_POWERUP_VALUE;
-                spwn::evt::Notification(world, "+DAMGE");
+                spwn::evt::Notification(world, data::notif::GAIN_DAMAGE);
                 break;
             }
             case data::loot::PowerupKind::AttackSpeed: {
                 data::g_player.attack_speed_multiplier += data::cnst::ATTACK_SPEED_POWERUP_VALUE;
-                spwn::evt::Notification(world, "+ATTACK SPEED");
+                spwn::evt::Notification(world, data::notif::GAIN_ATTACK_SPEED);
                 break;
             }
             case data::loot::PowerupKind::MoveSpeed: {
                 data::g_player.move_speed_multiplier += data::cnst::MOVE_SPEED_POWERUP_VALUE;
-                spwn::evt::Notification(world, "+MOVE SPEED");
+                spwn::evt::Notification(world, data::notif::GAIN_MOVE_SPEED);
                 break;
             }
             case data::loot::PowerupKind::PickupRange: {
                 data::g_player.pickup_range_multiplier += data::cnst::PICKUP_RANGE_POWERUP_VALUE;
-                spwn::evt::Notification(world, "+PICKUP RANGE");
+                spwn::evt::Notification(world, data::notif::GAIN_PICKUP_RANGE);
                 break;
             }
             case data::loot::PowerupKind::DashDistance: {
                 data::g_player.dash_range_multiplier += data::cnst::DASH_DISTANCE_POWERUP_VALUE;
-                spwn::evt::Notification(world, "+DASH RANGE");
+                spwn::evt::Notification(world, data::notif::GAIN_DASH_RANGE);
                 break;
             }
             case data::loot::PowerupKind::Health: {
                 auto& hp = world.GetComponent<cmpt::Health>(data::g_player.id);
                 hp.amount += data::cnst::HP_POWERUP_VALUE;
                 if (hp.amount > hp.max) hp.amount = hp.max;
-                spwn::evt::Notification(world, "+HP");
+                spwn::evt::Notification(world, data::notif::GAIN_HEALTH);
                 break;
             }
             case data::loot::PowerupKind::MaxHp: {
                 auto& hp = world.GetComponent<cmpt::Health>(data::g_player.id);
                 hp.max += data::cnst::HPMAX_POWERUP_VALUE;
                 hp.amount += data::cnst::HPMAX_POWERUP_VALUE;
-                spwn::evt::Notification(world, "+MAX HP");
+                spwn::evt::Notification(world, data::notif::GAIN_MAX_HEALTH);
                 break;
             }
             default: {
@@ -65,37 +65,37 @@ namespace sys::evt {
         switch (kind) {
             case data::loot::WeaponKind::Pistol: {
                 spwn::weapon::EquipPistol(world, id);
-                spwn::evt::Notification(world, "+PISTOL");
+                spwn::evt::Notification(world, data::notif::GAIN_PISTOL);
                 break;
             }
             case data::loot::WeaponKind::Shotgun: {
                 spwn::weapon::EquipShotgun(world, id);
-                spwn::evt::Notification(world, "+SHOTGUN");
+                spwn::evt::Notification(world, data::notif::GAIN_SHOTGUN);
                 break;
             }
             case data::loot::WeaponKind::Rifle: {
-                PRINT("+Rifle");
+                spwn::evt::Notification(world, data::notif::GAIN_RIFLE);
                 break;
             }
             case data::loot::WeaponKind::Sniper: {
-                PRINT("+Sniper");
+                spwn::evt::Notification(world, data::notif::GAIN_SNIPER);
                 break;
             }
             case data::loot::WeaponKind::RailGun: {
-                PRINT("+RailGun");
+                spwn::evt::Notification(world, data::notif::GAIN_RAILGUN);
                 break;
             }
             case data::loot::WeaponKind::SMG: {
-                PRINT("+SMG");
+                spwn::evt::Notification(world, data::notif::GAIN_SMG);
                 break;
             }
             case data::loot::WeaponKind::Grenade: {
                 spwn::weapon::EquipGrenade(world, id);
-                spwn::evt::Notification(world, "+GRENADE");
+                spwn::evt::Notification(world, data::notif::GAIN_GRENADE);
                 break;
             }
             case data::loot::WeaponKind::RocketLauncher: {
-                PRINT("+RocketLauncher");
+                spwn::evt::Notification(world, data::notif::GAIN_ROCKET_LAUNCHER);
                 break;
             }
             default: {
@@ -115,16 +115,16 @@ namespace sys::evt {
                 case data::loot::LootKind::Exp: {
                     auto& exp = world.GetComponent<cmpt::ExpLoot>(entity);
                     int levelup = data::g_player.AddExp(exp.amount);
-                    spwn::evt::Notification(world, "+EXP");
+                    spwn::evt::Notification(world, data::notif::GAIN_EXP);
                     if (levelup > 0) {
-                        spwn::evt::Notification(world, "LVLUP " + std::to_string(levelup));
+                        spwn::evt::Notification(world, data::notif::GAIN_LEVELUP);
                     }
                     break;
                 }
                 case data::loot::LootKind::Money: {
                     auto& money = world.GetComponent<cmpt::MoneyLoot>(entity);
                     data::g_player.money += money.amount;
-                    spwn::evt::Notification(world, "+" + std::to_string(money.amount) + " GOLD");
+                    spwn::evt::Notification(world, data::notif::GAIN_MONEY);
                     break;
                 }
 

@@ -1,7 +1,6 @@
 #include "systems/events/notification_event_system.h"
 #include "raylib.h"
 #include "components/components.h"
-#include "data/notifications/notification.h"
 
 namespace sys::evt {
    void DrawNotifications(Storage::Registry& world, const float delta_time) noexcept {
@@ -10,18 +9,15 @@ namespace sys::evt {
 
         for (auto noti : world.View<cmpt::Notification, 
                                     cmpt::Lifetime>()) {
-            auto& lifetime = world.GetComponent<cmpt::Lifetime>(noti);\
+            auto& lifetime = world.GetComponent<cmpt::Lifetime>(noti);
             lifetime.countdown -= delta_time;
             if (lifetime.countdown <= 0.0) {
                 world.AddComponent<tag::Destroy>(noti);
                 continue;
             }
-
+            
             auto& notification = world.GetComponent<cmpt::Notification>(noti);
-            auto msg = data::noti::notifications.m_notifications[notification.notification_index];
-
-            // TODO: move msg up over time
-            DrawText(msg.c_str(), x_pos, y_offset, 20, WHITE);
+            DrawText(notification.msg.data(), x_pos, y_offset, 20, WHITE);
             y_offset -= 20;
         }
    }

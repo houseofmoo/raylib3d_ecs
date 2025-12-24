@@ -65,7 +65,7 @@ namespace debug {
         ImGui::Text("dmg%:       %.2f", data::g_player.damage_multiplier);
         ImGui::Text("a-spd%:     %.2f", data::g_player.attack_speed_multiplier);
         ImGui::Text("m-spd%:     %.2f", data::g_player.move_speed_multiplier);
-        ImGui::Text("d-rng%:     %.2f", data::g_player.move_speed_multiplier);
+        ImGui::Text("d-rng%:     %.2f", data::g_player.dash_range_multiplier);
         ImGui::Text("pu-rng%:    %.2f", data::g_player.pickup_range_multiplier);
         ImGui::Separator();
 
@@ -74,72 +74,81 @@ namespace debug {
         ImGui::Separator();
 
         // add stats
-        if (ImGui::Button("+dmg")) {
+        ImVec2 bsize = ImVec2{100, 30};
+        if (ImGui::Button("+exp", bsize)) {
+            data::g_player.exp += data::cnst::EXP_VALUE;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+mny", bsize)) {
+            data::g_player.money += data::cnst::MONEY_VALUE;
+        }
+
+        if (ImGui::Button("+dmg", bsize)) {
             data::g_player.damage_multiplier += data::cnst::DAMAGE_POWERUP_VALUE;
         }
         ImGui::SameLine();
-        if (ImGui::Button("-dmg")) {
+        if (ImGui::Button("-dmg", bsize)) {
             data::g_player.damage_multiplier -= data::cnst::DAMAGE_POWERUP_VALUE;
         }
 
-        if (ImGui::Button("+atkspd")) {
+        if (ImGui::Button("+atkspd", bsize)) {
             data::g_player.attack_speed_multiplier += data::cnst::ATTACK_SPEED_POWERUP_VALUE;
         }
         ImGui::SameLine();
-        if (ImGui::Button("-atkspd")) {
+        if (ImGui::Button("-atkspd", bsize)) {
             data::g_player.attack_speed_multiplier -= data::cnst::ATTACK_SPEED_POWERUP_VALUE;
         }
 
-        if (ImGui::Button("+mspd")) {
+        if (ImGui::Button("+mspd", bsize)) {
             data::g_player.move_speed_multiplier += data::cnst::MOVE_SPEED_POWERUP_VALUE;
         }
         ImGui::SameLine();
-        if (ImGui::Button("-mspd")) {
+        if (ImGui::Button("-mspd", bsize)) {
             data::g_player.move_speed_multiplier -= data::cnst::MOVE_SPEED_POWERUP_VALUE;
         }
 
-        if (ImGui::Button("+prng")) {
+        if (ImGui::Button("+prng", bsize)) {
             data::g_player.pickup_range_multiplier += data::cnst::PICKUP_RANGE_POWERUP_VALUE;
         }
         ImGui::SameLine();
-        if (ImGui::Button("-prng")) {
+        if (ImGui::Button("-prng", bsize)) {
             data::g_player.pickup_range_multiplier -= data::cnst::PICKUP_RANGE_POWERUP_VALUE;
         }
 
-        if (ImGui::Button("+dash")) {
+        if (ImGui::Button("+dash", bsize)) {
             data::g_player.dash_range_multiplier += data::cnst::DASH_DISTANCE_POWERUP_VALUE;
         }
         ImGui::SameLine();
-        if (ImGui::Button("-dash")) {
+        if (ImGui::Button("-dash", bsize)) {
             data::g_player.dash_range_multiplier -= data::cnst::DASH_DISTANCE_POWERUP_VALUE;
         }
-        ImGui::Separator();
-        
-        // tilemap testing
-        if (ImGui::Button("draw tilemap")) {
-            data::g_terrain.DrawTileMap();
-        }
-        // ImGui::InputFloat("X:", &position_x);
-        // ImGui::InputFloat("Z:", &position_z);
-        // if (ImGui::Button("Test Point")) {
-        //     position_blocked = data::game::terrain.IsBlockedWorld(position_x, position_z);
-        // }
-        // ImGui::Text("Blocked: %d", position_blocked);
     }
 
     void DrawWeapsTab(Storage::Registry& world) {
-        if (ImGui::Button("+pistol")) {
+        ImVec2 size = ImVec2{100, 30};
+        if (ImGui::Button("+pistol", size)) {
             spwn::weapon::EquipPistol(world, data::g_player.id);
         }
         ImGui::SameLine();
-        if (ImGui::Button("+shotgun")) {
+        if (ImGui::Button("-pistol", size)) {
+            spwn::weapon::DequipPistol(world, data::g_player.id);
+        }
+
+        if (ImGui::Button("+shotgun", size)) {
             spwn::weapon::EquipShotgun(world, data::g_player.id);
         }
         ImGui::SameLine();
-        if (ImGui::Button("+grenade")) {
+        if (ImGui::Button("-shotgun", size)) {
+            spwn::weapon::DequipShotgun(world, data::g_player.id);
+        }
+        
+        if (ImGui::Button("+grenade", size)) {
             spwn::weapon::EquipGrenade(world, data::g_player.id);
         }
-
+        ImGui::SameLine();
+        if (ImGui::Button("-grenade", size)) {
+            spwn::weapon::DequipGrenade(world, data::g_player.id);
+        }
         ImGui::Separator();
 
         if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::g_player.id)) {
@@ -167,6 +176,35 @@ namespace debug {
             ImGui::Text("  cd:      %.2f", wep->base_stats.cooldown);
             ImGui::Separator();
         }
+    }
+
+    void DrawTilemapTab() {
+        // tilemap testing
+        if (ImGui::Button("draw tilemap")) {
+            data::g_terrain.DrawTileMap();
+        }
+    }
+
+    void DrawProfilerTab() {
+        #ifdef PROFILER_ENABLED
+        // Profiler Tab
+        if (ImGui::BeginTabItem("profiler")) {
+            if (ImGui::Checkbox("enable profiler: ", &data::g_player.profiler_enabled)) {
+                PRINT("Profiler contents cleared");
+                PROFILER_CLEAR;
+            }
+
+            if (ImGui::Button("dump profiler", ImVec2{120, 20})) {
+                PRINT("Profiler contents written");
+                PROFILER_PRINT;
+            }
+            if (ImGui::Button("clear profiler", ImVec2{120, 20})) {
+                PRINT("Profiler contents cleared");
+                PROFILER_CLEAR;
+            }
+            ImGui::EndTabItem();
+        }
+        #endif
     }
 
     void DrawDebugUI(Storage::Registry& world, ImGuiIO& io) {
@@ -202,25 +240,13 @@ namespace debug {
                 ImGui::EndTabItem();
             }
 
-            #ifdef PROFILER_ENABLED
-            // Profiler Tab
-            if (ImGui::BeginTabItem("profiler")) {
-                if (ImGui::Checkbox("enable profiler: ", &data::g_player.profiler_enabled)) {
-                    PRINT("Profiler contents cleared");
-                    PROFILER_CLEAR;
-                }
-
-                if (ImGui::Button("dump profiler", ImVec2{120, 20})) {
-                    PRINT("Profiler contents written");
-                    PROFILER_PRINT;
-                }
-                if (ImGui::Button("clear profiler", ImVec2{120, 20})) {
-                    PRINT("Profiler contents cleared");
-                    PROFILER_CLEAR;
-                }
+            // tilemap tab
+            if (ImGui::BeginTabItem("tilemap")) {
+                DrawTilemapTab();
                 ImGui::EndTabItem();
             }
-            #endif
+
+            DrawProfilerTab();
             ImGui::EndTabBar();
         }
         ImGui::End();

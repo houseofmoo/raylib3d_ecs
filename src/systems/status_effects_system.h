@@ -3,6 +3,7 @@
 #include "storage/registry.h"
 #include "components/components.h"
 #include "spawners/system/events/notification.h"
+#include "data/entity.h"
 #include "utils/debug.h"
 
 namespace sys::se {
@@ -29,11 +30,7 @@ namespace sys::se {
                     col->mask = invuln.mask;
                 }
                 world.RemoveComponent<cmpt::Invulnerable>(entity);
-                
-                spwn::evt::Notification(
-                    world, 
-                    std::string("-INVUL")
-                );
+                spwn::evt::Notification(world, data::notif::LOSE_INVUL);
             }
         }
 

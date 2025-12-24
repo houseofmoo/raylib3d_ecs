@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cinttypes>
+#include <string_view>
 #include "raylib.h"
 
 using Entity = uint32_t;
@@ -18,6 +19,7 @@ namespace data {
         };
 
         enum class PowerupKind {
+            NONE,
             Damage,
             AttackSpeed,
             MoveSpeed,
@@ -28,7 +30,15 @@ namespace data {
             Last
         };
 
+        inline PowerupKind GetRandomPowerupKind() {
+            return (PowerupKind)GetRandomValue(
+                (int)data::loot::PowerupKind::NONE + 1, 
+                (int)data::loot::PowerupKind::Last - 1
+            );;
+        }
+
         enum class WeaponKind {
+            NONE,
             Pistol,          // single pellet, starter wep expected to be not awesome
             Shotgun,         // spread pattern (3 pellets)
             Rifle,           // richochettes?
@@ -39,6 +49,13 @@ namespace data {
             RocketLauncher,  // slow moving + area damage
             Last
         };
+
+        inline WeaponKind GetRandomWeaponKind() {
+            return (WeaponKind)GetRandomValue(
+                (int)data::loot::WeaponKind::NONE + 1, 
+                (int)data::loot::WeaponKind::Last - 1
+            );
+        }
     }
     
     // layer masks
@@ -97,19 +114,20 @@ namespace data {
         constexpr float   PLAYER_DASH_RANGE         = 3.0f;
         constexpr float   PLAYER_DASH_DURATION      = 0.11f;
 
-
         // loot
-        constexpr float   LOOT_ROTATION_SPEED = 2.5f;
-        constexpr Vector3 MIN_LOOT_COLLIDER   = { 0.5f, 0.5f, 0.5f };
-        constexpr float   LOOT_LIFETIME       = 15.0f;
-        constexpr Layer   LOOT_LAYER          = data::layer::LOOT;
-        constexpr Layer   LOOT_LAYER_MASK     = data::layer::PLAYER;
-        constexpr Color   EXP_COLOR           = Color{ 102, 191, 255, 255 }; // SKYBLUE
-        constexpr Vector3 EXP_SIZE            = { 0.3f, 0.3f, 0.3f };
-        constexpr Vector3 MONEY_SIZE          = { 0.3f, 0.3f, 0.3f };
-        constexpr Color   MONEY_COLOR         = Color{ 255, 203, 0, 255 }; // GOLD
-        constexpr Vector3 POWERUP_SIZE        = { 0.5f, 0.5f, 0.5f };
-        constexpr Vector3 WEAPON_SIZE         = { 1.25f, 0.35f, 0.35f };
+        constexpr int     LOOT_CHANCE             = 50;
+        constexpr int     LOOT_BADLUCK_PROTECTION = 10;
+        constexpr float   LOOT_ROTATION_SPEED     = 2.5f;
+        constexpr Vector3 MIN_LOOT_COLLIDER       = { 0.5f, 0.5f, 0.5f };
+        constexpr float   LOOT_LIFETIME           = 15.0f;
+        constexpr Layer   LOOT_LAYER              = data::layer::LOOT;
+        constexpr Layer   LOOT_LAYER_MASK         = data::layer::PLAYER;
+        constexpr Color   EXP_COLOR               = Color{ 102, 191, 255, 255 }; // SKYBLUE
+        constexpr Vector3 EXP_SIZE                = { 0.3f, 0.3f, 0.3f };
+        constexpr Vector3 MONEY_SIZE              = { 0.3f, 0.3f, 0.3f };
+        constexpr Color   MONEY_COLOR             = Color{ 255, 203, 0, 255 }; // GOLD
+        constexpr Vector3 POWERUP_SIZE            = { 0.5f, 0.5f, 0.5f };
+        constexpr Vector3 WEAPON_SIZE             = { 1.25f, 0.35f, 0.35f };
 
         constexpr int   EXP_VALUE                   = 1; 
         constexpr int   MONEY_VALUE                 = 1;
@@ -123,6 +141,7 @@ namespace data {
 
         // powerup colors
         constexpr std::array<Color, static_cast<int>(data::loot::PowerupKind::Last)> POWERUP_COLORS = {
+            BLACK,      // NONE
             GREEN,      // damage
             LIME,       // attack speed
             DARKGREEN,  // move speed
@@ -134,6 +153,7 @@ namespace data {
 
         // weapon colors
         constexpr std::array<Color, static_cast<int>(data::loot::WeaponKind::Last)> WEAPON_COLORS = {
+            BLACK,      // NONE
             LIGHTGRAY,  // pistol
             GRAY,       // shotgun
             DARKGRAY,   // rifle
@@ -213,10 +233,35 @@ namespace data {
         constexpr float   BRUTE_KNOCKBACK_DURATION = 0.15f;
         constexpr Layer   BRUTE_LAYER              = ENEMY_LAYER;
         constexpr Layer   BRUTE_LAYER_MASK         = ENEMY_LAYER_MASK;
+    }
 
+    // notifications
+    namespace notif {
+        constexpr float NOTIFICATION_DURATION = 3.0f;
 
+        using Text = std::string_view;
+        inline constexpr Text GAIN_EXP             = "+EXP";
+        inline constexpr Text GAIN_MONEY           = "+MONEY";
+        inline constexpr Text GAIN_LEVELUP         = "+LEVEL";
 
-        // notifications
-        //constexpr std::string LOOT_MSG = "hello there"; // this is a test
+        inline constexpr Text GAIN_DAMAGE          = "+DAMAGE";
+        inline constexpr Text GAIN_ATTACK_SPEED    = "+ATTACK SPEED";
+        inline constexpr Text GAIN_MOVE_SPEED      = "+MOVE SPEED";
+        inline constexpr Text GAIN_PICKUP_RANGE    = "+PICKUP RANGE";
+        inline constexpr Text GAIN_DASH_RANGE      = "+DASH RANGE";
+        inline constexpr Text GAIN_HEALTH          = "+HEALTH";
+        inline constexpr Text GAIN_MAX_HEALTH      = "+MAX HEALTH";
+
+        inline constexpr Text GAIN_PISTOL          = "+PISTOL";
+        inline constexpr Text GAIN_SHOTGUN         = "+SHOTGUN";
+        inline constexpr Text GAIN_RIFLE           = "+RIFLE";
+        inline constexpr Text GAIN_SNIPER          = "+SNIPER";
+        inline constexpr Text GAIN_RAILGUN         = "+RAILGUN";
+        inline constexpr Text GAIN_SMG             = "+SMG";
+        inline constexpr Text GAIN_GRENADE         = "+GRENADE";
+        inline constexpr Text GAIN_ROCKET_LAUNCHER = "+ROCKET LAUNCHER";
+
+        inline constexpr Text GAIN_INVUL           = "+INVULNERABLE";
+        inline constexpr Text LOSE_INVUL           = "-INVULNERABLE";
     }
 }

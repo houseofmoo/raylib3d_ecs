@@ -4,6 +4,7 @@
 #include "storage/registry.h"
 
 namespace spwn::weapon {
-    void Shotgun(Storage::Registry& world, Entity parent);
-    void EquipShotgun(Storage::Registry& world, Entity id);
+    //void Shotgun(Storage::Registry& world, const Entity parent);
+    void EquipShotgun(Storage::Registry& world, const Entity id);
+    void DequipShotgun(Storage::Registry& world, const Entity id);
 }

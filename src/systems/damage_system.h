@@ -40,6 +40,7 @@ namespace sys::dmg {
                         .countdown = data::cnst::INVULNRABILITY_CD
                     }
                 );
+                spwn::evt::Notification(world, data::notif::GAIN_INVUL);
 
                 // while invulnerable do not interact with enemies
                 col.mask = col.mask & ~data::layer::ENEMY;
@@ -49,8 +50,6 @@ namespace sys::dmg {
                     entity,
                     cmpt::FreezeTime{ .countdown = data::cnst::IMPACT_FREZE }
                 );
-
-                spwn::evt::Notification(world, std::string("-" + std::to_string(dmg.total) + " HP"));
             }
             
             world.AddComponent<cmpt::DamageFlash>(

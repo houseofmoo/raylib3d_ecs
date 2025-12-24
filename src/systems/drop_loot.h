@@ -26,50 +26,41 @@ namespace sys::loot {
             spwn::loot::Exp(world, etrans.position, data::cnst::EXP_VALUE);
 
             if (data::g_player.always_drop_loot) {
-                int roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last - 1);
-                spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);
-                
-                roll = GetRandomValue(0, (int)data::loot::WeaponKind::Last - 1);
-                spwn::loot::Weapon(world, etrans.position, (data::loot::WeaponKind)roll);
+                spwn::loot::Powerup(world, etrans.position, data::loot::GetRandomPowerupKind());
+                spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
                 continue;
             }
 
             // if 10 enemies die and no loot has dropped, drop loot
             int roll = GetRandomValue(0, 99);
-            if (enemies_since_loot_dropped > 10) {
+            if (enemies_since_loot_dropped > data::cnst::LOOT_BADLUCK_PROTECTION) {
                 if (roll < 50) {
-                    roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last - 1);
-                    spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);
+                    spwn::loot::Powerup(world, etrans.position, data::loot::GetRandomPowerupKind());
                 } else {
-                    roll = GetRandomValue(0, (int)data::loot::WeaponKind::Last - 1);
-                    spwn::loot::Weapon(world, etrans.position, (data::loot::WeaponKind)roll);
+                    spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
                 }
                 enemies_since_loot_dropped = 0;
                 continue;
             }
 
             // check if loot roll was success
-            if (roll < 50) {
-                // if roll unsuccessful, add roll multiplier and recheck
-                roll *= chance.loot_chance;
-                if (roll < 50)  {
-                    enemies_since_loot_dropped += 1;
-                    continue;
-                }
+            if (roll < data::cnst::LOOT_CHANCE && 
+                roll * chance.loot_chance < data::cnst::LOOT_CHANCE) {
+                enemies_since_loot_dropped += 1;
+                continue;
             }
 
             // roll for loot type
-            enemies_since_loot_dropped = 0;
             roll = GetRandomValue(0, 99);
-
             if (roll < 40) {
                 spwn::loot::Money(world, etrans.position, data::cnst::MONEY_VALUE);
+                enemies_since_loot_dropped += 1; // money doesnt count (we generous like that)
             } else if (roll >= 40 && roll < 80) {
-                roll = GetRandomValue(0, (int)data::loot::PowerupKind::Last - 1);
-                spwn::loot::Powerup(world, etrans.position, (data::loot::PowerupKind)roll);
+                spwn::loot::Powerup(world, etrans.position, data::loot::GetRandomPowerupKind());
+                enemies_since_loot_dropped = 0;
             } else if (roll >= 80) {
-                roll = GetRandomValue(0, (int)data::loot::WeaponKind::Last - 1);
-                spwn::loot::Weapon(world, etrans.position, (data::loot::WeaponKind)roll);
+                spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
+                enemies_since_loot_dropped = 0;
             }
         }
     }

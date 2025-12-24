@@ -14,48 +14,21 @@ namespace sys::atk {
         int pellet_count,
         float spread_degrees,
         spwn::proj::BulletConfig config) {
-            
+
+        // save original directino for angle calcs
         Vector3 base_dir = config.direction;
 
-        // Convert to radians
+        // convert to radians
         float spread_rad = spread_degrees * (PI / 180.0f);
         float half = spread_rad * 0.5f;
 
         for (int i = 0; i < pellet_count; i++) {
             float t = (float)i / (float)(pellet_count - 1);
             float angle = Lerp(-half, +half, t);
-            Vector3 dir = utils::RotateDirYaw(base_dir, angle);
-            config.direction = dir;
+            config.direction = utils::RotateDirYaw(base_dir, angle);
             spwn::proj::Bullet(world, config);
         }
     }
-
-    // inline void FireSpread(
-    //     Storage::Registry& world, 
-    //     Vector3 origin, 
-    //     Vector3 base_dir, 
-    //     int pellet_count,
-    //     float totalSpreadDegrees, 
-    //     const int damage, 
-    //     const int penetration) {
-        
-    //     // Convert to radians
-    //     float spread_rad = totalSpreadDegrees * (PI / 180.0f);
-    //     float half = spread_rad * 0.5f;
-
-    //     for (int i = 0; i < pellet_count; i++) {
-    //         float t = (float)i / (float)(pellet_count - 1);
-    //         float angle = Lerp(-half, +half, t);
-    //         Vector3 dir = utils::RotateDirYaw(base_dir, angle);
-    //         spwn::proj::Bullet(
-    //             world, 
-    //             origin,
-    //             dir, 
-    //             damage,
-    //             penetration
-    //         );
-    //     }
-    // }
 
     void PistolAttack(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("PistolAttack()");
