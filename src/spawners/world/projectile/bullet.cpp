@@ -72,6 +72,7 @@ namespace spwn::proj {
             entity,
             cmpt::Draw{ 
                 .size = data::cnst::PROJECTILE_SIZE, 
+                .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::PROJECTILE_COLOR,
                 .model = &rsrc::asset::bullet_model,
             }

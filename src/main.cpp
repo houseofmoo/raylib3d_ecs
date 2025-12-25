@@ -177,6 +177,11 @@ void StateDraws(const float delta_time, const int screen_width, const int screen
         }
 
         case data::GameState_E::Paused: {
+            ::BeginMode3D(sys::camera);
+            sys::RunEntityDrawSystems(delta_time);
+            ::EndMode3D();
+            sys::RunUIDrawSystems(delta_time);
+            
             // draw dark box over entire screen
             DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175});
 

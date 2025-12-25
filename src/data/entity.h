@@ -100,10 +100,11 @@ namespace data {
             .min = Vector3{-60.0f, 0.0f, -30.0f},
             .max = Vector3{60.0f, 55.0f, 30.0f}
         };
-        constexpr Layer ENEMY_LAYER      = data::layer::ENEMY;
-        constexpr Layer ENEMY_LAYER_MASK = data::layer::PLAYER | data::layer::ENEMY | data::layer::PROJECTILE;
-        constexpr float IMPACT_FREZE     = 0.1f;
-        constexpr float DAMAGE_FLASH     = 0.1f;
+        constexpr Layer   ENEMY_LAYER      = data::layer::ENEMY;
+        constexpr Layer   ENEMY_LAYER_MASK = data::layer::PLAYER | data::layer::ENEMY | data::layer::PROJECTILE;
+        constexpr float   IMPACT_FREZE     = 0.1f;
+        constexpr float   DAMAGE_FLASH     = 0.1f;
+        constexpr Vector3 BASE_SCALE       = { 1.0f, 1.0f, 1.0f };
 
         // player
         constexpr Color   PLAYER_COLOR              = Color{ 0, 121, 241, 255 };
@@ -126,11 +127,11 @@ namespace data {
         constexpr Color   EXP_COLOR               = Color{ 102, 191, 255, 255 }; // SKYBLUE
         constexpr Vector3 EXP_SIZE                = { 0.3f, 0.3f, 0.3f };
         constexpr Vector3 MONEY_SIZE              = { 0.3f, 0.3f, 0.3f };
-        constexpr Color   MONEY_COLOR             = Color{ 255, 203, 0, 255 }; // GOLD
+        constexpr Color   MONEY_COLOR             = { 255, 203, 0, 255 }; // GOLD
         constexpr Vector3 POWERUP_SIZE            = { 0.5f, 0.5f, 0.5f };
         constexpr Vector3 WEAPON_SIZE             = { 1.25f, 0.35f, 0.35f };
         constexpr Vector3 WEAPON_CRATE_SIZE       = { 1.25f, 1.5f, 0.75f };
-        constexpr Color   WEAPON_CRATE_COLOR      = Color{ 211, 176, 131, 255 };
+        constexpr Color   WEAPON_CRATE_COLOR      = { 211, 176, 131, 255 };
 
         constexpr int   EXP_VALUE                   = 1; 
         constexpr int   MONEY_VALUE                 = 1;
@@ -191,12 +192,12 @@ namespace data {
         constexpr float   GRENADE_PROJECTILE_SPEED = 25.0f;
         constexpr Vector3 GRENADE_SIZE             = { 0.5f, 0.5f, 0.5f };
 
-        constexpr int     EXPLOSIVE_DAMAGE             = 30;
-        constexpr Vector3 EXPLOSIVE_START_SIZE         = { 0.1f, 0.1f, 0.1f };
-        constexpr Vector3 EXPLOSIVE_SIZE_STEPS         = { 0.2f, 0.2f, 0.2f };
-        constexpr float   EXPLOSIVE_DURATION           = 0.25f;
-        constexpr float   EXPLOSIVE_KNOCKBACK_SCALE    = 35.0f;
-        constexpr float   EXPLOSIVE_KNOCKBACK_DURATION = 0.2f;
+        constexpr int     EXPLOSION_DAMAGE             = 1;
+        constexpr Vector3 EXPLOSION_START_SIZE         = { 0.1f, 0.1f, 0.1f };
+        constexpr Vector3 EXPLOSION_END_SIZE           = { 7.0f, 7.0f, 7.0f };
+        constexpr float   EXPLOSION_DURATION           = 0.25f;
+        constexpr float   EXPLOSION_KNOCKBACK_SCALE    = 35.0f;
+        constexpr float   EXPLOSION_KNOCKBACK_DURATION = 0.2f;
 
         // projectiles
         constexpr Color   PROJECTILE_COLOR      = Color{ 230, 41, 55, 255 };
@@ -221,7 +222,7 @@ namespace data {
         const float     ENEMY_RANDOM_RETARGET_TIME = 2.0f;
 
         // grunt
-        constexpr Color   GRUNT_COLOR              = Color{ 255, 0, 255, 255 };
+        constexpr Color   GRUNT_COLOR              = { 255, 0, 255, 255 };
         constexpr Vector3 GRUNT_SIZE               = { 1.0f, 1.5f, 1.0f };
         constexpr int     GRUNT_MIN_HP             = 20;
         const float       GRUNT_SPEED              = 5.0f;
@@ -233,7 +234,7 @@ namespace data {
         constexpr Layer   GRUNT_LAYER_MASK         = ENEMY_LAYER_MASK;
 
         // brute
-        constexpr Color   BRUTE_COLOR              = Color{ 255, 100, 255, 255 };
+        constexpr Color   BRUTE_COLOR              = { 255, 100, 255, 255 };
         constexpr Vector3 BRUTE_SIZE               = { 1.5f, 2.5f, 1.5f };
         constexpr int     BRUTE_MIN_HP             = 50;
         constexpr float   BRUTE_SPEED              = 3.5f;

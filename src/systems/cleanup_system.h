@@ -31,15 +31,8 @@ namespace sys::cleanup {
                 auto& trans = world.GetComponent<cmpt::Transform>(entity);
                 spwn::proj::Explosion(
                     world,
-                    spwn::proj::ExplosionConfig{
-                        .position = trans.position,
-                        .start_size = data::cnst::EXPLOSIVE_START_SIZE,
-                        .expansion_steps = data::cnst::EXPLOSIVE_SIZE_STEPS,
-                        .duration = data::cnst::EXPLOSIVE_DURATION,
-                        .damage = (int)(data::cnst::EXPLOSIVE_DAMAGE * data::g_player.damage_multiplier),
-                        .knockback_scale = data::cnst::EXPLOSIVE_KNOCKBACK_SCALE,
-                        .knockback_duration = data::cnst::EXPLOSIVE_KNOCKBACK_DURATION
-                    }
+                    trans.position,
+                    (int)(data::cnst::EXPLOSION_DAMAGE * data::g_player.damage_multiplier)
                 );
             }
         }

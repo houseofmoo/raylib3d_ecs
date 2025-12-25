@@ -110,6 +110,7 @@ namespace spwn::enemy {
             entity,
             cmpt::Draw{ 
                 .size = data::cnst::GRUNT_SIZE, 
+                .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::BRUTE_COLOR, 
                 .model = &rsrc::asset::grunt_model,
             }

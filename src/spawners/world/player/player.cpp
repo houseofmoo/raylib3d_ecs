@@ -73,6 +73,7 @@ namespace spwn::player {
             player,
             cmpt::Draw{ 
                 .size = data::cnst::PLAYER_SIZE,
+                .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::PLAYER_COLOR,
                 .model = &rsrc::asset::player_model
             }

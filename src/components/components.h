@@ -124,8 +124,11 @@ namespace cmpt {
         float duration;
     };
 
-    struct Expands {
-        Vector3 steps;
+    struct Explosion {
+        float duration;
+        float elapsed;
+        Vector3 start_size;
+        Vector3 end_size;
     };
 
     ////////////////////////////////////////////////
@@ -281,6 +284,7 @@ namespace cmpt {
     ////////////////////////////////////////////////
     struct Draw {
         Vector3 size;
+        Vector3 scale;
         Color color;
         Model* model;
     };

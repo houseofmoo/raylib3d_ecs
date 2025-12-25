@@ -122,7 +122,6 @@ namespace sys {
         sys::vel::ApplyVelocity(world, delta_time);
         sys::vel::ApplyArch(world, delta_time);
         sys::vel::ApplyRotateInPlace(world, delta_time);
-        sys::vel::ApplyExpands(world);
 
         sys::cleanup::Cleanup(world, delta_time);
         sys::cleanup::OnDestroy(world);
@@ -165,7 +164,7 @@ namespace sys {
                 QuaternionToAxisAngle(trans.rotation, &axis, &angle);
                 axis = Vector3Normalize(axis);
 
-                DrawModelEx(*draw.model, trans.position, axis, RAD2DEG * angle, {1,1,1}, color);
+                DrawModelEx(*draw.model, trans.position, axis, RAD2DEG * angle, draw.scale, color);
                 rlPushMatrix();
                     rlTranslatef(trans.position.x, trans.position.y, trans.position.z);   // pivot at model position
                     rlRotatef(RAD2DEG * angle, axis.x, axis.y, axis.z);                   // apply same rotation

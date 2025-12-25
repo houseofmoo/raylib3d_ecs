@@ -34,9 +34,10 @@ namespace spwn::terrain {
             world.AddComponent<cmpt::Draw>(
                 terrain,
                 cmpt::Draw{ 
-                    size, 
-                    DARKGRAY, 
-                    nullptr
+                    .size = size,
+                    .scale = data::cnst::BASE_SCALE, 
+                    .color = DARKGRAY, 
+                    .model = nullptr
                 }
             );
         }

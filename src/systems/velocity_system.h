@@ -95,17 +95,4 @@ namespace sys::vel {
             trans.rotation = QuaternionNormalize(trans.rotation);
         }
     }
-
-    inline void ApplyExpands(Storage::Registry& world) {
-        PROFILE_SCOPE("ApplyExpands()");
-        for (auto entity : world.View<cmpt::Expands, cmpt::Collider, cmpt::Draw>()) {
-
-            auto& expands = world.GetComponent<cmpt::Expands>(entity);
-            auto& col = world.GetComponent<cmpt::Collider>(entity);
-            auto& draw = world.GetComponent<cmpt::Draw>(entity);
-
-            col.size = Vector3Add(col.size, expands.steps);
-            draw.size = Vector3Add(col.size, expands.steps);
-        }
-    }
 }

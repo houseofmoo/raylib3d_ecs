@@ -134,9 +134,34 @@ namespace sys::atk {
         }
     }
 
+    void ExplosionAttack(Storage::Registry& world, const float delta_time) {
+        PROFILE_SCOPE("ApplyExpands()");
+        for (auto entity : world.View<cmpt::Explosion, cmpt::Collider, cmpt::Draw>()) {
+
+            auto& exp = world.GetComponent<cmpt::Explosion>(entity);
+            auto& col = world.GetComponent<cmpt::Collider>(entity);
+            auto& draw = world.GetComponent<cmpt::Draw>(entity);
+
+            exp.elapsed += delta_time;
+            float t = Clamp(exp.elapsed / exp.duration, 0.0f, 1.0f);
+  
+            // we want the collider to be a bit larger than the
+            // draw animations to make it feel better
+
+            // collider grows larger over time
+            col.size = Vector3Lerp(exp.start_size, exp.end_size, t);
+            draw.size = Vector3Scale(col.size, 0.9); // for wires
+
+            // base model size.x is 0.5f
+            float scale = (col.size.x / data::cnst::GRENADE_SIZE.x) * 0.9f;
+            draw.scale = { scale, scale, scale };
+        }
+    }
+
     void WeaponAttacks(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
         PistolAttack(world, delta_time, sound_fx);
         ShotgunAttack(world, delta_time, sound_fx);
         GrenadeAttack(world, delta_time, sound_fx);
+        ExplosionAttack(world, delta_time);
     }
 }

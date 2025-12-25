@@ -109,7 +109,8 @@ namespace spwn::enemy {
         world.AddComponent<cmpt::Draw>(
             entity,
             cmpt::Draw{ 
-                .size = data::cnst::BRUTE_SIZE, 
+                .size = data::cnst::BRUTE_SIZE,
+                .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::BRUTE_COLOR, 
                 .model = &rsrc::asset::brute_model,
             }

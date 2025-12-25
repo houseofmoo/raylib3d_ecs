@@ -62,6 +62,7 @@ namespace spwn::loot {
             exp,
             cmpt::Draw{
                 .size = data::cnst::EXP_SIZE, 
+                .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::EXP_COLOR, 
                 .model = &rsrc::asset::exp_model,
             }
@@ -122,6 +123,7 @@ namespace spwn::loot {
             money,
             cmpt::Draw{
                 .size = data::cnst::MONEY_SIZE, 
+                .scale = data::cnst::BASE_SCALE,
                 .color = GOLD, 
                 .model = &rsrc::asset::money_model,
             }
@@ -182,6 +184,7 @@ namespace spwn::loot {
             powerup,
             cmpt::Draw{
                 .size = data::cnst::POWERUP_SIZE, 
+                .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::POWERUP_COLORS[(int)kind],
                 .model = &rsrc::asset::powerup_model,
             }
@@ -242,6 +245,7 @@ namespace spwn::loot {
             weapon,
             cmpt::Draw{
                 .size = data::cnst::WEAPON_SIZE, 
+                .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::WEAPON_COLORS[(int)kind],
                 .model = &rsrc::asset::weapon_model,
             }
@@ -297,6 +301,7 @@ namespace spwn::loot {
             entity,
             cmpt::Draw{
                 .size = data::cnst::WEAPON_CRATE_SIZE, 
+                .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::WEAPON_CRATE_COLOR,
                 .model = &rsrc::asset::weapon_crate_model,
             }
