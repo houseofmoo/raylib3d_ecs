@@ -124,6 +124,10 @@ namespace cmpt {
         float duration;
     };
 
+    struct Expands {
+        Vector3 steps;
+    };
+
     ////////////////////////////////////////////////
     // SPECIAL CASE
     ////////////////////////////////////////////////
@@ -255,7 +259,7 @@ namespace cmpt {
         int amount;
     };
 
-    struct ExplodeOnImpact {
+    struct ExplodeOnDestroy {
         float radius;
         float duration;
     };

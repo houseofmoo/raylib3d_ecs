@@ -142,7 +142,7 @@ namespace sys::evt {
                 }
 
                 case data::loot::LootKind::WeaponCrate: {
-                    data::g_game.show_weapon_crate_menu = true;
+                    data::g_weapon_select_menu.show = true;
                     PRINT("+wep crate");
                     break;
                 }

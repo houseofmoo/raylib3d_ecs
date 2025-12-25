@@ -68,16 +68,17 @@ namespace sys::vel {
         // through the air and do not have a cmpt::Velocty and instead have
         // a cmpt::ArchMove
         for (auto entity : world.View<cmpt::ArchMove, cmpt::Transform>()) {
-
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& arch = world.GetComponent<cmpt::ArchMove>(entity);
 
             arch.elapsed += delta_time;
-            float u = Clamp(arch.elapsed, 0.0f, arch.duration);
-            float u_eased = utils::EaseInOutQuad(u);
+            float time = (arch.duration > 0.0f) ?
+                Clamp(arch.elapsed / arch.duration, 0.0f, 1.0f)
+                : 1.0f;
+            //float time_eased = utils::EaseInOutQuad(time);
 
-            Vector3 new_pos = Vector3Lerp(arch.start, arch.end, u_eased);
-            new_pos.y += 4.0f * arch.height * u * (1.0f - u);
+            Vector3 new_pos = Vector3Lerp(arch.start, arch.end, time);
+            new_pos.y += 4.0f * arch.height * time * (1.0f - time);
             trans.position = new_pos;
         }
     }
@@ -92,6 +93,19 @@ namespace sys::vel {
             Quaternion dq = QuaternionFromAxisAngle({0.0f, 1.0f, 0.0f}, rip.speed * delta_time);
             trans.rotation = QuaternionMultiply(dq, trans.rotation);
             trans.rotation = QuaternionNormalize(trans.rotation);
+        }
+    }
+
+    inline void ApplyExpands(Storage::Registry& world) {
+        PROFILE_SCOPE("ApplyExpands()");
+        for (auto entity : world.View<cmpt::Expands, cmpt::Collider, cmpt::Draw>()) {
+
+            auto& expands = world.GetComponent<cmpt::Expands>(entity);
+            auto& col = world.GetComponent<cmpt::Collider>(entity);
+            auto& draw = world.GetComponent<cmpt::Draw>(entity);
+
+            col.size = Vector3Add(col.size, expands.steps);
+            draw.size = Vector3Add(col.size, expands.steps);
         }
     }
 }

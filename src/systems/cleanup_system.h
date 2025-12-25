@@ -1,8 +1,10 @@
 #pragma once
 
 #include "storage/registry.h"
+#include "spawners/world/projectile/explosion.h"
 #include "components/components.h"
 #include "data/player/player.h"
+#include "data/game/game.h"
 #include "utils/debug.h"
 
 namespace sys::cleanup {
@@ -13,10 +15,38 @@ namespace sys::cleanup {
             lifetime.countdown -= delta_time;
 
             if (lifetime.countdown <= 0.0f) {
-                world.DestroyEntity(entity);
+                world.AddComponent<tag::Destroy>(entity);
+                // world.DestroyEntity(entity);
             }
         }
-        
+    }
+
+    void OnDestroy(Storage::Registry& world) {
+        PROFILE_SCOPE("Destroy()");
+        for (auto entity : world.View<tag::Destroy,
+                                      cmpt::Transform>()) {
+
+            // check for on destroy effects
+            if (world.HasComponent<cmpt::ExplodeOnDestroy>(entity)) {
+                auto& trans = world.GetComponent<cmpt::Transform>(entity);
+                spwn::proj::Explosion(
+                    world,
+                    spwn::proj::ExplosionConfig{
+                        .position = trans.position,
+                        .start_size = data::cnst::EXPLOSIVE_START_SIZE,
+                        .expansion_steps = data::cnst::EXPLOSIVE_SIZE_STEPS,
+                        .duration = data::cnst::EXPLOSIVE_DURATION,
+                        .damage = (int)(data::cnst::EXPLOSIVE_DAMAGE * data::g_player.damage_multiplier),
+                        .knockback_scale = data::cnst::EXPLOSIVE_KNOCKBACK_SCALE,
+                        .knockback_duration = data::cnst::EXPLOSIVE_KNOCKBACK_DURATION
+                    }
+                );
+            }
+        }
+    }
+
+    void Destroy(Storage::Registry& world) {
+        PROFILE_SCOPE("Destroy()");
         for (auto entity : world.View<tag::Destroy>()) {
             // if (world.HasComponent<cmpt::DeathAnimation>(entity)) {
             //     auto& death_anim = world.GetComponent<cmpt::DeathAnimation>(entity);

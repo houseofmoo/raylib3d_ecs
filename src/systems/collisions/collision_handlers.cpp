@@ -58,10 +58,10 @@ namespace sys::col {
                 }
 
                 // explosive -> destroy and spawn damage area
-                if (auto exp = world.TryGetComponent<cmpt::ExplodeOnImpact>(col.entity_a)) {
-                    //world.AddComponent<tag::Destroy>(col.entity_a);
-                    // TODO: spawn area damage request
-                }
+                // if (auto exp = world.TryGetComponent<cmpt::ExplodeOnImpact>(col.entity_a)) {
+                //     //world.AddComponent<tag::Destroy>(col.entity_a);
+                //     // TODO: spawn area damage request
+                // }
             }
 
             // if B is a projectile
@@ -75,10 +75,10 @@ namespace sys::col {
                 }
 
                 // explosive -> destroy and spawn damage  area
-                if (auto exp = world.TryGetComponent<cmpt::ExplodeOnImpact>(col.entity_b)) {
-                    //world.AddComponent<tag::Destroy>(col.entity_b);
-                    // TODO: spawn area damage request
-                }
+                // if (auto exp = world.TryGetComponent<cmpt::ExplodeOnImpact>(col.entity_b)) {
+                //     //world.AddComponent<tag::Destroy>(col.entity_b);
+                //     // TODO: spawn area damage request
+                // }
             }
         }
     }

@@ -13,6 +13,8 @@ namespace data {
         Dead,
     };
 
+
+
     struct GameState {
         GameState_E state;
         int difficulty;
@@ -21,7 +23,6 @@ namespace data {
         int enemy_count;
         int entity_count;
 
-        bool show_weapon_crate_menu;
 
         void Tick(float delta_time) {
             enemy_spawn_countdown -= delta_time;
@@ -62,6 +63,13 @@ namespace data {
         }
     };
 
+
+    struct WeaponSelectMenu {
+        bool show;
+        std::array<int, 3> selections;
+    };
+
     extern strg::Tilemap g_terrain;
     extern GameState g_game;
+    extern WeaponSelectMenu g_weapon_select_menu;
 }

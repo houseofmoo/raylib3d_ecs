@@ -165,7 +165,7 @@ void StateDraws(const float delta_time, const int screen_width, const int screen
             ::EndMode3D();
             sys::RunUIDrawSystems(delta_time);
 
-            if (data::g_game.show_weapon_crate_menu) {
+            if (data::g_weapon_select_menu.show) {
                 sys::RunWeaponSelectDrawSystem(screen_width, screen_height);
             }
             break;

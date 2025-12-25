@@ -90,7 +90,7 @@ namespace data {
         constexpr Vector3 CAMERA_UP               = { 0.0f, 1.0f, 0.0f };
         constexpr float   CAMERA_FOVY             = 60.0f;
         constexpr Vector3 CAMERA_OFFSET           = { 0.0f, 35.0f, 15.0f };   // up + back (fixed)
-        constexpr Vector3 TARGET_OFFSET           = { 0.0f, 0.5f, 0.0f };     // look a bit above feet
+        constexpr Vector3 CAMERA_TARGET_OFFSET    = { 0.0f, 0.5f, 0.0f };     // look a bit above feet
         constexpr float   CAMERA_FOLLOW_SHARPNESS = 14.0f;                   // bigger = tighter
         constexpr float   CAMERA_SHAKE_STR        = 5.0f;
         constexpr float   CAMERA_SHAKE_FREQ       = 30.0f;
@@ -186,10 +186,17 @@ namespace data {
         constexpr float SHOTGUN_KNOCKBACK_SCALE    = 10.0f;
         constexpr float SHOTGUN_KNOCKBACK_DURATION = 0.10f;
 
-        constexpr int     GRENADE_DAMAGE           = 25;
+        constexpr int     GRENADE_DAMAGE           = 5;
         constexpr float   GRENADE_COOLDOWN         = 2.0f;
         constexpr float   GRENADE_PROJECTILE_SPEED = 25.0f;
         constexpr Vector3 GRENADE_SIZE             = { 0.5f, 0.5f, 0.5f };
+
+        constexpr int     EXPLOSIVE_DAMAGE             = 30;
+        constexpr Vector3 EXPLOSIVE_START_SIZE         = { 0.1f, 0.1f, 0.1f };
+        constexpr Vector3 EXPLOSIVE_SIZE_STEPS         = { 0.2f, 0.2f, 0.2f };
+        constexpr float   EXPLOSIVE_DURATION           = 0.25f;
+        constexpr float   EXPLOSIVE_KNOCKBACK_SCALE    = 35.0f;
+        constexpr float   EXPLOSIVE_KNOCKBACK_DURATION = 0.2f;
 
         // projectiles
         constexpr Color   PROJECTILE_COLOR      = Color{ 230, 41, 55, 255 };
@@ -199,8 +206,8 @@ namespace data {
         constexpr float   PROJECTILE_LIFETIME   = 10.0f;
 
         // arch projectiles
-        constexpr float ARCH_MAX_HEIGHT = 10.0f;
-        constexpr float ARCH_DURATION = 1.0f; // doubles as lifetime since the ground does not destroy projectiles
+        constexpr float ARCH_MAX_HEIGHT = 5.0f;
+        constexpr float ARCH_DURATION   = 0.75f; // doubles as lifetime since the ground does not destroy projectiles
 
         // status effects
         constexpr float INVULNRABILITY_CD = 1.0f;

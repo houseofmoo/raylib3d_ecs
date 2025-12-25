@@ -15,6 +15,10 @@ namespace data {
         .enemy_spawn_interval = data::cnst::MAX_SPAWN_INTERVAL,
         .enemy_count = 0,
         .entity_count = 0,
-        .show_weapon_crate_menu = false,
+    };
+
+    constinit WeaponSelectMenu g_weapon_select_menu {
+        .show = false,
+        .selections = {-1, -1, -1 }
     };
 }

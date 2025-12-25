@@ -123,12 +123,11 @@ namespace sys::atk {
                 wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
             } 
 
-            float dmg = wep.base_stats.damage * data::g_player.damage_multiplier;
             spwn::proj::Grenade(
                 world, 
                 trans.position, 
                 input.mouse_world_position,
-                dmg
+                wep.base_stats.damage * data::g_player.damage_multiplier
             );
             PlaySound(sound_fx);
             SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);

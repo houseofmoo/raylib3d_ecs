@@ -21,7 +21,7 @@ namespace sys {
                 evel.y = 0.0f;
                 world.RemoveComponent<cmpt::SpawnAnimation>(enemy);
                 continue;
-            }  
+            }
 
             // downwards velocity during spawn animation
             evel.x = 0.0f;

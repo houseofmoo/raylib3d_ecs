@@ -9,20 +9,20 @@ namespace spwn::proj {
     void Grenade(Storage::Registry& world, const Vector3 start_pos,
                 Vector3 end_pos, const int damage) {
 
-        auto grenade = world.CreateEntity();
+        auto entity = world.CreateEntity();
         
         world.AddComponent<tag::Projectile>(
-            grenade,
+            entity,
             tag::Projectile{}
         );
 
         world.AddComponent<tag::DestroyOnTerrainCollision>(
-            grenade,
+            entity,
             tag::DestroyOnTerrainCollision{}
         );
 
         world.AddComponent<cmpt::Transform>(
-            grenade,
+            entity,
             cmpt::Transform{ 
                 start_pos,
                 QuaternionIdentity()
@@ -30,7 +30,7 @@ namespace spwn::proj {
         );
 
         world.AddComponent<cmpt::ArchMove>(
-            grenade,
+            entity,
             cmpt::ArchMove{
                 .start = start_pos,
                 .end = end_pos,
@@ -41,7 +41,7 @@ namespace spwn::proj {
         );
 
         world.AddComponent<cmpt::Collider>(
-            grenade,
+            entity,
             cmpt::Collider{
                 .layer = data::cnst::PROJECTILE_LAYER,
                 .mask = data::cnst::PROJECTILE_LAYER_MASK,
@@ -51,7 +51,7 @@ namespace spwn::proj {
         );
 
         world.AddComponent<cmpt::Lifetime>(
-            grenade,
+            entity,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
                 .countdown = data::cnst::ARCH_DURATION 
@@ -59,15 +59,23 @@ namespace spwn::proj {
         );
 
         world.AddComponent<cmpt::DamageDealer>(
-            grenade,
+            entity,
             cmpt::DamageDealer{ 
                 .amount = damage,
                 .penetration = 0
             }
         );
 
+        world.AddComponent<cmpt::ExplodeOnDestroy>(
+            entity,
+            cmpt::ExplodeOnDestroy{
+                .radius = 1.0f,
+                .duration = 1.0f
+            }
+        );
+
         world.AddComponent<cmpt::Draw>(
-            grenade,
+            entity,
             cmpt::Draw{ 
                 .size = data::cnst::GRENADE_SIZE, 
                 .color = data::cnst::PROJECTILE_COLOR,

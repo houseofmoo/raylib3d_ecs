@@ -52,7 +52,7 @@ namespace sys {
 
     void RunUpdateSystems(const float delta_time) {
         // TODO: temp for crate menu testing
-        if (data::g_game.show_weapon_crate_menu) {
+        if (data::g_weapon_select_menu.show) {
             return;
         }
 
@@ -122,8 +122,11 @@ namespace sys {
         sys::vel::ApplyVelocity(world, delta_time);
         sys::vel::ApplyArch(world, delta_time);
         sys::vel::ApplyRotateInPlace(world, delta_time);
+        sys::vel::ApplyExpands(world);
 
         sys::cleanup::Cleanup(world, delta_time);
+        sys::cleanup::OnDestroy(world);
+        sys::cleanup::Destroy(world);
         //sys::ConstraintToWorld(world, data::size::PLAY_AREA);
     }
 
@@ -244,19 +247,19 @@ namespace sys {
         auto rec = Rectangle{ (screen_width * 0.5f) - 50.0f, 300.0f, 100.0f, 50.0f };
         if (::GuiButton(rec, "Pistol")) {
             spwn::weapon::EquipPistol(world, data::g_player.id);
-            data::g_game.show_weapon_crate_menu = false;
+            data::g_weapon_select_menu.show = false;
         }
 
         rec.y += 50.0f;
         if (::GuiButton(rec, "Shotgun")) {
             spwn::weapon::EquipShotgun(world, data::g_player.id);
-            data::g_game.show_weapon_crate_menu = false;
+            data::g_weapon_select_menu.show = false;
         }
 
         rec.y += 50.0f;
         if (::GuiButton(rec, "Grenade")) {
             spwn::weapon::EquipGrenade(world, data::g_player.id);
-            data::g_game.show_weapon_crate_menu = false;
+            data::g_weapon_select_menu.show = false;
         }
     }
 }
