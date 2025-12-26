@@ -13,10 +13,10 @@ namespace sys::col {
     };
 
     BroadphaseIDs broad;
-    Grid2D grid;
+    strg::Grid2D grid;
     strg::CollisionEnterCache collision_cache;
 
-    void EntityCollision(Storage::Registry& world) {
+    void EntityCollision(strg::Registry& world) {
         PROFILE_SCOPE("EntityCollision()");
         
         // set up for next collision check

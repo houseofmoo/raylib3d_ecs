@@ -7,7 +7,7 @@
 #include "utils/debug.h"
 
 namespace sys::se {
-    inline void ApplyStatusEffects(Storage::Registry& world) {
+    inline void ApplyStatusEffects(strg::Registry& world) {
         PROFILE_SCOPE("ApplyStatusEffects()");
         // dash
         for (auto entity : world.View<cmpt::Dash, cmpt::Speed>()) {
@@ -17,7 +17,7 @@ namespace sys::se {
         }
     }
 
-    inline void RemoveStatsusEffects(Storage::Registry& world) {
+    inline void RemoveStatsusEffects(strg::Registry& world) {
         PROFILE_SCOPE("RemoveStatsusEffects()");
         // remove invulnerability
         for (auto entity : world.View<cmpt::Invulnerable>()) {

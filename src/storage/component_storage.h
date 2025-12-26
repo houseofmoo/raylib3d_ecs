@@ -5,7 +5,7 @@
 #include <cassert>
 #include "data/entity.h"
 
-namespace Storage {
+namespace strg {
     template <typename T>
     struct ComponentStorage {
 

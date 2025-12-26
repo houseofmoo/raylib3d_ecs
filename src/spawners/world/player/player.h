@@ -4,5 +4,5 @@
 #include "storage/registry.h"
 
 namespace spwn::player {
-    Entity Player(Storage::Registry& world);
+    Entity Player(strg::Registry& world);
 }

@@ -2,13 +2,12 @@
 
 #include "storage/registry.h"
 #include "data/entity.h"
-#include "data/loot.h"
 #include "components/components.h"
 #include "utils/debug.h"
 
 namespace spwn::evt {
     inline void LootPickedupEvent(
-            Storage::Registry& world, 
+            strg::Registry& world, 
             const Entity id, 
             const data::loot::LootKind kind,
             const int amount) {
@@ -33,7 +32,7 @@ namespace spwn::evt {
 
 
     inline void LootPickedupEvent(
-            Storage::Registry& world, 
+            strg::Registry& world, 
             const Entity id, 
             const data::loot::LootKind kind,
             const data::loot::PowerupKind pukind) noexcept {
@@ -43,7 +42,7 @@ namespace spwn::evt {
     }
 
     inline void LootPickedupEvent(
-            Storage::Registry& world, 
+            strg::Registry& world, 
             const Entity id, 
             const data::loot::LootKind kind,
             const data::loot::WeaponKind wkind) noexcept {
@@ -52,7 +51,7 @@ namespace spwn::evt {
         world.AddComponent<cmpt::WeaponLoot>(event, cmpt::WeaponLoot{ .kind = wkind });
     }
 
-    inline void WeaponCratePickedupEvent(Storage::Registry& world, const Entity id) noexcept {
+    inline void WeaponCratePickedupEvent(strg::Registry& world, const Entity id) noexcept {
         Entity event = world.CreateEntity();
         world.AddComponent<cmpt::LootEvent>(event, cmpt::LootEvent{.id = id, .kind = data::loot::LootKind::WeaponCrate});
     }

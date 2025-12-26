@@ -12,7 +12,7 @@ namespace utils {
         return position.y - (collider_size.y * 0.5f);
     }
 
-    inline float GetEntityHeight(Storage::Registry& world, const Entity id) {
+    inline float GetEntityHeight(strg::Registry& world, const Entity id) {
         auto* trans = world.TryGetComponent<cmpt::Transform>(id);
         if (trans == nullptr) {
             return 0.0f;

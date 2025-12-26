@@ -5,7 +5,7 @@
 #include "resources/asset_loader.h"
 
 namespace spwn::proj {
-    void Explosion(Storage::Registry& world, const Vector3 position, const int damage) {
+    void Explosion(strg::Registry& world, const Vector3 position, const int damage) {
         auto entity = world.CreateEntity();
 
         world.AddComponent<cmpt::Transform>(

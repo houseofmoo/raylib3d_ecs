@@ -46,7 +46,7 @@ namespace debug {
         }
     }
    
-    void DrawStatsTab(Storage::Registry& world) {
+    void DrawStatsTab(strg::Registry& world) {
         ImGui::Text("fps:        %d", GetFPS());
         ImGui::Text("entities:   %d", data::g_game.entity_count);
         ImGui::Text("enemies:    %d", data::g_game.enemy_count);
@@ -69,8 +69,8 @@ namespace debug {
         ImGui::Text("pu-rng%:    %.2f", data::g_player.pickup_range_multiplier);
         ImGui::Separator();
 
-        ImGui::Checkbox(" god mode", &data::g_player.god_mode);
-        ImGui::Checkbox(" loot mode", &data::g_player.always_drop_loot);
+        ImGui::Checkbox(" god mode", &data::g_cheats.god_mode);
+        ImGui::Checkbox(" loot mode", &data::g_cheats.always_drop_loot);
         ImGui::Separator();
 
         // add stats
@@ -124,7 +124,7 @@ namespace debug {
         }
     }
 
-    void DrawWeapsTab(Storage::Registry& world) {
+    void DrawWeapsTab(strg::Registry& world) {
         ImVec2 size = ImVec2{100, 30};
         if (ImGui::Button("+pistol", size)) {
             spwn::weapon::EquipPistol(world, data::g_player.id);
@@ -207,7 +207,7 @@ namespace debug {
         #endif
     }
 
-    void DrawDebugUI(Storage::Registry& world, ImGuiIO& io) {
+    void DrawDebugUI(strg::Registry& world, ImGuiIO& io) {
         static bool show_demo_window = false;
         static float position_x = 0;
         static float position_z = 0;

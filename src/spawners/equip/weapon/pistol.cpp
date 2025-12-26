@@ -2,7 +2,7 @@
 #include "components/components.h"
 
 namespace spwn::weapon {
-    // void Pistol(Storage::Registry& world, const Entity parent) {
+    // void Pistol(strg::Registry& world, const Entity parent) {
     //     auto weapon = world.CreateEntity();
         
     //     world.AddComponent<cmpt::Weapon>(
@@ -28,7 +28,7 @@ namespace spwn::weapon {
     //     );
     // }
 
-    void EquipPistol(Storage::Registry& world, const Entity id) {
+    void EquipPistol(strg::Registry& world, const Entity id) {
         if (!world.HasComponent<cmpt::Pistol>(id)) {
             world.AddComponent<cmpt::Pistol>(
                 id,
@@ -50,7 +50,7 @@ namespace spwn::weapon {
         }
     }
 
-    void DequipPistol(Storage::Registry& world, const Entity id) {
+    void DequipPistol(strg::Registry& world, const Entity id) {
         if (world.HasComponent<cmpt::Pistol>(id)) {
             world.RemoveComponent<cmpt::Pistol>(id);
         }

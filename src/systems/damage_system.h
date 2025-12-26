@@ -2,6 +2,7 @@
 #pragma once
 
 #include "storage/registry.h"
+#include "data/game/game.h"
 #include "data/player/player.h"
 #include "data/entity.h"
 #include "components/components.h"
@@ -10,7 +11,7 @@
 #include "utils/debug.h"
 
 namespace sys::dmg {
-    inline void ApplyDamage(Storage::Registry& world) {
+    inline void ApplyDamage(strg::Registry& world) {
         PROFILE_SCOPE("ApplyDamage()");
         for (auto entity : world.View<cmpt::Health, cmpt::DamageReceiver>()) {
             auto& hp = world.GetComponent<cmpt::Health>(entity);
@@ -27,7 +28,7 @@ namespace sys::dmg {
             // player taking damage is special
             if (world.HasComponent<tag::Player>(entity)) {
                 // if god mode enabled, remove all player damage
-                if (data::g_player.god_mode) {
+                if (data::g_cheats.god_mode) {
                     dmg.total = 0;
                 } 
 

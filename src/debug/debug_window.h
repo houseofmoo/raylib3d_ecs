@@ -4,5 +4,5 @@
 #include "storage/registry.h"
 
 namespace debug {
-    void DrawDebugUI(Storage::Registry& world, ImGuiIO& io);
+    void DrawDebugUI(strg::Registry& world, ImGuiIO& io);
 }

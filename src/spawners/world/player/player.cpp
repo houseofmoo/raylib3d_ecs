@@ -5,7 +5,7 @@
 #include "components/components.h"
 
 namespace spwn::player {
-    Entity Player(Storage::Registry& world) {
+    Entity Player(strg::Registry& world) {
 
         auto player = world.CreateEntity();
         

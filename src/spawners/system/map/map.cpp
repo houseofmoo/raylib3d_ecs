@@ -3,7 +3,7 @@
 #include "data/game/game.h"
 
 namespace spwn::map {
-     void GenerateMap(Storage::Registry& world, const BoundingBox& boundary) {
+     void GenerateMap(strg::Registry& world, const BoundingBox& boundary) {
         // spawn world boundaries
         data::g_terrain.ResetTiles();
       

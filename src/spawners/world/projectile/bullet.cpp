@@ -5,7 +5,7 @@
 #include "components/components.h"
 
 namespace spwn::proj {
-    void Bullet(Storage::Registry& world, const BulletConfig config) {
+    void Bullet(strg::Registry& world, const BulletConfig config) {
         
         auto entity = world.CreateEntity();
         

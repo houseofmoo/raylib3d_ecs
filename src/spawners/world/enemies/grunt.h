@@ -5,7 +5,7 @@
 #include "components/components.h"
 
 namespace spwn::enemy {
-    void Grunt(Storage::Registry& world, 
+    void Grunt(strg::Registry& world, 
             const Vector3 position, 
             const cmpt::AIMoveMode move_mode, 
             const int hp);

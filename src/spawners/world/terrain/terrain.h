@@ -5,7 +5,7 @@
 
 namespace spwn::terrain {
     void Terrain(
-        Storage::Registry& world, 
+        strg::Registry& world, 
         const Vector3 position, 
         const Vector3 size, 
         const bool visible = true

@@ -3,7 +3,6 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include "data/loot.h"
 #include "data/player/player.h"
 #include "data/game/game.h"
 #include "storage/collision_pairs.h"
@@ -16,7 +15,7 @@
 #include "utils/debug.h"
 
 namespace sys::col {
-    void DamageOnCollision(Storage::Registry& world) {
+    void DamageOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("DamageOnCollision()");
         for (auto& col : sys::col::collision_cache.current) {
             // if A and B interacted last frame, ignore them this frame
@@ -44,7 +43,7 @@ namespace sys::col {
         }
     }
 
-    void DestroyOnCollision(Storage::Registry& world) {
+    void DestroyOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("DestroyOnCollision()");
          for (auto& col : sys::col::collision_cache.current) {
             // if A is a projectile
@@ -83,7 +82,7 @@ namespace sys::col {
         }
     }
 
-    void KnockbackOnCollision(Storage::Registry& world) {
+    void KnockbackOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("KnockbackOnCollision()");
         for (auto& col : sys::col::collision_cache.current) {
             // if a and b are enemies, they do not knock eachother back
@@ -128,7 +127,7 @@ namespace sys::col {
         }
     }
 
-    void PickupOnCollision(Storage::Registry& world) {
+    void PickupOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("PickupOnCollision()");
        for (auto& col : sys::col::collision_cache.current) {
 
@@ -203,11 +202,11 @@ namespace sys::col {
         }
     }
 
-    void TriggerOnCollision(Storage::Registry& world) {
+    void TriggerOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("TriggerOnCollision()");
     }
 
-    void RepositionOnCollision(Storage::Registry& world) {
+    void RepositionOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("RepositionOnCollision()");
         for (auto& col : sys::col::collision_cache.current) {
             // enemies cannot overlap

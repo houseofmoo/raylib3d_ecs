@@ -18,7 +18,7 @@ namespace cmpt {
     }
 
     // attach movement system component for AI based on move type
-    inline void AttachAIMovementComponent(Storage::Registry& world, const Entity id, const cmpt::AIMoveMode move_type) {
+    inline void AttachAIMovementComponent(strg::Registry& world, const Entity id, const cmpt::AIMoveMode move_type) {
         switch (move_type) {
             case cmpt::AIMoveMode::Melee: {
                 world.AddComponent<cmpt::MeleeMovement>(

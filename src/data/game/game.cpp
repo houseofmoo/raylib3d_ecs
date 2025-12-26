@@ -21,4 +21,10 @@ namespace data {
         .show = false,
         .selections = {-1, -1, -1 }
     };
+
+    constinit Cheats g_cheats {
+        .god_mode = false,
+        .always_drop_loot = false,
+        .profiler_enabled = false,
+    };
 }

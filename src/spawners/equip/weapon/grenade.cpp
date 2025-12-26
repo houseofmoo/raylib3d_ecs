@@ -2,7 +2,7 @@
 #include "components/components.h"
 
 namespace spwn::weapon {
-    void EquipGrenade(Storage::Registry& world, const Entity id) {
+    void EquipGrenade(strg::Registry& world, const Entity id) {
          if (!world.HasComponent<cmpt::Grenade>(id)) {
             world.AddComponent<cmpt::Grenade>(
                 id,
@@ -24,7 +24,7 @@ namespace spwn::weapon {
         }
     }
     
-    void DequipGrenade(Storage::Registry& world, const Entity id) {
+    void DequipGrenade(strg::Registry& world, const Entity id) {
         if (world.HasComponent<cmpt::Grenade>(id)) {
            world.RemoveComponent<cmpt::Grenade>(id);
         }

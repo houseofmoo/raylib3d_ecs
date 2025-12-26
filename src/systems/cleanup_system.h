@@ -8,7 +8,7 @@
 #include "utils/debug.h"
 
 namespace sys::cleanup {
-    void Cleanup(Storage::Registry& world, const float delta_time) {
+    void Cleanup(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("Cleanup()");
         for (auto entity : world.View<cmpt::Lifetime>()) {
             auto& lifetime = world.GetComponent<cmpt::Lifetime>(entity);
@@ -21,7 +21,7 @@ namespace sys::cleanup {
         }
     }
 
-    void OnDestroy(Storage::Registry& world) {
+    void OnDestroy(strg::Registry& world) {
         PROFILE_SCOPE("Destroy()");
         for (auto entity : world.View<tag::Destroy,
                                       cmpt::Transform>()) {
@@ -38,7 +38,7 @@ namespace sys::cleanup {
         }
     }
 
-    void Destroy(Storage::Registry& world) {
+    void Destroy(strg::Registry& world) {
         PROFILE_SCOPE("Destroy()");
         for (auto entity : world.View<tag::Destroy>()) {
             // if (world.HasComponent<cmpt::DeathAnimation>(entity)) {

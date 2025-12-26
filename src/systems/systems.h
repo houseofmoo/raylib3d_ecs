@@ -5,7 +5,7 @@
 
 namespace sys {
     extern Camera3D camera;
-    extern Storage::Registry world;
+    extern strg::Registry world;
 
     void InitWorld();
     void StartGame();

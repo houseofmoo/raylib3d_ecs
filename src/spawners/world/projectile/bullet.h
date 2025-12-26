@@ -13,5 +13,5 @@ namespace spwn::proj {
         float knockback_duration;
     };
 
-    void Bullet(Storage::Registry& world, const BulletConfig config);
+    void Bullet(strg::Registry& world, const BulletConfig config);
 }

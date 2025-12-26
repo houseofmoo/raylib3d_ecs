@@ -8,7 +8,7 @@
 #include "utils/debug.h"
 
 namespace sys::mov {
-    inline void ApplyPlayerMovement(Storage::Registry& world, const float delta_time) {
+    inline void ApplyPlayerMovement(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyPlayerMovement()");
         for (auto entity : world.View<cmpt::Input, 
                                         cmpt::Transform,
@@ -49,7 +49,7 @@ namespace sys::mov {
 
  
 
-    inline void ApplyAIMovement(Storage::Registry& world, const float delta_time) {
+    inline void ApplyAIMovement(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyAIMovement()");
         for (auto entity : world.View<cmpt::AIMoveIntent,
                                         cmpt::Transform, 

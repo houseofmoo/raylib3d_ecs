@@ -22,7 +22,6 @@
 #include "systems/cleanup_system.h"
 #include "systems/collisions/entity_collision_system.h"
 #include "systems/collisions/collision_handlers.h"
-#include "systems/constraint.h"
 #include "systems/damage_system.h"
 #include "systems/drop_loot.h"
 #include "systems/timed_spawn_system.h"
@@ -35,7 +34,7 @@
 
 namespace sys {
     Camera3D camera;
-    Storage::Registry world;
+    strg::Registry world;
 
     void InitWorld() {
         camera = spwn::camera::Camera();

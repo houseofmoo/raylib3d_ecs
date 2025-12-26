@@ -12,7 +12,7 @@
 #include "utils/debug.h"
 
 namespace sys::evt {
-    void ApplyPowerup(Storage::Registry& world, data::loot::PowerupKind kind, Entity id) {
+    void ApplyPowerup(strg::Registry& world, data::loot::PowerupKind kind, Entity id) {
         switch (kind) {
             case data::loot::PowerupKind::Damage: {
                 data::g_player.damage_multiplier += data::cnst::DAMAGE_POWERUP_VALUE;
@@ -60,7 +60,7 @@ namespace sys::evt {
         }
     }
 
-    void ApplyWeapon(Storage::Registry& world, data::loot::WeaponKind kind, Entity id) {
+    void ApplyWeapon(strg::Registry& world, data::loot::WeaponKind kind, Entity id) {
         // TODO: if weapon exists, upgrade it
         // otherwise give baselist to player
         switch (kind) {
@@ -106,7 +106,7 @@ namespace sys::evt {
         }
     }
 
-    void HandleLootPickedupEvents(Storage::Registry& world) noexcept {
+    void HandleLootPickedupEvents(strg::Registry& world) noexcept {
         PROFILE_SCOPE("HandleLootPickedupEvents()");
         for(auto entity : world.View<cmpt::LootEvent>()) {
 

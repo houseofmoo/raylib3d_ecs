@@ -9,7 +9,7 @@
 #include "utils/debug.h"
 
 namespace sys {
-    inline void SpawnEnemyInterval(Storage::Registry& world, const float delta_time) {
+    inline void SpawnEnemyInterval(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("SpawnEnemyInterval()");
         
         data::g_game.Tick(delta_time);

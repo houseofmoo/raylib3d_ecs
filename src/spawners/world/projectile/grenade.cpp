@@ -6,7 +6,7 @@
 #include "components/components.h"
 
 namespace spwn::proj {
-    void Grenade(Storage::Registry& world, const Vector3 start_pos,
+    void Grenade(strg::Registry& world, const Vector3 start_pos,
                 Vector3 end_pos, const int damage) {
 
         auto entity = world.CreateEntity();

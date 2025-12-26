@@ -3,7 +3,7 @@
 #include "components/components.h"
 
 namespace sys::evt {
-   void DrawNotifications(Storage::Registry& world, const float delta_time) noexcept {
+   void DrawNotifications(strg::Registry& world, const float delta_time) noexcept {
         int y_offset = GetScreenHeight() - 50;  // start from bottom of the screen 
         int x_pos = 50;                         // left side
 

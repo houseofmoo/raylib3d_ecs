@@ -7,11 +7,12 @@
 #include "components/components.h"
 #include "spawners/world/loot/loot.h"
 #include "data/player/player.h"
+#include "data/game/game.h"
 #include "data/entity.h"
 #include "utils/debug.h"
 
 namespace sys::loot {
-    inline void LootDrop(Storage::Registry& world) {
+    inline void LootDrop(strg::Registry& world) {
         PROFILE_SCOPE("LootDrop()");
         static uint32_t enemies_since_loot_dropped = 0;
         for (auto enemy : world.View<cmpt::DropsLoot, 
@@ -25,7 +26,7 @@ namespace sys::loot {
             // all enemies that drop loot always drop exp
             spwn::loot::Exp(world, etrans.position, data::cnst::EXP_VALUE);
 
-            if (data::g_player.always_drop_loot) {
+            if (data::g_cheats.always_drop_loot) {
                 spwn::loot::Powerup(world, etrans.position, data::loot::GetRandomPowerupKind());
                 //spwn::loot::Weapon(world, etrans.position, data::loot::GetRandomWeaponKind());
                 spwn::loot::WeaponCrate(world, etrans.position);

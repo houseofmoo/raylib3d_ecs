@@ -6,7 +6,7 @@
 
 namespace spwn::enemy {
     void Brute(
-        Storage::Registry& world, 
+        strg::Registry& world, 
         const Vector3 position, 
         const cmpt::AIMoveMode move_mode, 
         const int hp);

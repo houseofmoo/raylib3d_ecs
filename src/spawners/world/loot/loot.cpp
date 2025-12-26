@@ -8,7 +8,7 @@
 #include "utils/position.h"
 
 namespace spwn::loot {
-    void Exp(Storage::Registry& world, const Vector3 position, int exp_amount) {
+    void Exp(strg::Registry& world, const Vector3 position, int exp_amount) {
         Entity exp = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
@@ -69,7 +69,7 @@ namespace spwn::loot {
         );
     }
 
-    void Money(Storage::Registry& world, const Vector3 position, int money_amount) { 
+    void Money(strg::Registry& world, const Vector3 position, int money_amount) { 
         Entity money = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
@@ -130,7 +130,7 @@ namespace spwn::loot {
         );
     }
 
-    void Powerup(Storage::Registry& world, const Vector3 position, data::loot::PowerupKind kind) {
+    void Powerup(strg::Registry& world, const Vector3 position, data::loot::PowerupKind kind) {
         Entity powerup = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
@@ -191,7 +191,7 @@ namespace spwn::loot {
         );
     }
 
-    void Weapon(Storage::Registry& world, const Vector3 position, data::loot::WeaponKind kind) {
+    void Weapon(strg::Registry& world, const Vector3 position, data::loot::WeaponKind kind) {
         Entity weapon = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
@@ -252,7 +252,7 @@ namespace spwn::loot {
         );
     }
 
-    void WeaponCrate(Storage::Registry& world, const Vector3 position) {
+    void WeaponCrate(strg::Registry& world, const Vector3 position) {
         Entity entity = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(

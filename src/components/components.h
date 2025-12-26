@@ -5,7 +5,6 @@
 #include <string_view>
 #include "raylib.h"
 #include "data/entity.h"
-#include "data/loot.h"
 
 namespace tag {
     struct Player {};

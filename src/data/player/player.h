@@ -20,11 +20,6 @@ namespace data {
         // info stats
         int enemies_defeated;
 
-        // cheats
-        bool god_mode;
-        bool always_drop_loot;
-        bool profiler_enabled;
-
         // returns new level on level up, or 0 if no level up
         int AddExp(int exp_amount) {
             exp += exp_amount;

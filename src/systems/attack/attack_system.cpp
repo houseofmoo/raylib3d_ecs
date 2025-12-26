@@ -10,7 +10,7 @@
 
 namespace sys::atk {
     inline void FireSpread(
-        Storage::Registry& world,
+        strg::Registry& world,
         int pellet_count,
         float spread_degrees,
         spwn::proj::BulletConfig config) {
@@ -30,7 +30,7 @@ namespace sys::atk {
         }
     }
 
-    void PistolAttack(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
+    void PistolAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("PistolAttack()");
         for (auto entity : world.View<cmpt::Pistol>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
@@ -67,7 +67,7 @@ namespace sys::atk {
         }
     }
 
-    void ShotgunAttack(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
+    void ShotgunAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("ShotgunAttack()");
         for (auto entity : world.View<cmpt::Shotgun>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
@@ -108,7 +108,7 @@ namespace sys::atk {
         }
     }
 
-    void GrenadeAttack(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
+    void GrenadeAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("GrenadeAttack()");
         for (auto entity : world.View<cmpt::Grenade>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
@@ -134,7 +134,7 @@ namespace sys::atk {
         }
     }
 
-    void ExplosionAttack(Storage::Registry& world, const float delta_time) {
+    void ExplosionAttack(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyExpands()");
         for (auto entity : world.View<cmpt::Explosion, cmpt::Collider, cmpt::Draw>()) {
 
@@ -158,7 +158,7 @@ namespace sys::atk {
         }
     }
 
-    void WeaponAttacks(Storage::Registry& world, const float delta_time, Sound& sound_fx) {
+    void WeaponAttacks(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PistolAttack(world, delta_time, sound_fx);
         ShotgunAttack(world, delta_time, sound_fx);
         GrenadeAttack(world, delta_time, sound_fx);

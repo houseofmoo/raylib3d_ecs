@@ -17,10 +17,5 @@ namespace data {
 
         // info stats
         .enemies_defeated = 0,
-
-        // cheats
-        .god_mode = false,
-        .always_drop_loot = false,
-        .profiler_enabled = false,
     };
 }

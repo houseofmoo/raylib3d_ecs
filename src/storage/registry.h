@@ -12,7 +12,7 @@
 #include "data/entity.h"
 #include "storage/component_storage.h"
 
-namespace Storage {
+namespace strg {
     class Registry {
         private:
         struct IStorage {

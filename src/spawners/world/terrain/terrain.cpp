@@ -4,7 +4,7 @@
 #include "data/game/game.h"
 
 namespace spwn::terrain {
-     void Terrain(Storage::Registry& world, const Vector3 position, const Vector3 size, const bool visible) {
+     void Terrain(strg::Registry& world, const Vector3 position, const Vector3 size, const bool visible) {
         auto terrain = world.CreateEntity();
         
         world.AddComponent<tag::Terrain>(

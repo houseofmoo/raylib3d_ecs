@@ -6,7 +6,7 @@
 #include "components/components.h"
 
 namespace spwn::evt {
-    inline void Notification(Storage::Registry& world, const std::string_view msg) {
+    inline void Notification(strg::Registry& world, const std::string_view msg) {
         Entity noti = world.CreateEntity();
 
         world.AddComponent<tag::Event>(

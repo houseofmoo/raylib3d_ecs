@@ -3,10 +3,10 @@
 #include "storage/registry.h"
 
 namespace sys::col {
-    void DamageOnCollision(Storage::Registry& world);
-    void DestroyOnCollision(Storage::Registry& world);
-    void KnockbackOnCollision(Storage::Registry& world);
-    void PickupOnCollision(Storage::Registry& world);
-    void TriggerOnCollision(Storage::Registry& world);
-    void RepositionOnCollision(Storage::Registry& world);
+    void DamageOnCollision(strg::Registry& world);
+    void DestroyOnCollision(strg::Registry& world);
+    void KnockbackOnCollision(strg::Registry& world);
+    void PickupOnCollision(strg::Registry& world);
+    void TriggerOnCollision(strg::Registry& world);
+    void RepositionOnCollision(strg::Registry& world);
 }

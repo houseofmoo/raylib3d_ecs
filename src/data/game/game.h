@@ -4,6 +4,12 @@
 #include "storage/tilemap.h"
 
 namespace data {
+    struct Cheats {
+        bool god_mode;
+        bool always_drop_loot;
+        bool profiler_enabled;
+    };
+
     enum class GameState_E {
         StartScreen,
         NewGame,
@@ -61,12 +67,12 @@ namespace data {
         }
     };
 
-
     struct WeaponSelectMenu {
         bool show;
         std::array<int, 3> selections;
     };
 
+    extern Cheats g_cheats;
     extern strg::Tilemap g_terrain;
     extern GameState g_game;
     extern WeaponSelectMenu g_weapon_select_menu;

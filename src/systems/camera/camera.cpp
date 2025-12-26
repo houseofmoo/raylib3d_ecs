@@ -7,7 +7,7 @@
 
 
 namespace sys::cam {
-    void CameraMovement_Debug(Storage::Registry& world, Camera3D& camera, const float delta_time, const bool shake_cam) {
+    void CameraMovement_Debug(strg::Registry& world, Camera3D& camera, const float delta_time, const bool shake_cam) {
         static float g_camera_yaw = 0.0f;
         static float g_camera_pitch = 0.0f;  // radians
         
@@ -69,7 +69,7 @@ namespace sys::cam {
         camera.target   = Vector3Lerp(camera.target, cam_desired_target, tightness);
     }
 
-    void CameraMovement(Storage::Registry& world, Camera3D& camera, const float delta_time, const bool shake_cam) {
+    void CameraMovement(strg::Registry& world, Camera3D& camera, const float delta_time, const bool shake_cam) {
         PROFILE_SCOPE("CameraMovement()");
         #ifdef DEBUG
             CameraMovement_Debug(world, camera, delta_time, shake_cam);

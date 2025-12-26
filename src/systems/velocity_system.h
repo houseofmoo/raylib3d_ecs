@@ -13,7 +13,7 @@
 
 namespace sys::vel {
     // ApplyMovement
-    inline void ApplyVelocity(Storage::Registry& world, const float delta_time) {
+    inline void ApplyVelocity(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyVelocity()");
         for (auto entity : world.View<cmpt::Velocity, cmpt::Transform>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
@@ -48,7 +48,7 @@ namespace sys::vel {
     }
 
     // ApplyArchMovement
-    inline void ApplyArch(Storage::Registry& world, const float delta_time) {
+    inline void ApplyArch(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyArch()");
         // this are not moving in normal horizontal space, they're arching
         // through the air and do not have a cmpt::Velocty and instead have
@@ -78,7 +78,7 @@ namespace sys::vel {
         }
     }
 
-    inline void ApplyRotateInPlace(Storage::Registry& world, const float delta_time) {
+    inline void ApplyRotateInPlace(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyRotateInPlace()");
         for (auto entity : world.View<cmpt::RotateInPlace, cmpt::Transform>()) {
             auto& rip = world.GetComponent<cmpt::RotateInPlace>(entity);

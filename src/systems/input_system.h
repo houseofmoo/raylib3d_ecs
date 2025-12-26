@@ -5,7 +5,6 @@
 #include "data/player/player.h"
 #include "data/entity.h"
 #include "storage/registry.h"
-#include "systems/player/player_input.h"
 #include "components/components.h"
 #include "utils/position.h"
 #include "utils/rl_utils.h"
@@ -22,7 +21,7 @@ namespace sys::input {
         return true;
     }
 
-    inline void PlayerInput(Storage::Registry& world, Camera3D& camera) {
+    inline void PlayerInput(strg::Registry& world, Camera3D& camera) {
         PROFILE_SCOPE("PlayerInput()");
 
         for (auto entity : world.View<tag::Player, 
@@ -59,7 +58,7 @@ namespace sys::input {
         }
     }
 
-    inline void AIMoveIntent(Storage::Registry& world, const float delta_time) {
+    inline void AIMoveIntent(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("AIMoveIntent()");
         for (auto entity : world.View<cmpt::AIMoveIntent, cmpt::Transform>()) {
             auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
