@@ -12,7 +12,6 @@
 #include "utils/debug.h"
 
 namespace sys::vel {
-    // ApplyMovement
     inline void ApplyVelocity(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyVelocity()");
         for (auto entity : world.View<cmpt::Velocity, cmpt::Transform>()) {
@@ -45,7 +44,6 @@ namespace sys::vel {
         }
     }
 
-    // ApplyArchMovement
     inline void ApplyArch(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyArch()");
         for (auto entity : world.View<cmpt::ArchMove, cmpt::Transform>()) {

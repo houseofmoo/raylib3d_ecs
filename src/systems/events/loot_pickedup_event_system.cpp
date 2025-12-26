@@ -5,7 +5,7 @@
 #include "spawners/system/events/notification.h"
 #include "spawners/equip/weapon/shotgun.h"
 #include "spawners/equip/weapon/pistol.h"
-#include "spawners/equip/weapon/grenade.h"
+#include "spawners/equip/weapon/grenade_launcher.h"
 #include "data/player/player.h"
 #include "data/game/game.h"
 #include "data/entity.h"
@@ -90,9 +90,9 @@ namespace sys::evt {
                 spwn::evt::Notification(world, data::notif::GAIN_SMG);
                 break;
             }
-            case data::loot::WeaponKind::Grenade: {
-                spwn::weapon::EquipGrenade(world, id);
-                spwn::evt::Notification(world, data::notif::GAIN_GRENADE);
+            case data::loot::WeaponKind::GrenadeLauncher: {
+                spwn::weapon::EquipGrenadeLauncher(world, id);
+                spwn::evt::Notification(world, data::notif::GAIN_GRENADE_LAUNCHER);
                 break;
             }
             case data::loot::WeaponKind::RocketLauncher: {

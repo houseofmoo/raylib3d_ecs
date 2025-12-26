@@ -5,13 +5,13 @@
 #include "resources/asset_loader.h"
 
 namespace spwn::proj {
-    void Explosion(strg::Registry& world, const Vector3 position, const int damage) {
+    void Explosion(strg::Registry& world, const ExplosionConfig config) {
         auto entity = world.CreateEntity();
 
         world.AddComponent<cmpt::Transform>(
             entity,
             cmpt::Transform{ 
-                position,
+                config.position,
                 QuaternionIdentity()
             }
         );
@@ -22,7 +22,7 @@ namespace spwn::proj {
                 .layer = data::cnst::PROJECTILE_LAYER,
                 .mask = data::cnst::PROJECTILE_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = data::cnst::EXPLOSION_START_SIZE
+                .size = config.start_size
             }
         );
 
@@ -30,14 +30,14 @@ namespace spwn::proj {
             entity,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
-                .countdown = data::cnst::EXPLOSION_DURATION
+                .countdown = config.duration
             }
         );
 
         world.AddComponent<cmpt::DamageDealer>(
             entity,
             cmpt::DamageDealer{ 
-                .amount = damage,
+                .amount = config.damage,
                 .penetration = 999
             }
         );
@@ -45,25 +45,25 @@ namespace spwn::proj {
         world.AddComponent<cmpt::AppliesKnockback>(
             entity,
             cmpt::AppliesKnockback { 
-                .scale = data::cnst::EXPLOSION_KNOCKBACK_SCALE, 
-                .duration = data::cnst::EXPLOSION_KNOCKBACK_DURATION
+                .scale = config.knockback_scale,
+                .duration = config.knockback_duration
             }
         );
 
         world.AddComponent<cmpt::Explosion>(
             entity,
             cmpt::Explosion{
-                .duration = data::cnst::EXPLOSION_DURATION,
+                .duration = config.duration,
                 .elapsed = 0.0f,
-                .start_size = data::cnst::EXPLOSION_START_SIZE,
-                .end_size = data::cnst::EXPLOSION_END_SIZE
+                .start_size = config.start_size,
+                .end_size = config.end_size
             }
         );
 
         world.AddComponent<cmpt::Draw>(
             entity,
             cmpt::Draw{ 
-                .size = data::cnst::EXPLOSION_START_SIZE, 
+                .size = config.start_size,
                 .scale  = data::cnst::BASE_SCALE,
                 .color = ORANGE,
                 .model = &rsrc::asset::grenade_model,

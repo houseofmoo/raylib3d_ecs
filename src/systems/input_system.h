@@ -143,6 +143,10 @@ namespace sys::input {
                     break;
                 }
 
+                case cmpt::AIMoveMode::None: {
+                    intent.direction = { 0.0f, 0.0f, 0.0f };
+                }
+
                 default: {}
             }
         }

@@ -52,6 +52,10 @@ namespace cmpt {
                 break;
             }
 
+            case cmpt::AIMoveMode::None: {
+                break;
+            }
+
             default: {
                 PRINT("Tried to add unknown MoveIntentType component AddMovementType()");
                 break;

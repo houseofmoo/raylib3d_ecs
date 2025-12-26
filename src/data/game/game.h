@@ -6,6 +6,7 @@
 namespace data {
     struct Cheats {
         bool god_mode;
+        bool dont_spawn_enemies;
         bool always_drop_loot;
         bool never_drop_loot;
         bool profiler_enabled;

@@ -40,13 +40,13 @@ namespace data {
 
         enum class WeaponKind {
             NONE,
-            Pistol,          // single pellet, starter wep expected to be not awesome
+            Pistol,          // single pellet, starter wep expected to be not awesome?
             Shotgun,         // spread pattern (3 pellets)
-            Rifle,           // richochettes?
+            Rifle,           // 3 round burts + penetration (1 enemy)
             Sniper,          // penetration (3 enemies)
             RailGun,         // high speed + penetration (5 enemies)
             SMG,             // high attack speed
-            Grenade,         // arch + area damage
+            GrenadeLauncher, // arch + area damage
             RocketLauncher,  // slow moving + area damage
             Last
         };
@@ -61,16 +61,11 @@ namespace data {
     
     // layer masks
     namespace layer {
+        constexpr Layer NONE       = 0;
         constexpr Layer PLAYER     = 1 << 0;
         constexpr Layer ENEMY      = 1 << 1;
         constexpr Layer PROJECTILE = 1 << 2;
         constexpr Layer LOOT       = 1 << 3;
-        //constexpr Layer TERRAIN    = 1 << 4;
-        //constexpr Layer LAYER_TBD  = 1 << 5;
-        //constexpr Layer LAYER_TBD  = 1 << 6;
-        //constexpr Layer LAYER_TBD  = 1 << 7;
-        //constexpr Layer LAYER_TBD  = 1 << 8;
-        //constexpr Layer LAYER_TBD  = 1 << 9;
 
         inline bool InteractsOneWay(Layer layer_a, Mask mask_a, Layer layer_b, Mask mask_b) {
             // if either interact with the other
@@ -171,44 +166,55 @@ namespace data {
         // weapons
         constexpr float MIN_WEAPON_COOLDOWN     = 0.1f;
 
-        constexpr int   PISTOL_DAMAGE             = 5;
         constexpr float PISTOL_COOLDOWN           = 0.5f;
-        constexpr float PISTOL_PROJECTILE_SPEED   = 25.0f;
+        constexpr int   PISTOL_DAMAGE             = 5;
         constexpr int   PISTOL_PENETRATION        = 1;
+        constexpr float PISTOL_PROJECTILE_SPEED   = 20.0f;
         constexpr float PISTOL_KNOCKBACK_SCALE    = 5.0f;
         constexpr float PISTOL_KNOCKBACK_DURATION = 0.10f;
 
-        constexpr int   SHOTGUN_DAMAGE             = 9;
         constexpr float SHOTGUN_COOLDOWN           = 2.5f;
+        constexpr int   SHOTGUN_DAMAGE             = 9;
+        constexpr int   SHOTGUN_PENETRATION        = 1;
         constexpr float SHOTGUN_PROJECTILE_SPEED   = 20.0f;
-        constexpr int   SHOTGUNL_PENETRATION       = 1;
-        constexpr float SHOTGUN_SPREAD             = 30.0f;
-        constexpr int   SHOTGUN_PELLET_COUNT       = 3;
         constexpr float SHOTGUN_KNOCKBACK_SCALE    = 10.0f;
         constexpr float SHOTGUN_KNOCKBACK_DURATION = 0.10f;
+        constexpr float SHOTGUN_SPREAD             = 30.0f;
+        constexpr int   SHOTGUN_PELLET_COUNT       = 3;
 
-        constexpr int     GRENADE_DAMAGE           = 5;
-        constexpr float   GRENADE_COOLDOWN         = 2.0f;
-        constexpr float   GRENADE_PROJECTILE_SPEED = 25.0f;
-        constexpr Vector3 GRENADE_SIZE             = { 0.5f, 0.5f, 0.5f };
+        constexpr float RIFLE_COOLDOWN           = 1.5f;
+        constexpr int   RIFLE_DAMAGE             = 7;
+        constexpr int   RIFLE_PENETRATION        = 2;
+        constexpr float RIFLE_PROJECTILE_SPEED   = 35.0f;
+        constexpr float RIFLE_KNOCKBACK_SCALE    = 7.5f;
+        constexpr float RIFLE_KNOCKBACK_DURATION = 0.10f;
+        constexpr int   RIFLE_BURST_COUNT        = 3;
+        constexpr float RIFLE_BURST_COOLDOWN     = 0.10f;
 
-        constexpr int     EXPLOSION_DAMAGE             = 20;
-        constexpr Vector3 EXPLOSION_START_SIZE         = { 0.1f, 0.1f, 0.1f };
-        constexpr Vector3 EXPLOSION_END_SIZE           = { 7.0f, 7.0f, 7.0f };
-        constexpr float   EXPLOSION_DURATION           = 0.25f;
-        constexpr float   EXPLOSION_KNOCKBACK_SCALE    = 35.0f;
-        constexpr float   EXPLOSION_KNOCKBACK_DURATION = 0.2f;
+        constexpr float GRENADE_COOLDOWN           = 2.0f;
+        constexpr int   GRENADE_DAMAGE             = 5;
+        constexpr int   GRENADE_PENETRATION        = 1;
+        constexpr float GRENADE_PROJECTILE_SPEED   = 25.0f;
+        constexpr float GRENADE_KNOCKBACK_SCALE    = 0.0f;
+        constexpr float GRENADE_KNOCKBACK_DURATION = 0.0f;
+        constexpr float GRENADE_ARCH_DURATION      = 0.75f;
+        constexpr float GRENADE_ARCH_MAX_HEIGHT    = 5.0f;
+
+        constexpr int     GRENADE_EXPLOSION_DAMAGE             = 20;
+        constexpr Vector3 GRENADE_EXPLOSION_START_SIZE         = { 0.1f, 0.1f, 0.1f };
+        constexpr Vector3 GRENADE_EXPLOSION_END_SIZE           = { 7.0f, 7.0f, 7.0f };
+        constexpr float   GRENADE_EXPLOSION_DURATION           = 0.25f;
+        constexpr float   GRENADE_EXPLOSION_KNOCKBACK_SCALE    = 20.0f;
+        constexpr float   GRENADE_EXPLOSION_KNOCKBACK_DURATION = 0.2f;
 
         // projectiles
-        constexpr Color   PROJECTILE_COLOR      = Color{ 230, 41, 55, 255 };
-        constexpr Vector3 PROJECTILE_SIZE       = { 0.25f, 0.25f, 0.25f };
+        constexpr Color   BULLET_COLOR          = Color{ 230, 41, 55, 255 };
+        constexpr Vector3 BULLET_SIZE           = { 0.25f, 0.25f, 0.25f };
+        constexpr Color   GRENADE_COLOR         = Color{ 230, 41, 55, 255 };
+        constexpr Vector3 GRENADE_SIZE          = { 0.5f, 0.5f, 0.5f };
         constexpr Layer   PROJECTILE_LAYER      = data::layer::PROJECTILE;
         constexpr Layer   PROJECTILE_LAYER_MASK = data::layer::ENEMY;
         constexpr float   PROJECTILE_LIFETIME   = 10.0f;
-
-        // arch projectiles
-        constexpr float ARCH_MAX_HEIGHT = 5.0f;
-        constexpr float ARCH_DURATION   = 0.75f; // doubles as lifetime since the ground does not destroy projectiles
 
         // status effects
         constexpr float INVULNRABILITY_CD = 1.0f;
@@ -225,6 +231,7 @@ namespace data {
         constexpr Color   GRUNT_COLOR              = { 255, 0, 255, 255 };
         constexpr Vector3 GRUNT_SIZE               = { 1.0f, 1.5f, 1.0f };
         constexpr int     GRUNT_MIN_HP             = 20;
+        constexpr float   GRUNT_HP_MULTIPLIER      = 1.5f;
         const float       GRUNT_SPEED              = 5.0f;
         const int         GRUNT_MELEE_DMG          = 5;
         constexpr float   GRUNT_LOOT_MULTIPLIER    = 1.0f;
@@ -236,7 +243,8 @@ namespace data {
         // brute
         constexpr Color   BRUTE_COLOR              = { 255, 100, 255, 255 };
         constexpr Vector3 BRUTE_SIZE               = { 1.5f, 2.5f, 1.5f };
-        constexpr int     BRUTE_MIN_HP             = 50;
+        constexpr int     BRUTE_MIN_HP             = 35;
+        constexpr float   BRUTE_HP_MULTIPLIER      = 1.5f;
         constexpr float   BRUTE_SPEED              = 3.5f;
         constexpr int     BRUTE_MELEE_DMG          = 10;
         constexpr float   BRUTE_LOOT_MULTIPLIER    = 1.5f;
@@ -251,28 +259,28 @@ namespace data {
         constexpr float NOTIFICATION_DURATION = 3.0f;
 
         using Text = std::string_view;
-        inline constexpr Text GAIN_EXP             = "+EXP";
-        inline constexpr Text GAIN_MONEY           = "+MONEY";
-        inline constexpr Text GAIN_LEVELUP         = "+LEVEL";
+        inline constexpr Text GAIN_EXP              = "+EXP";
+        inline constexpr Text GAIN_MONEY            = "+MONEY";
+        inline constexpr Text GAIN_LEVELUP          = "+LEVEL";
+ 
+        inline constexpr Text GAIN_DAMAGE           = "+DAMAGE";
+        inline constexpr Text GAIN_ATTACK_SPEED     = "+ATTACK SPEED";
+        inline constexpr Text GAIN_MOVE_SPEED       = "+MOVE SPEED";
+        inline constexpr Text GAIN_PICKUP_RANGE     = "+PICKUP RANGE";
+        inline constexpr Text GAIN_DASH_RANGE       = "+DASH RANGE";
+        inline constexpr Text GAIN_HEALTH           = "+HEALTH";
+        inline constexpr Text GAIN_MAX_HEALTH       = "+MAX HEALTH";
 
-        inline constexpr Text GAIN_DAMAGE          = "+DAMAGE";
-        inline constexpr Text GAIN_ATTACK_SPEED    = "+ATTACK SPEED";
-        inline constexpr Text GAIN_MOVE_SPEED      = "+MOVE SPEED";
-        inline constexpr Text GAIN_PICKUP_RANGE    = "+PICKUP RANGE";
-        inline constexpr Text GAIN_DASH_RANGE      = "+DASH RANGE";
-        inline constexpr Text GAIN_HEALTH          = "+HEALTH";
-        inline constexpr Text GAIN_MAX_HEALTH      = "+MAX HEALTH";
+        inline constexpr Text GAIN_PISTOL           = "+PISTOL";
+        inline constexpr Text GAIN_SHOTGUN          = "+SHOTGUN";
+        inline constexpr Text GAIN_RIFLE            = "+RIFLE";
+        inline constexpr Text GAIN_SNIPER           = "+SNIPER";
+        inline constexpr Text GAIN_RAILGUN          = "+RAILGUN";
+        inline constexpr Text GAIN_SMG              = "+SMG";
+        inline constexpr Text GAIN_GRENADE_LAUNCHER = "+GRENADE LAUNCHER";
+        inline constexpr Text GAIN_ROCKET_LAUNCHER  = "+ROCKET LAUNCHER";
 
-        inline constexpr Text GAIN_PISTOL          = "+PISTOL";
-        inline constexpr Text GAIN_SHOTGUN         = "+SHOTGUN";
-        inline constexpr Text GAIN_RIFLE           = "+RIFLE";
-        inline constexpr Text GAIN_SNIPER          = "+SNIPER";
-        inline constexpr Text GAIN_RAILGUN         = "+RAILGUN";
-        inline constexpr Text GAIN_SMG             = "+SMG";
-        inline constexpr Text GAIN_GRENADE         = "+GRENADE";
-        inline constexpr Text GAIN_ROCKET_LAUNCHER = "+ROCKET LAUNCHER";
-
-        inline constexpr Text GAIN_INVUL           = "+INVULNERABLE";
-        inline constexpr Text LOSE_INVUL           = "-INVULNERABLE";
+        inline constexpr Text GAIN_INVUL            = "+INVULNERABLE";
+        inline constexpr Text LOSE_INVUL            = "-INVULNERABLE";
     }
 }

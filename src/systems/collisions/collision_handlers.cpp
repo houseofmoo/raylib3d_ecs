@@ -46,6 +46,9 @@ namespace sys::col {
     void DestroyOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("DestroyOnCollision()");
          for (auto& col : sys::col::collision_cache.current) {
+            // if A and B interacted last frame, ignore them this frame
+            if (sys::col::collision_cache.previous.contains(col)) continue;
+
             // if A is a projectile
             if (world.HasComponent<tag::Projectile>(col.entity_a)) {
                 // penetration -> destroy once penetration value is 0
@@ -55,12 +58,6 @@ namespace sys::col {
                         world.AddComponent<tag::Destroy>(col.entity_a);
                     }
                 }
-
-                // explosive -> destroy and spawn damage area
-                // if (auto exp = world.TryGetComponent<cmpt::ExplodeOnImpact>(col.entity_a)) {
-                //     //world.AddComponent<tag::Destroy>(col.entity_a);
-                //     // TODO: spawn area damage request
-                // }
             }
 
             // if B is a projectile
@@ -72,12 +69,6 @@ namespace sys::col {
                         world.AddComponent<tag::Destroy>(col.entity_b);
                     }
                 }
-
-                // explosive -> destroy and spawn damage  area
-                // if (auto exp = world.TryGetComponent<cmpt::ExplodeOnImpact>(col.entity_b)) {
-                //     //world.AddComponent<tag::Destroy>(col.entity_b);
-                //     // TODO: spawn area damage request
-                // }
             }
         }
     }

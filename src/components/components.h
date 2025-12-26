@@ -59,6 +59,7 @@ namespace cmpt {
         Ranged, // stays some min/max distance near player
         Lazy,   // moves generally towards player
         Random, // move entirely randomly
+        None,   // stand still
     };
 
     // non-player characters have this value for AI movement
@@ -121,13 +122,6 @@ namespace cmpt {
 
     struct DeathAnimation {
         float duration;
-    };
-
-    struct Explosion {
-        float duration;
-        float elapsed;
-        Vector3 start_size;
-        Vector3 end_size;
     };
 
     ////////////////////////////////////////////////
@@ -231,8 +225,11 @@ namespace cmpt {
         data::loot::WeaponKind kind;
         float cooldown;
         float countdown;
-        float projectile_speed;
         int damage;
+        int penetration;
+        float projectile_speed;
+        float knockback_scale;
+        float knockback_duration;
     };
 
     struct Pistol {
@@ -245,13 +242,30 @@ namespace cmpt {
         int pellet_count;
     };
 
-    struct Sniper {
+    struct Rifle {
         WeaponBaseStats base_stats;
-        int penetration;
+        int burst_count;
+        int burst_completed;
+        float burst_cooldown;
+        float burst_countdown;
     };
 
-    struct Grenade {
+    struct Sniper {
         WeaponBaseStats base_stats;
+    };
+
+    struct GrenadeLauncher {
+        WeaponBaseStats base_stats;
+        
+        float arch_duration;
+        float arch_max_height;
+
+        int explosion_damage;
+        Vector3 explosion_start_size;
+        Vector3 explosion_end_size;
+        float explosion_duration;
+        float explosion_knockback_scale;
+        float explosion_knockback_duration;
     };
 
     ////////////////////////////////////////////////
@@ -262,8 +276,19 @@ namespace cmpt {
     };
 
     struct ExplodeOnDestroy {
-        float radius;
+        Vector3 start_size;
+        Vector3 end_size;
+        int damage;
         float duration;
+        float knockback_scale;
+        float knockback_duration;
+    };
+
+    struct Explosion {
+        float duration;
+        float elapsed;
+        Vector3 start_size;
+        Vector3 end_size;
     };
 
     ////////////////////////////////////////////////

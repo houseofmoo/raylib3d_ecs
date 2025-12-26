@@ -28,11 +28,20 @@ namespace sys::cleanup {
 
             // check for on destroy effects
             if (world.HasComponent<cmpt::ExplodeOnDestroy>(entity)) {
+                auto& exp = world.GetComponent<cmpt::ExplodeOnDestroy>(entity);
                 auto& trans = world.GetComponent<cmpt::Transform>(entity);
                 spwn::proj::Explosion(
                     world,
-                    trans.position,
-                    (int)(data::cnst::EXPLOSION_DAMAGE * data::g_player.damage_multiplier)
+                    spwn::proj::ExplosionConfig {
+                        .position = trans.position,
+                        .start_size = exp.start_size,
+                        .end_size = exp.end_size,
+                        .damage = static_cast<int>(exp.damage * data::g_player.damage_multiplier),
+                        .duration = exp.duration,
+                        .knockback_scale = exp.knockback_scale,
+                        .knockback_duration = exp.knockback_duration
+
+                    }
                 );
             }
         }

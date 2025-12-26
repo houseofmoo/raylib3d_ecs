@@ -38,7 +38,7 @@ namespace spwn::proj {
                 .layer = data::cnst::PROJECTILE_LAYER,
                 .mask = data::cnst::PROJECTILE_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = data::cnst::PROJECTILE_SIZE
+                .size = data::cnst::BULLET_SIZE
             }
         );
 
@@ -71,9 +71,9 @@ namespace spwn::proj {
         world.AddComponent<cmpt::Draw>(
             entity,
             cmpt::Draw{ 
-                .size = data::cnst::PROJECTILE_SIZE, 
+                .size = data::cnst::BULLET_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
-                .color = data::cnst::PROJECTILE_COLOR,
+                .color = data::cnst::BULLET_COLOR,
                 .model = &rsrc::asset::bullet_model,
             }
         );

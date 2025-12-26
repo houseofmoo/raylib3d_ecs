@@ -2,12 +2,16 @@
 
 #include "raymath.h"
 #include "data/entity.h"
+#include "data/player/player.h"
 #include "resources/asset_loader.h"
 #include "components/components.h"
 
 namespace spwn::proj {
-    void Grenade(strg::Registry& world, const Vector3 start_pos,
-                Vector3 end_pos, const int damage) {
+    void Grenade(
+        strg::Registry& world, 
+        const Vector3 start_pos,
+        const Vector3 end_pos, 
+        const GrenadeConfig& config) {
 
         auto entity = world.CreateEntity();
         
@@ -34,9 +38,9 @@ namespace spwn::proj {
             cmpt::ArchMove{
                 .start = start_pos,
                 .end = end_pos,
-                .duration = data::cnst::ARCH_DURATION,
+                .duration = config.arch_duration,
                 .elapsed = 0.0f,
-                .height = data::cnst::ARCH_MAX_HEIGHT
+                .height = config.arch_max_height
             }
         );
 
@@ -54,23 +58,27 @@ namespace spwn::proj {
             entity,
             cmpt::Lifetime{ 
                 .start_time = GetTime(),
-                .countdown = data::cnst::ARCH_DURATION 
+                .countdown = config.arch_duration
             }
         );
 
         world.AddComponent<cmpt::DamageDealer>(
             entity,
             cmpt::DamageDealer{ 
-                .amount = damage,
-                .penetration = 0
+                .amount = config.damage,
+                .penetration = config.penetration
             }
         );
 
         world.AddComponent<cmpt::ExplodeOnDestroy>(
             entity,
             cmpt::ExplodeOnDestroy{
-                .radius = 1.0f,
-                .duration = 1.0f
+                .start_size = config.explosion_start_size,
+                .end_size = config.explosion_end_size,
+                .damage = config.explosion_damage,
+                .duration = config.explosion_duration,
+                .knockback_scale = config.explosion_knockback_scale,
+                .knockback_duration = config.explosion_duration,
             }
         );
 
@@ -79,7 +87,7 @@ namespace spwn::proj {
             cmpt::Draw{ 
                 .size = data::cnst::GRENADE_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
-                .color = data::cnst::PROJECTILE_COLOR,
+                .color = data::cnst::GRENADE_COLOR,
                 .model = &rsrc::asset::grenade_model,
             }
         );

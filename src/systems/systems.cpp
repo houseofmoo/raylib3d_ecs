@@ -13,7 +13,7 @@
 #include "spawners/system/map/map.h"
 #include "spawners/equip/weapon/pistol.h"
 #include "spawners/equip/weapon/shotgun.h"
-#include "spawners/equip/weapon/grenade.h"
+#include "spawners/equip/weapon/grenade_launcher.h"
 #include "spawners/world/player/player.h"
 
 #include "systems/animation_system.h"
@@ -256,7 +256,7 @@ namespace sys {
 
         rec.y += 50.0f;
         if (::GuiButton(rec, "Grenade")) {
-            spwn::weapon::EquipGrenade(world, data::g_player.id);
+            spwn::weapon::EquipGrenadeLauncher(world, data::g_player.id);
             data::g_weapon_select_menu.show = false;
         }
     }

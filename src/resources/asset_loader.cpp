@@ -52,7 +52,7 @@ namespace rsrc::asset {
         Mesh brute_mesh = GenMeshCube(data::cnst::BRUTE_SIZE.x, data::cnst::BRUTE_SIZE.y, data::cnst::BRUTE_SIZE.z);
         brute_model = LoadModelFromMesh(brute_mesh);
 
-        Mesh bullet_mesh = GenMeshCube(data::cnst::PROJECTILE_SIZE.x, data::cnst::PROJECTILE_SIZE.y, data::cnst::PROJECTILE_SIZE.z);
+        Mesh bullet_mesh = GenMeshCube(data::cnst::BULLET_SIZE.x, data::cnst::BULLET_SIZE.y, data::cnst::BULLET_SIZE.z);
         bullet_model = LoadModelFromMesh(bullet_mesh);
 
         Mesh grenade_mesh = GenMeshCube(data::cnst::GRENADE_SIZE.x, data::cnst::GRENADE_SIZE.y, data::cnst::GRENADE_SIZE.z);

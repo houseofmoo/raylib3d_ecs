@@ -5,9 +5,13 @@
 #include "data/player/player.h"
 #include "utils/debug.h"
 #include "components/components.h"
+#include "spawners/world/enemies/grunt.h"
+#include "spawners/world/enemies/brute.h"
 #include "spawners/equip/weapon/pistol.h"
 #include "spawners/equip/weapon/shotgun.h"
-#include "spawners/equip/weapon/grenade.h"
+#include "spawners/equip/weapon/rifle.h"
+#include "spawners/equip/weapon/grenade_launcher.h"
+
 
 namespace debug {
     static bool show_demo_window = false;
@@ -67,11 +71,6 @@ namespace debug {
         ImGui::Text("m-spd%:     %.2f", data::g_player.move_speed_multiplier);
         ImGui::Text("d-rng%:     %.2f", data::g_player.dash_range_multiplier);
         ImGui::Text("pu-rng%:    %.2f", data::g_player.pickup_range_multiplier);
-        ImGui::Separator();
-
-        ImGui::Checkbox(" god mode", &data::g_cheats.god_mode);
-        ImGui::Checkbox(" always loot", &data::g_cheats.always_drop_loot);
-        ImGui::Checkbox(" no loot", &data::g_cheats.never_drop_loot);
         ImGui::Separator();
 
         // add stats
@@ -142,13 +141,21 @@ namespace debug {
         if (ImGui::Button("-shotgun", size)) {
             spwn::weapon::DequipShotgun(world, data::g_player.id);
         }
+
+        if (ImGui::Button("+rifle", size)) {
+            spwn::weapon::EquipRifle(world, data::g_player.id);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("-rifle", size)) {
+            spwn::weapon::DequipRifle(world, data::g_player.id);
+        }
         
         if (ImGui::Button("+grenade", size)) {
-            spwn::weapon::EquipGrenade(world, data::g_player.id);
+            spwn::weapon::EquipGrenadeLauncher(world, data::g_player.id);
         }
         ImGui::SameLine();
         if (ImGui::Button("-grenade", size)) {
-            spwn::weapon::DequipGrenade(world, data::g_player.id);
+            spwn::weapon::DequipGrenadeLauncher(world, data::g_player.id);
         }
         ImGui::Separator();
 
@@ -170,7 +177,16 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::Grenade>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Rifle>(data::g_player.id)) {
+            ImGui::Text("rifle:");
+            ImGui::Text("  dmg:     %d", wep->base_stats.damage);
+            ImGui::Text("  pjk spd: %.2f", wep->base_stats.projectile_speed);
+            ImGui::Text("  cd:      %.2f", wep->base_stats.cooldown);
+            ImGui::Text("  burst:   %d", wep->burst_completed);
+            ImGui::Separator();
+        }
+
+        if (auto* wep = world.TryGetComponent<cmpt::GrenadeLauncher>(data::g_player.id)) {
             ImGui::Text("grenade:");
             ImGui::Text("  dmg:     %d", wep->base_stats.damage);
             ImGui::Text("  pjk spd: %.2f", wep->base_stats.projectile_speed);
@@ -217,13 +233,31 @@ namespace debug {
         rlImGuiBegin();
         SetImGuiDocking(io);
         // State& state = GetState_Debug();
-
         ImGui::Begin("Debug Panel");
 
         // exmaples so i can figure shit out
         ImGui::Checkbox("Demo window", &show_demo_window);
         if (show_demo_window) {
             ImGui::ShowDemoWindow(&show_demo_window);
+        }
+
+        // cheats
+        ImGui::Checkbox(" god mode", &data::g_cheats.god_mode);
+        ImGui::Checkbox(" dont spawn enemies", &data::g_cheats.dont_spawn_enemies);
+        ImGui::Checkbox(" always loot", &data::g_cheats.always_drop_loot);
+        ImGui::Checkbox(" no loot", &data::g_cheats.never_drop_loot);
+        ImGui::Separator();
+
+        // spawn enemies
+        if (ImGui::Button("spawn grunt line")) {
+            for (int x = -10; x < 10; x+= 2) {
+                spwn::enemy::Grunt(world, Vector3{(float)x, 0.0f, 0.0f}, cmpt::AIMoveMode::None, 500);
+            }
+        }
+        if (ImGui::Button("spawn brute line")) {
+            for (int x = -10; x < 10; x+= 4) {
+                spwn::enemy::Brute(world, Vector3{(float)x, 0.0f, 0.0f}, cmpt::AIMoveMode::None, 500);
+            }
         }
         ImGui::Separator();
 

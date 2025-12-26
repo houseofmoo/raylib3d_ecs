@@ -57,9 +57,9 @@ namespace sys::atk {
                     .position = trans.position,
                     .direction = direction,
                     .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
-                    .penetration = data::cnst::PISTOL_PENETRATION,
-                    .knockback_scale = data::cnst::PISTOL_KNOCKBACK_SCALE,
-                    .knockback_duration = data::cnst::PISTOL_KNOCKBACK_DURATION
+                    .penetration = wep.base_stats.penetration,
+                    .knockback_scale = wep.base_stats.knockback_scale,
+                    .knockback_duration = wep.base_stats.knockback_duration
                 }
             );
             PlaySound(sound_fx);
@@ -98,9 +98,9 @@ namespace sys::atk {
                     .position = trans.position,
                     .direction = direction,
                     .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
-                    .penetration = data::cnst::SHOTGUNL_PENETRATION,
-                    .knockback_scale = data::cnst::SHOTGUN_KNOCKBACK_SCALE,
-                    .knockback_duration = data::cnst::SHOTGUN_KNOCKBACK_DURATION
+                    .penetration = wep.base_stats.penetration,
+                    .knockback_scale = wep.base_stats.knockback_scale,
+                    .knockback_duration = wep.base_stats.knockback_duration
                 }
             );
             PlaySound(sound_fx);
@@ -108,12 +108,63 @@ namespace sys::atk {
         }
     }
 
-    void GrenadeAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
-        PROFILE_SCOPE("GrenadeAttack()");
-        for (auto entity : world.View<cmpt::Grenade>()) {
+    void RifleAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
+        PROFILE_SCOPE("RifleAttack()");
+        for (auto entity : world.View<cmpt::Rifle>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& input = world.GetComponent<cmpt::Input>(entity);
-            auto& wep = world.GetComponent<cmpt::Grenade>(entity);
+            auto& wep = world.GetComponent<cmpt::Rifle>(entity);
+     
+            // if doing a burst
+            if (wep.burst_completed < wep.burst_count) {
+                // check if burst is ready
+                wep.burst_countdown -= delta_time;
+                if (wep.burst_countdown > 0.0f) continue;
+                
+                Vector3 direction = utils::DirectionFlattenThenNormalize(
+                    trans.position, 
+                    input.mouse_world_position
+                );
+
+                direction = Vector3Scale(direction, wep.base_stats.projectile_speed);
+                spwn::proj::Bullet(
+                    world,
+                    spwn::proj::BulletConfig{
+                        .position = trans.position,
+                        .direction = direction,
+                        .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
+                        .penetration = wep.base_stats.penetration,
+                        .knockback_scale = wep.base_stats.knockback_scale,
+                        .knockback_duration = wep.base_stats.knockback_duration
+                    }
+                );
+                PlaySound(sound_fx);
+                SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
+
+                wep.burst_completed += 1;
+                wep.burst_countdown = wep.burst_cooldown;
+            } else {
+                // check if ready to fire
+                wep.base_stats.countdown -= delta_time;
+                if (wep.base_stats.countdown > 0.0f) continue;
+
+                wep.base_stats.countdown = wep.base_stats.cooldown / data::g_player.attack_speed_multiplier;
+                if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                    wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+                }
+
+                wep.burst_completed = 0;
+                wep.burst_countdown = 0.0f;
+            }
+        }
+    }
+
+    void GrenadeLauncherAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
+        PROFILE_SCOPE("GrenadeAttack()");
+        for (auto entity : world.View<cmpt::GrenadeLauncher>()) {
+            auto& trans = world.GetComponent<cmpt::Transform>(entity);
+            auto& input = world.GetComponent<cmpt::Input>(entity);
+            auto& wep = world.GetComponent<cmpt::GrenadeLauncher>(entity);
      
             wep.base_stats.countdown -= delta_time;
             if (wep.base_stats.countdown > 0.0f) continue;
@@ -127,7 +178,22 @@ namespace sys::atk {
                 world, 
                 trans.position, 
                 input.mouse_world_position,
-                wep.base_stats.damage * data::g_player.damage_multiplier
+                spwn::proj::GrenadeConfig {
+                    .damage = static_cast<int>(wep.base_stats.damage * data::g_player.damage_multiplier),
+                    .penetration = wep.base_stats.penetration,
+                    .knockback_scale = wep.base_stats.knockback_scale,
+                    .knockback_duration = wep.base_stats.knockback_duration,
+                    
+                    .arch_duration = wep.arch_duration,
+                    .arch_max_height = wep.arch_max_height,
+
+                    .explosion_damage = static_cast<int>(wep.explosion_damage * data::g_player.damage_multiplier),
+                    .explosion_start_size = wep.explosion_start_size,
+                    .explosion_end_size = wep.explosion_end_size,
+                    .explosion_duration = wep.explosion_duration,
+                    .explosion_knockback_scale = wep.explosion_knockback_scale,
+                    .explosion_knockback_duration = wep.explosion_knockback_duration
+                }
             );
             PlaySound(sound_fx);
             SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
@@ -161,7 +227,8 @@ namespace sys::atk {
     void WeaponAttacks(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PistolAttack(world, delta_time, sound_fx);
         ShotgunAttack(world, delta_time, sound_fx);
-        GrenadeAttack(world, delta_time, sound_fx);
+        RifleAttack(world, delta_time, sound_fx);
+        GrenadeLauncherAttack(world, delta_time, sound_fx);
         ExplosionAttack(world, delta_time);
     }
 }
