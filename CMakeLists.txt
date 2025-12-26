@@ -25,14 +25,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/components)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/data)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/data/game)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/data/notifications)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/data/player)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/debug)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/resources)
-
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/raygui_styles)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/resources)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip)
@@ -59,7 +58,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/systems/events)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/utils)
 
 # add all local cpp files
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/style)
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     ${CMAKE_SOURCE_DIR}/src/*.cpp
     ${CMAKE_SOURCE_DIR}/src/*.c
