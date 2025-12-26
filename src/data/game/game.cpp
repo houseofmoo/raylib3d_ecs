@@ -25,6 +25,7 @@ namespace data {
     constinit Cheats g_cheats {
         .god_mode = false,
         .always_drop_loot = false,
+        .never_drop_loot = false,
         .profiler_enabled = false,
     };
 }

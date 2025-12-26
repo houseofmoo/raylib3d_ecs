@@ -7,6 +7,7 @@ namespace data {
     struct Cheats {
         bool god_mode;
         bool always_drop_loot;
+        bool never_drop_loot;
         bool profiler_enabled;
     };
 

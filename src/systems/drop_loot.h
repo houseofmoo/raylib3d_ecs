@@ -15,10 +15,14 @@ namespace sys::loot {
     inline void LootDrop(strg::Registry& world) {
         PROFILE_SCOPE("LootDrop()");
         static uint32_t enemies_since_loot_dropped = 0;
+        
+        if (data::g_cheats.never_drop_loot) {
+            return;
+        }
+        
         for (auto enemy : world.View<cmpt::DropsLoot, 
                                         tag::Destroy,
                                         cmpt::Transform>()) {
-            
             
             auto& drop = world.GetComponent<cmpt::DropsLoot>(enemy);                                   
             auto& etrans = world.GetComponent<cmpt::Transform>(enemy);

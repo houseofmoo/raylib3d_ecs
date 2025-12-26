@@ -19,30 +19,28 @@ namespace sys::vel {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& vel = world.GetComponent<cmpt::Velocity>(entity);
 
-            Vector3 org_pos = trans.position;
-            Vector3 new_pos = Vector3Add(org_pos, Vector3Scale(vel, delta_time));
+            Vector3 new_pos = Vector3Add(trans.position, Vector3Scale(vel, delta_time));
             
-            // spawning animations are not validated
-            if (world.HasComponent<cmpt::SpawnAnimation>(entity)) {
-                trans.position = new_pos;
-                continue;
-            }
+            //// spawning animations are not validated
+            // if (world.HasComponent<cmpt::SpawnAnimation>(entity)) {
+            //     trans.position = new_pos;
+            //     continue;
+            // }
 
             auto* col = world.TryGetComponent<cmpt::Collider>(entity);
             float height = (col == nullptr) ? 0.0f : utils::GetEntityHeight(trans.position, col->size);
-
-            bool valid_move = data::g_terrain.ValidMove(new_pos, height);
-            if (valid_move) {
+            if (data::g_terrain.ValidMove(new_pos, height)) {
                 trans.position = new_pos;
+                continue;
+            }
+         
+            if (world.HasComponent<tag::DestroyOnTerrainCollision>(entity)) {
+                world.AddComponent<tag::Destroy>(entity);
+            } else if (world.HasComponent<cmpt::AIMoveIntent>(entity)) {
+                auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
+                intent.stuck = true;
             } else {
-                if (world.HasComponent<tag::DestroyOnTerrainCollision>(entity)) {
-                    world.AddComponent<tag::Destroy>(entity);
-                } else if (world.HasComponent<cmpt::AIMoveIntent>(entity)) {
-                    auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
-                    intent.stuck = true;
-                } else {
-                    trans.position = utils::ValidateMovePosition(org_pos, new_pos, height);
-                }
+                trans.position = utils::ValidateMovePosition(trans.position, new_pos, height);
             }
         }
     }
@@ -50,9 +48,6 @@ namespace sys::vel {
     // ApplyArchMovement
     inline void ApplyArch(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyArch()");
-        // this are not moving in normal horizontal space, they're arching
-        // through the air and do not have a cmpt::Velocty and instead have
-        // a cmpt::ArchMove
         for (auto entity : world.View<cmpt::ArchMove, cmpt::Transform>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& arch = world.GetComponent<cmpt::ArchMove>(entity);
@@ -70,10 +65,16 @@ namespace sys::vel {
             Vector3 new_pos = Vector3Lerp(arch.start, arch.end, time);
             new_pos.y += 4.0f * arch.height * time * (1.0f - time);
             float height = (col == nullptr) ? 0.0f : utils::GetEntityHeight(new_pos, col->size);
-            if (!data::g_terrain.ValidMove(new_pos, height)) {
+
+            if (data::g_terrain.ValidMove(new_pos, height)) {   
+                trans.position = new_pos;
+                continue;
+            }
+
+            if (world.HasComponent<tag::DestroyOnTerrainCollision>(entity)) {
                 world.AddComponent<tag::Destroy>(entity);
             } else {
-                trans.position = new_pos;
+                trans.position = utils::ValidateMovePosition(trans.position, new_pos, height);
             }
         }
     }

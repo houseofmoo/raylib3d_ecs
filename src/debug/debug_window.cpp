@@ -70,7 +70,8 @@ namespace debug {
         ImGui::Separator();
 
         ImGui::Checkbox(" god mode", &data::g_cheats.god_mode);
-        ImGui::Checkbox(" loot mode", &data::g_cheats.always_drop_loot);
+        ImGui::Checkbox(" always loot", &data::g_cheats.always_drop_loot);
+        ImGui::Checkbox(" no loot", &data::g_cheats.never_drop_loot);
         ImGui::Separator();
 
         // add stats
