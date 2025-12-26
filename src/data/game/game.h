@@ -13,8 +13,6 @@ namespace data {
         Dead,
     };
 
-
-
     struct GameState {
         GameState_E state;
         int difficulty;

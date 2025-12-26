@@ -20,42 +20,28 @@ namespace sys::vel {
             auto& vel = world.GetComponent<cmpt::Velocity>(entity);
 
             Vector3 org_pos = trans.position;
-            Vector3 delta = Vector3Scale(vel, delta_time);
-
-            // projectiles are allow it to travel over low terrain
-            if (world.HasComponent<tag::Projectile>(entity)) {
-                if (!utils::MoveOverTerrainProjectile(trans.position, delta)) {\
-                    world.AddComponent<tag::Destroy>(entity);
-                }
-                continue;
-            }
-
-            // special case entities that are destroyed on terrain or low terrain contact
-            if (world.HasComponent<tag::DestroyOnTerrainCollision>(entity)) {
-                Vector3 new_pos = Vector3Add(trans.position, delta);
-                if (data::g_terrain.IsBlockedWorld(new_pos.x, new_pos.z)) {
-                    world.AddComponent<tag::Destroy>(entity);
-                    continue;
-                }
-            }
-
-            // spawning animations are not modified
+            Vector3 new_pos = Vector3Add(org_pos, Vector3Scale(vel, delta_time));
+            
+            // spawning animations are not validated
             if (world.HasComponent<cmpt::SpawnAnimation>(entity)) {
-                trans.position = Vector3Add(trans.position, delta);
+                trans.position = new_pos;
                 continue;
             }
 
-            // all over units movement handled here
-            utils::MoveAndSlideTerrain(trans.position, delta);
+            auto* col = world.TryGetComponent<cmpt::Collider>(entity);
+            float height = (col == nullptr) ? 0.0f : utils::GetEntityHeight(trans.position, col->size);
 
-            // TODO: need a better way to detect stuck, right now it fails 
-            // with low terrain (sometimes) and the large brutes seem to ignore it entirely?
-            // if direction attempted to move is invalid and AI, flag as stuck
-            if (world.HasComponent<cmpt::AIMoveIntent>(entity)) {
-                Vector3 attempted_pos = Vector3Add(org_pos, delta);
-                if (data::g_terrain.IsBlockedWorld(attempted_pos.x, attempted_pos.z)) {
+            bool valid_move = data::g_terrain.ValidMove(new_pos, height);
+            if (valid_move) {
+                trans.position = new_pos;
+            } else {
+                if (world.HasComponent<tag::DestroyOnTerrainCollision>(entity)) {
+                    world.AddComponent<tag::Destroy>(entity);
+                } else if (world.HasComponent<cmpt::AIMoveIntent>(entity)) {
                     auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
                     intent.stuck = true;
+                } else {
+                    trans.position = utils::ValidateMovePosition(org_pos, new_pos, height);
                 }
             }
         }
@@ -70,23 +56,31 @@ namespace sys::vel {
         for (auto entity : world.View<cmpt::ArchMove, cmpt::Transform>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& arch = world.GetComponent<cmpt::ArchMove>(entity);
-
+            auto* col = world.TryGetComponent<cmpt::Collider>(entity);
+            
             arch.elapsed += delta_time;
-            float time = (arch.duration > 0.0f) ?
-                Clamp(arch.elapsed / arch.duration, 0.0f, 1.0f)
-                : 1.0f;
+            float time = 0.0f;
+            if (arch.duration > 0.0f) {
+                time = Clamp(arch.elapsed / arch.duration, 0.0f, 1.0f);
+            } else {
+                time = 1.0f;
+            } 
             //float time_eased = utils::EaseInOutQuad(time);
 
             Vector3 new_pos = Vector3Lerp(arch.start, arch.end, time);
             new_pos.y += 4.0f * arch.height * time * (1.0f - time);
-            trans.position = new_pos;
+            float height = (col == nullptr) ? 0.0f : utils::GetEntityHeight(new_pos, col->size);
+            if (!data::g_terrain.ValidMove(new_pos, height)) {
+                world.AddComponent<tag::Destroy>(entity);
+            } else {
+                trans.position = new_pos;
+            }
         }
     }
 
     inline void ApplyRotateInPlace(Storage::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ApplyRotateInPlace()");
         for (auto entity : world.View<cmpt::RotateInPlace, cmpt::Transform>()) {
-
             auto& rip = world.GetComponent<cmpt::RotateInPlace>(entity);
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
 

@@ -192,7 +192,7 @@ namespace data {
         constexpr float   GRENADE_PROJECTILE_SPEED = 25.0f;
         constexpr Vector3 GRENADE_SIZE             = { 0.5f, 0.5f, 0.5f };
 
-        constexpr int     EXPLOSION_DAMAGE             = 1;
+        constexpr int     EXPLOSION_DAMAGE             = 20;
         constexpr Vector3 EXPLOSION_START_SIZE         = { 0.1f, 0.1f, 0.1f };
         constexpr Vector3 EXPLOSION_END_SIZE           = { 7.0f, 7.0f, 7.0f };
         constexpr float   EXPLOSION_DURATION           = 0.25f;

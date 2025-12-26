@@ -2,10 +2,30 @@
 
 #include "raylib.h"
 #include "raymath.h"
+#include "data/entity.h"
 #include "data/game/game.h"
 #include "components/components.h"
+#include "storage/registry.h"
 
 namespace utils {
+    inline float GetEntityHeight(const Vector3 position, const Vector3 collider_size) {
+        return position.y - (collider_size.y * 0.5f);
+    }
+
+    inline float GetEntityHeight(Storage::Registry& world, const Entity id) {
+        auto* trans = world.TryGetComponent<cmpt::Transform>(id);
+        if (trans == nullptr) {
+            return 0.0f;
+        }
+
+        auto* col = world.TryGetComponent<cmpt::Collider>(id);
+        if (col == nullptr) {
+            return 0.0f;
+        }
+
+        return GetEntityHeight(trans->position, col->size);
+    }
+
     inline BoundingBox GetBoundingBox(const Vector3 position, const Vector3 offset, const Vector3 size) {
         Vector3 center = Vector3Add(position, offset);
         Vector3 half_size =  Vector3Scale(size, 0.5f);

@@ -8,6 +8,7 @@
 
 namespace utils {
     inline Vector3 GetRandomValidPosition() {
+        // assumes looking for a position that is valid at 0.0f height
         float new_x = 0.0f;
         float new_z = 0.0f;
         int attempts = 0;
@@ -21,10 +22,11 @@ namespace utils {
                 data::cnst::PLAY_AREA.max.z - 1.0f
             );
             
-            if (!data::g_terrain.IsBlockedWorld(new_x, new_z)) break;
+            if (data::g_terrain.ValidMove(new_x, new_z, 0.0f)) break;
+
             attempts += 1;
             if (attempts > 5) {
-                PRINT("took more than 5 attempts to GetRandomValidPosition()!")
+                PRINT("took more than 5 attempts to GetRandomValidPosition()");
             }
         }
 
@@ -32,6 +34,7 @@ namespace utils {
     }
 
     inline Vector3 GetRandomValidPisitionNearTarget(const Vector3 target, const int offset) {
+        // assumes looking for a position that is valid at 0.0f height
         float new_x = 0.0f;
         float new_z = 0.0f;
         int attempts = 0;
@@ -44,34 +47,41 @@ namespace utils {
                 (int)std::floor(target.z - offset), 
                 (int)std::ceil(target.z + offset)
             );
+
+            if (data::g_terrain.ValidMove(new_x, new_z, 0.0f)) break;
             
-            if (!data::g_terrain.IsBlockedWorld(new_x, new_z)) break;
             attempts += 1;
-            if (attempts > 5) return target; // failed, give up!
+            if (attempts > 5) {
+                PRINT("took more than 5 attempts to GetRandomValidPisitionNearTarget()");
+                return target; // failed, give up
+            }
         }
 
         return Vector3{new_x, 0.0f, new_z};
     }
 
-    inline void MoveAndSlideTerrain(Vector3& pos, Vector3 delta) {
-        Vector3 tryX = pos;
-        tryX.x += delta.x;
-        if (!data::g_terrain.IsBlockedWorld(tryX.x, tryX.z)) pos.x = tryX.x;
-
-        Vector3 tryZ = pos;
-        tryZ.z += delta.z;
-        if (!data::g_terrain.IsBlockedWorld(tryZ.x, tryZ.z)) pos.z = tryZ.z;
-    }
-
-    // returns false if must be destroyed
-    inline bool MoveOverTerrainProjectile(Vector3& pos, Vector3 delta) {
-        Vector3 new_pos = Vector3Add(pos, delta);
-        bool terrain_blocked = data::g_terrain.IsProjectileBlockedWorld(new_pos.x, new_pos.z);
-        if (terrain_blocked) {
-            return false;
+    inline Vector3 ValidateMovePosition(const Vector3 from_position, const Vector3 to_position, const float height) {
+        // if to_position is valid, just return it
+        if (data::g_terrain.ValidMove(to_position, height)){
+            return to_position;
         }
-        pos = new_pos;
-        return true;
+        
+        // check x is valid position
+        Vector3 valid_position = from_position;
+        
+        // if X is not valid, restore from_position.x
+        valid_position.x = to_position.x;
+        if (!data::g_terrain.ValidMove(valid_position.x, valid_position.z, height)) {
+            valid_position.x = from_position.x;
+        }
+
+        // if Z is not valid, restore from_position.z
+        valid_position.z = to_position.z;
+        if (!data::g_terrain.ValidMove(valid_position.x, valid_position.z, height)) {
+            valid_position.z = from_position.z;
+        }
+
+        return valid_position;
     }
 
     // Minimum Translation Vector
@@ -104,43 +114,4 @@ namespace utils {
             return { 0.0f, 0.0f, (dz < 0.0f ? -oz : oz) };
         }
     }
-
-    // inline Vector3 PushbackDirection(const BoundingBox& a, const BoundingBox& b) {
-    //     // get direction box a should be pushed back so it no longer
-    //     // overlaps with box b
-        
-    //     // assumes they intersect
-    //     float axCenter = (a.min.x + a.max.x) * 0.5f;
-    //     float ayCenter = (a.min.y + a.max.y) * 0.5f;
-    //     float azCenter = (a.min.z + a.max.z) * 0.5f;
-
-    //     float bxCenter = (b.min.x + b.max.x) * 0.5f;
-    //     float byCenter = (b.min.y + b.max.y) * 0.5f;
-    //     float bzCenter = (b.min.z + b.max.z) * 0.5f;
-
-    //     float dx = axCenter - bxCenter;
-    //     float dy = ayCenter - byCenter;
-    //     float dz = azCenter - bzCenter;
-
-    //     float axHalf = (a.max.x - a.min.x) * 0.5f;
-    //     float ayHalf = (a.max.y - a.min.y) * 0.5f;
-    //     float azHalf = (a.max.z - a.min.z) * 0.5f;
-
-    //     float bxHalf = (b.max.x - b.min.x) * 0.5f;
-    //     float byHalf = (b.max.y - b.min.y) * 0.5f;
-    //     float bzHalf = (b.max.z - b.min.z) * 0.5f;
-
-    //     float ox = (axHalf + bxHalf) - fabsf(dx);
-    //     float oy = (ayHalf + byHalf) - fabsf(dy);
-    //     float oz = (azHalf + bzHalf) - fabsf(dz);
-
-    //     // push out along smallest overlap axis
-    //     if (ox < oy && ox < oz) {
-    //         return { (dx < 0.0f ? -ox : ox), 0.0f, 0.0f };
-    //     } else if (oy < oz) {
-    //         return { 0.0f, (dy < 0.0f ? -oy : oy), 0.0f };
-    //     } else {
-    //         return { 0.0f, 0.0f, (dz < 0.0f ? -oz : oz) };
-    //     }
-    // }
 }

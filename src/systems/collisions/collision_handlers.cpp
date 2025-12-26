@@ -229,8 +229,19 @@ namespace sys::col {
 
             // other than velocity system, this should be the only place that modifies transforms
             if (direction.x != 0.0f || direction.z != 0) {
-                utils::MoveAndSlideTerrain(atrans.position, Vector3Scale(direction,  0.5f));
-                utils::MoveAndSlideTerrain(btrans.position, Vector3Scale(direction, -0.5f));
+                atrans.position = utils::ValidateMovePosition(
+                    atrans.position,
+                    Vector3Add(atrans.position, Vector3Scale(direction, 0.5f)),
+                    utils::GetEntityHeight(atrans.position, acol.size)
+                );
+
+                btrans.position = utils::ValidateMovePosition(
+                    btrans.position,
+                    Vector3Add(btrans.position, Vector3Scale(direction, -0.5f)),
+                    utils::GetEntityHeight(btrans.position, bcol.size)
+                );
+                // utils::MoveAndSlideTerrain(atrans.position, Vector3Scale(direction,  0.5f));
+                // utils::MoveAndSlideTerrain(btrans.position, Vector3Scale(direction, -0.5f));
             }
         }
     }

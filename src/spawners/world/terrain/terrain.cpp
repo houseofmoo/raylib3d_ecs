@@ -20,16 +20,6 @@ namespace spwn::terrain {
             }
         );
 
-        // world.AddComponent<cmpt::Collider>(
-        //     terrain,
-        //     cmpt::Collider{
-        //         .layer = data::layer::TERRAIN,
-        //         .mask = data::layer::PLAYER | data::layer::ENEMY | data::layer::PROJECTILE,
-        //         .offset = { 0.0f, 0.0f, 0.0f },
-        //         .size = size
-        //     }
-        // );
-
         if (visible) {
             world.AddComponent<cmpt::Draw>(
                 terrain,
@@ -43,6 +33,6 @@ namespace spwn::terrain {
         }
 
         // add to terrain tilemap
-        data::g_terrain.SetAreaMask(position, size);
+        data::g_terrain.SetAreaTiles(position, size);
     }
 }
