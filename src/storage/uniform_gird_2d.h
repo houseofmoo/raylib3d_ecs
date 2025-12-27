@@ -12,7 +12,7 @@ namespace strg {
         static constexpr int kMaxEntities = 5000;
         static constexpr int kWorldWUnits = 120;
         static constexpr int kWorldHUnits = 60;
-        static constexpr int kCellSizeUnits = 2;
+        static constexpr int kCellSizeUnits = 1;
 
         static constexpr int kCols = (kWorldWUnits + kCellSizeUnits - 1) / kCellSizeUnits;
         static constexpr int kRows = (kWorldHUnits + kCellSizeUnits - 1) / kCellSizeUnits;

@@ -201,7 +201,7 @@ namespace sys::atk {
     }
 
     void ExplosionAttack(strg::Registry& world, const float delta_time) {
-        PROFILE_SCOPE("ApplyExpands()");
+        PROFILE_SCOPE("ExplosionAttack()");
         for (auto entity : world.View<cmpt::Explosion, cmpt::Collider, cmpt::Draw>()) {
 
             auto& exp = world.GetComponent<cmpt::Explosion>(entity);

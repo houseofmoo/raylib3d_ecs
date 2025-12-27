@@ -1,6 +1,7 @@
 #include "storage/tilemap.h"
 #include <iomanip>
 #include "utils/rl_utils.h"
+#include "utils/debug.h"
 
 
 namespace strg {

@@ -11,7 +11,8 @@
                 "${workspaceFolder}/libs/raylib/src"
             ],
             "windowsSdkVersion": "10.0.26100.0",
-            "intelliSenseMode": "windows-msvc-x64"
+            "intelliSenseMode": "windows-msvc-x64",
+            "defines": ["DEBUG", "PROFILER_ENABLED"]
         }
     ],
     "version": 4

@@ -5,7 +5,8 @@
     #include <iostream>
     #include <mutex>
     #include <sstream>
-    #include "data/player/player.h"
+    #include <chrono>
+    #include "data/game/game.h"
 
     #define PRINT(...) Print::Print(__VA_ARGS__);
     #define ERROR(...) Print::Error(__VA_ARGS__);
@@ -55,11 +56,10 @@
                 std::string_view name;
                 clock::time_point start;
 
-                explicit ProfileScope(std::string_view n)
-                    : name(n), start(clock::now()) {}
+                explicit ProfileScope(std::string_view n) : name(n), start(clock::now()) {}
 
                 ~ProfileScope() {
-                    if (!data::g_player.profiler_enabled) return;
+                    if (!data::g_cheats.profiler_enabled) return;
                     auto end = clock::now();
                     auto us = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 

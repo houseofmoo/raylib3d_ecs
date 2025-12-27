@@ -254,12 +254,30 @@ namespace cmpt {
         WeaponBaseStats base_stats;
     };
 
+    struct RailGun {
+        WeaponBaseStats base_stats;
+    };
+
+    struct SMG {
+        WeaponBaseStats base_stats;
+    };
+
     struct GrenadeLauncher {
         WeaponBaseStats base_stats;
         
         float arch_duration;
         float arch_max_height;
 
+        int explosion_damage;
+        Vector3 explosion_start_size;
+        Vector3 explosion_end_size;
+        float explosion_duration;
+        float explosion_knockback_scale;
+        float explosion_knockback_duration;
+    };
+
+    struct RocketLauncher {
+        WeaponBaseStats base_stats;
         int explosion_damage;
         Vector3 explosion_start_size;
         Vector3 explosion_end_size;

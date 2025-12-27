@@ -14,7 +14,6 @@
 
 
 namespace debug {
-    static bool show_demo_window = false;
     
     void SetImGuiDocking(ImGuiIO& io) {
         if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
@@ -49,14 +48,13 @@ namespace debug {
             ImGui::End();
         }
     }
-   
+    
     void DrawStatsTab(strg::Registry& world) {
         ImGui::Text("fps:        %d", GetFPS());
         ImGui::Text("entities:   %d", data::g_game.entity_count);
         ImGui::Text("enemies:    %d", data::g_game.enemy_count);
         ImGui::Text("spawn time: %.2f", data::g_game.enemy_spawn_interval);
         ImGui::Text("difficulty: %d", data::g_game.difficulty);
-        if (ImGui::SliderInt("##diff_slider", &data::g_game.difficulty, 0, 2000)) {}
         ImGui::Separator();
 
         ImGui::Text("id:         %d", data::g_player.id);
@@ -195,6 +193,38 @@ namespace debug {
         }
     }
 
+    void DrawCheatsTab(strg::Registry& world) {
+        // exmaples so i can figure shit out
+        static bool show_demo_window = false;
+        ImGui::Checkbox(" demo window", &show_demo_window);
+        if (show_demo_window) {
+            ImGui::ShowDemoWindow(&show_demo_window);
+        }
+
+        // cheats
+        ImGui::Checkbox(" god mode", &data::g_cheats.god_mode);
+        ImGui::Checkbox(" dont spawn enemies", &data::g_cheats.dont_spawn_enemies);
+        ImGui::Checkbox(" always loot", &data::g_cheats.always_drop_loot);
+        ImGui::Checkbox(" no loot", &data::g_cheats.never_drop_loot);
+        ImGui::Separator();
+
+        ImGui::Text("difficulty slider");
+        if (ImGui::SliderInt("##diff_slider", &data::g_game.difficulty, 0, 2000)) {}
+        ImGui::Separator();
+
+        // spawn enemies
+        if (ImGui::Button("spawn grunt line")) {
+            for (int x = -10; x < 10; x+= 2) {
+                spwn::enemy::Grunt(world, Vector3{(float)x, 0.0f, 0.0f}, cmpt::AIMoveMode::None, 500);
+            }
+        }
+        if (ImGui::Button("spawn brute line")) {
+            for (int x = -10; x < 10; x+= 4) {
+                spwn::enemy::Brute(world, Vector3{(float)x, 0.0f, 0.0f}, cmpt::AIMoveMode::None, 500);
+            }
+        }
+    }
+
     void DrawTilemapTab() {
         // tilemap testing
         if (ImGui::Button("draw tilemap")) {
@@ -206,7 +236,7 @@ namespace debug {
         #ifdef PROFILER_ENABLED
         // Profiler Tab
         if (ImGui::BeginTabItem("profiler")) {
-            if (ImGui::Checkbox("enable profiler: ", &data::g_player.profiler_enabled)) {
+            if (ImGui::Checkbox("enable profiler: ", &data::g_cheats.profiler_enabled)) {
                 PRINT("Profiler contents cleared");
                 PROFILER_CLEAR;
             }
@@ -234,44 +264,25 @@ namespace debug {
         SetImGuiDocking(io);
         // State& state = GetState_Debug();
         ImGui::Begin("Debug Panel");
-
-        // exmaples so i can figure shit out
-        ImGui::Checkbox("Demo window", &show_demo_window);
-        if (show_demo_window) {
-            ImGui::ShowDemoWindow(&show_demo_window);
-        }
-
-        // cheats
-        ImGui::Checkbox(" god mode", &data::g_cheats.god_mode);
-        ImGui::Checkbox(" dont spawn enemies", &data::g_cheats.dont_spawn_enemies);
-        ImGui::Checkbox(" always loot", &data::g_cheats.always_drop_loot);
-        ImGui::Checkbox(" no loot", &data::g_cheats.never_drop_loot);
-        ImGui::Separator();
-
-        // spawn enemies
-        if (ImGui::Button("spawn grunt line")) {
-            for (int x = -10; x < 10; x+= 2) {
-                spwn::enemy::Grunt(world, Vector3{(float)x, 0.0f, 0.0f}, cmpt::AIMoveMode::None, 500);
-            }
-        }
-        if (ImGui::Button("spawn brute line")) {
-            for (int x = -10; x < 10; x+= 4) {
-                spwn::enemy::Brute(world, Vector3{(float)x, 0.0f, 0.0f}, cmpt::AIMoveMode::None, 500);
-            }
-        }
         ImGui::Separator();
 
         // main info panel
         if (ImGui::BeginTabBar("main")) {
-            // Stats Tab
+            // stats Tab
             if (ImGui::BeginTabItem("stats")) {
                 DrawStatsTab(world);
                 ImGui::EndTabItem();
             }
 
-            // Weapons Tab
+            // weapons Tab
             if (ImGui::BeginTabItem("weapons")) {
                 DrawWeapsTab(world);
+                ImGui::EndTabItem();
+            }
+
+            // cheats tab
+            if (ImGui::BeginTabItem("cheats")) {
+                DrawCheatsTab(world);
                 ImGui::EndTabItem();
             }
 

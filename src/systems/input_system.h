@@ -23,7 +23,6 @@ namespace sys::input {
 
     inline void PlayerInput(strg::Registry& world, Camera3D& camera) {
         PROFILE_SCOPE("PlayerInput()");
-
         for (auto entity : world.View<tag::Player, 
                                     cmpt::Input>()) {
 

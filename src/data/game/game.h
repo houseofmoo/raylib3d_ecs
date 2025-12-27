@@ -49,7 +49,7 @@ namespace data {
             enemy_spawn_countdown = enemy_spawn_interval;
 
             // if too many enemies, do not spawn enemies this time
-            if (enemy_count > 500) return 0;
+            if (enemy_count > 1000) return 0;
 
             // every 100 difficulty levels, spawn 1 addition enemy
             return (difficulty / 100) + 1;

@@ -7,19 +7,16 @@
 #include <fstream>
 #include <algorithm>
 #include "raylib.h"
-#include "utils/debug.h"
 
 namespace strg {
-    // TEMP MASKS
-    //using TileType = uint8_t;
-    constexpr uint8_t OPEN    = 0;
-    constexpr uint8_t OOB     = 1 << 0; // out of bounds
-    constexpr uint8_t LOW     = 1 << 1; // bullets can travel over this
-    constexpr uint8_t TERRAIN = 1 << 2; // arch movers can move over this
-    constexpr uint8_t HOLE    = 1 << 3;
-    constexpr uint8_t LAVA    = 1 << 5;
-
-    // tile types would be OOB, OPEN, TERRAIN, HOLE, DAMAGE?
+    // // TEMP MASKS
+    // //using TileType = uint8_t;
+    // constexpr uint8_t OPEN    = 0;
+    // constexpr uint8_t OOB     = 1 << 0; // out of bounds
+    // constexpr uint8_t LOW     = 1 << 1; // bullets can travel over this
+    // constexpr uint8_t TERRAIN = 1 << 2; // arch movers can move over this
+    // constexpr uint8_t HOLE    = 1 << 3;
+    // constexpr uint8_t LAVA    = 1 << 5;
 
     enum class TileType : uint8_t {
         OPEN,
