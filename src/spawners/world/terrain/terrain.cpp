@@ -7,10 +7,10 @@ namespace spwn::terrain {
      void Terrain(strg::Registry& world, const Vector3 position, const Vector3 size, const bool visible) {
         auto terrain = world.CreateEntity();
         
-        world.AddComponent<tag::Terrain>(
-            terrain,
-            tag::Terrain{}
-        );
+        // world.AddComponent<tag::Terrain>(
+        //     terrain,
+        //     tag::Terrain{}
+        // );
 
         world.AddComponent<cmpt::Transform>(
             terrain,

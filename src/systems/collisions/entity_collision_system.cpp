@@ -44,9 +44,6 @@ namespace sys::col {
         grid.for_each_candidate_pair([&](Entity da, Entity db) {
             auto a = broad.dense_to_entity[da];
             auto b = broad.dense_to_entity[db];
-
-            if (world.HasComponent<tag::Terrain>(a)) return;
-            if (world.HasComponent<tag::Terrain>(b)) return;
             
             auto& ca = world.GetComponent<cmpt::Collider>(a);
             auto& cb = world.GetComponent<cmpt::Collider>(b);

@@ -111,7 +111,7 @@ namespace spwn::enemy {
             cmpt::Draw{ 
                 .size = data::cnst::GRUNT_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
-                .color = data::cnst::BRUTE_COLOR, 
+                .color = data::cnst::GRUNT_COLOR, 
                 .model = &rsrc::asset::grunt_model,
             }
         );

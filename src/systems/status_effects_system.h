@@ -17,12 +17,12 @@ namespace sys::se {
         }
     }
 
-    inline void RemoveStatsusEffects(strg::Registry& world) {
+    inline void RemoveStatsusEffects(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("RemoveStatsusEffects()");
         // remove invulnerability
         for (auto entity : world.View<cmpt::Invulnerable>()) {
             auto& invuln = world.GetComponent<cmpt::Invulnerable>(entity);
-            invuln.countdown -= GetFrameTime();
+            invuln.countdown -= delta_time;
 
             if (invuln.countdown <= 0.0f) {
                 // restore mask
@@ -37,7 +37,7 @@ namespace sys::se {
         // remove knock back
         for (auto entity : world.View<cmpt::Knockback>()) {
             auto& kb = world.GetComponent<cmpt::Knockback>(entity);
-            kb.countdown -= GetFrameTime();
+            kb.countdown -= delta_time;
 
             if (kb.countdown <= 0.0f) {
                 world.RemoveComponent<cmpt::Knockback>(entity);
@@ -47,7 +47,7 @@ namespace sys::se {
         // remove dash exhausted
         for (auto entity : world.View<cmpt::DashExhausted>()) {
             auto& de = world.GetComponent<cmpt::DashExhausted>(entity);
-            de.countdown -= GetFrameTime();
+            de.countdown -= delta_time;
 
             if (de.countdown <= 0.0f) {
                 world.RemoveComponent<cmpt::DashExhausted>(entity);
@@ -57,7 +57,7 @@ namespace sys::se {
         // remove dash
         for (auto entity : world.View<cmpt::Dash, cmpt::Speed>()) {
             auto& dash = world.GetComponent<cmpt::Dash>(entity);
-            dash.countdown -= GetFrameTime();
+            dash.countdown -= delta_time;
 
             if (dash.countdown <= 0.0f) {
                 auto& spd = world.GetComponent<cmpt::Speed>(entity);

@@ -12,7 +12,7 @@ namespace tag {
     struct Enemy {};
     struct Destroy {};
     struct DestroyOnTerrainCollision {};
-    struct Terrain {};
+    //struct Terrain {};
     struct Event {};
     struct CameraFollow {};
 }

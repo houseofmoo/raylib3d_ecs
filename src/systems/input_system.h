@@ -59,6 +59,12 @@ namespace sys::input {
 
     inline void AIMoveIntent(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("AIMoveIntent()");
+        // get player position
+        Vector3 player_pos = Vector3Zero();
+        if (auto ptrans = world.TryGetComponent<cmpt::Transform>(data::g_player.id)) {
+            player_pos = ptrans->position;
+        }
+
         for (auto entity : world.View<cmpt::AIMoveIntent, cmpt::Transform>()) {
             auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
@@ -69,15 +75,6 @@ namespace sys::input {
             
             if (world.HasComponent<cmpt::DeathAnimation>(entity)) {
                 continue;
-            }
-
-            // get player position
-            Entity player_id = data::g_player.id;
-            auto ptrans = world.TryGetComponent<cmpt::Transform>(player_id);
-            if (!ptrans) {
-                // TODO: set gameover
-                PRINT("player does not exist");
-                return;
             }
 
             switch (intent.mode) {
@@ -100,7 +97,7 @@ namespace sys::input {
                         // moves directly at the player
                         intent.direction = utils::DirectionFlattenThenNormalize(
                             trans.position,
-                            ptrans->position
+                            player_pos
                         );
                     }
                     break;
@@ -119,7 +116,7 @@ namespace sys::input {
                     if (lazy.countdown > 0.0f && !intent.stuck) continue;
                     intent.stuck = false;
                     lazy.countdown = data::cnst::ENEMY_LAZY_RETARGET_TIME;
-                    Vector3 dir = utils::Direction(trans.position, ptrans->position);
+                    Vector3 dir = utils::Direction(trans.position, player_pos);
                     // add a random offset so we dont move directly at the player
                     dir.x += (float)GetRandomValue(-5, 5);
                     dir.z += (float)GetRandomValue(-5, 5);
@@ -144,6 +141,7 @@ namespace sys::input {
 
                 case cmpt::AIMoveMode::None: {
                     intent.direction = { 0.0f, 0.0f, 0.0f };
+                    break;
                 }
 
                 default: {}

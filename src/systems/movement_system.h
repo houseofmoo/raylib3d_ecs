@@ -82,7 +82,7 @@ namespace sys::mov {
 
                 // rotation
                 switch (intent.mode) {
-                    case cmpt::AIMoveMode::Lazy: {}
+                    case cmpt::AIMoveMode::Lazy: {} // fallthrough
                     case cmpt::AIMoveMode::Random: {
                         if (intent.rotation_complete) continue;
                         

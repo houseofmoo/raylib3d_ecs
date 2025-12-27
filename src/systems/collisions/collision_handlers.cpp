@@ -19,26 +19,24 @@ namespace sys::col {
         PROFILE_SCOPE("DamageOnCollision()");
         for (auto& col : sys::col::collision_cache.current) {
             // if A and B interacted last frame, ignore them this frame
-            if (sys::col::collision_cache.previous.contains(col)) continue;
+            if (!sys::col::collision_cache.IsEnter(col)) continue;
 
             // if a and b are enemies, they cannot damage eachother
-            if (world.HasComponent<tag::Enemy>(col.entity_a) && 
-                world.HasComponent<tag::Enemy>(col.entity_b)) {
-                continue;
-            }
-
+            if (world.HasComponent<tag::Enemy>(col.entity_a) &&
+                world.HasComponent<tag::Enemy>(col.entity_b)) continue;
+            
             // if A deals damage and B receives damage
-            if (auto* dmg = world.TryGetComponent<cmpt::DamageDealer>(col.entity_a)) {
-                if (auto* rcv = world.TryGetComponent<cmpt::DamageReceiver>(col.entity_b)) {
-                    rcv->total += dmg->amount;
-                }
+            auto* a_dmg = world.TryGetComponent<cmpt::DamageDealer>(col.entity_a);
+            auto* b_dmg = world.TryGetComponent<cmpt::DamageDealer>(col.entity_b);
+            auto* a_rcv = world.TryGetComponent<cmpt::DamageReceiver>(col.entity_a);
+            auto* b_rcv = world.TryGetComponent<cmpt::DamageReceiver>(col.entity_b);
+
+            if (a_dmg != nullptr && b_rcv != nullptr) {
+                b_rcv->total += a_dmg->amount;
             }
 
-            // if B deals damage and A receives damage
-            if (auto* dmg = world.TryGetComponent<cmpt::DamageDealer>(col.entity_b)) {
-                if (auto* rcv = world.TryGetComponent<cmpt::DamageReceiver>(col.entity_a)) {
-                    rcv->total += dmg->amount;
-                }
+            if (b_dmg != nullptr && a_rcv != nullptr) {
+                a_rcv->total += b_dmg->amount;
             }
         }
     }
@@ -47,7 +45,7 @@ namespace sys::col {
         PROFILE_SCOPE("DestroyOnCollision()");
          for (auto& col : sys::col::collision_cache.current) {
             // if A and B interacted last frame, ignore them this frame
-            if (sys::col::collision_cache.previous.contains(col)) continue;
+            if (!sys::col::collision_cache.IsEnter(col)) continue;
 
             // if A is a projectile
             if (world.HasComponent<tag::Projectile>(col.entity_a)) {
@@ -76,6 +74,9 @@ namespace sys::col {
     void KnockbackOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("KnockbackOnCollision()");
         for (auto& col : sys::col::collision_cache.current) {
+            // if A and B interacted last frame, ignore them this frame
+            if (!sys::col::collision_cache.IsEnter(col)) continue;
+
             // if a and b are enemies, they do not knock eachother back
             if (world.HasComponent<tag::Enemy>(col.entity_a) && 
                 world.HasComponent<tag::Enemy>(col.entity_b)) {
@@ -118,77 +119,54 @@ namespace sys::col {
         }
     }
 
+    void HandleLootPickup(strg::Registry& world, Entity player, Entity loot) {
+        auto* lootkind = world.TryGetComponent<cmpt::Loot>(loot);
+        if (lootkind == nullptr) return;
+        world.AddComponent<tag::Destroy>(loot);
+
+        switch (lootkind->kind) {
+            case data::loot::LootKind::Exp: {
+                auto& exp = world.GetComponent<cmpt::ExpLoot>(loot);
+                spwn::evt::LootPickedupEvent(world, player, lootkind->kind, exp.amount);
+                break;
+            }
+            case data::loot::LootKind::Money: {
+                auto& money = world.GetComponent<cmpt::MoneyLoot>(loot);
+                spwn::evt::LootPickedupEvent(world, player, lootkind->kind, money.amount);
+                break;
+            }
+            case data::loot::LootKind::Powerup: {
+                auto& pukind = world.GetComponent<cmpt::PowerupLoot>(loot);
+                spwn::evt::LootPickedupEvent(world, player, lootkind->kind, pukind.kind);
+                break;
+            }
+            case data::loot::LootKind::Weapon: {
+                auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(loot);
+                spwn::evt::LootPickedupEvent(world, player, lootkind->kind, wepkind.kind);
+                break;
+            }
+            case data::loot::LootKind::WeaponCrate: {
+                spwn::evt::WeaponCratePickedupEvent(world, player);
+            }
+            default: {
+                PRINT("Unknown loot type found in PickupOnCollision() a->b");
+            }
+        }
+    }
+
     void PickupOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("PickupOnCollision()");
        for (auto& col : sys::col::collision_cache.current) {
 
             // only players can pick up loot
-            if (auto* player = world.TryGetComponent<tag::Player>(col.entity_a)) {
-                if (auto* loot = world.TryGetComponent<cmpt::Loot>(col.entity_b)) {
-                    world.AddComponent<tag::Destroy>(col.entity_b);
-                    switch (loot->kind) {
-                        case data::loot::LootKind::Exp: {
-                            auto& exp = world.GetComponent<cmpt::ExpLoot>(col.entity_b);
-                            spwn::evt::LootPickedupEvent(world, col.entity_a, loot->kind, exp.amount);
-                            break;
-                        }
-                        case data::loot::LootKind::Money: {
-                            auto& money = world.GetComponent<cmpt::MoneyLoot>(col.entity_b);
-                            spwn::evt::LootPickedupEvent(world, col.entity_a, loot->kind, money.amount);
-                            break;
-                        }
-                        case data::loot::LootKind::Powerup: {
-                            auto& pukind = world.GetComponent<cmpt::PowerupLoot>(col.entity_b);
-                            spwn::evt::LootPickedupEvent(world, col.entity_a, loot->kind, pukind.kind);
-                            break;
-                        }
-                        case data::loot::LootKind::Weapon: {
-                            auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(col.entity_b);
-                            spwn::evt::LootPickedupEvent(world, col.entity_a, loot->kind, wepkind.kind);
-                            break;
-                        }
-                        case data::loot::LootKind::WeaponCrate: {
-                            spwn::evt::WeaponCratePickedupEvent(world, col.entity_a);
-                        }
-                        default: {
-                            PRINT("Unknown loot type found in PickupOnCollision() a->b");
-                        }
-                    }
-                }
+            if (world.HasComponent<tag::Player>(col.entity_a) &&
+                world.HasComponent<cmpt::Loot>(col.entity_b)) {
+                HandleLootPickup(world, col.entity_a, col.entity_b);
             }
 
-            if (auto* player = world.TryGetComponent<tag::Player>(col.entity_b)) {
-                if (auto* loot = world.TryGetComponent<cmpt::Loot>(col.entity_a)) {
-                    world.AddComponent<tag::Destroy>(col.entity_a);
-                    switch (loot->kind) {
-                        case data::loot::LootKind::Exp: {
-                            auto& exp = world.GetComponent<cmpt::ExpLoot>(col.entity_a);
-                            spwn::evt::LootPickedupEvent(world, col.entity_b, loot->kind, exp.amount);
-                            break;
-                        }
-                        case data::loot::LootKind::Money: {
-                            auto& money = world.GetComponent<cmpt::MoneyLoot>(col.entity_a);
-                            spwn::evt::LootPickedupEvent(world, col.entity_b, loot->kind, money.amount);
-                            break;
-                        }
-                        case data::loot::LootKind::Powerup: {
-                            auto& pukind = world.GetComponent<cmpt::PowerupLoot>(col.entity_a);
-                            spwn::evt::LootPickedupEvent(world, col.entity_b, loot->kind, pukind.kind);
-                            break;
-                        }
-                        case data::loot::LootKind::Weapon: {
-                            auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(col.entity_a);
-                            spwn::evt::LootPickedupEvent(world, col.entity_b, loot->kind, wepkind.kind);
-                            break;
-                        }
-                        case data::loot::LootKind::WeaponCrate: {
-                            spwn::evt::WeaponCratePickedupEvent(world, col.entity_b);
-                        }
-                        default: {
-                            PRINT("Unknown loot type found in PickupOnCollision() b->a");
-                        }
-                    }
-                }
+            if (world.HasComponent<tag::Player>(col.entity_b) &&
+                world.HasComponent<cmpt::Loot>(col.entity_a)) {
+                HandleLootPickup(world, col.entity_b, col.entity_a);
             }
         }
     }
@@ -205,7 +183,7 @@ namespace sys::col {
                 !world.HasComponent<tag::Enemy>(col.entity_b)) {
                 continue;
             }
-                
+            
             // push enenmies out of each other
             auto& btrans = world.GetComponent<cmpt::Transform>(col.entity_b);
             auto& bcol = world.GetComponent<cmpt::Collider>(col.entity_b);
@@ -218,7 +196,8 @@ namespace sys::col {
             );
 
             // other than velocity system, this should be the only place that modifies transforms
-            if (direction.x != 0.0f || direction.z != 0) {
+            if (Vector3LengthSqr(direction) > 0.0001f) {
+                // TODO: maybe set stuck=true here? so enemies colliding also results in them wandering off in a new direction
                 atrans.position = utils::ValidateMovePosition(
                     atrans.position,
                     Vector3Add(atrans.position, Vector3Scale(direction, 0.5f)),
@@ -230,8 +209,6 @@ namespace sys::col {
                     Vector3Add(btrans.position, Vector3Scale(direction, -0.5f)),
                     utils::GetEntityHeight(btrans.position, bcol.size)
                 );
-                // utils::MoveAndSlideTerrain(atrans.position, Vector3Scale(direction,  0.5f));
-                // utils::MoveAndSlideTerrain(btrans.position, Vector3Scale(direction, -0.5f));
             }
         }
     }

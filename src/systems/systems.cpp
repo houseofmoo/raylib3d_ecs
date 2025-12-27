@@ -105,7 +105,7 @@ namespace sys {
         sys::col::TriggerOnCollision(world);
         sys::col::RepositionOnCollision(world);
         sys::dmg::ApplyDamage(world);
-        sys::se::RemoveStatsusEffects(world);
+        sys::se::RemoveStatsusEffects(world, delta_time);
 
         // sys::enemy::EnemyTerrainCollision(world);
         // sys::proj::BulletTerrainCollision(world);

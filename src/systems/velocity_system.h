@@ -18,6 +18,8 @@ namespace sys::vel {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
             auto& vel = world.GetComponent<cmpt::Velocity>(entity);
 
+            // if not moving, dont do anything
+            if (Vector3LengthSqr(vel) < 0.000001f) continue;
             Vector3 new_pos = Vector3Add(trans.position, Vector3Scale(vel, delta_time));
             
             //// spawning animations are not validated
@@ -27,7 +29,7 @@ namespace sys::vel {
             // }
 
             auto* col = world.TryGetComponent<cmpt::Collider>(entity);
-            float height = (col == nullptr) ? 0.0f : utils::GetEntityHeight(trans.position, col->size);
+            float height = (col == nullptr) ? 0.0f : utils::GetEntityHeight(new_pos, col->size);
             if (data::g_terrain.ValidMove(new_pos, height)) {
                 trans.position = new_pos;
                 continue;
