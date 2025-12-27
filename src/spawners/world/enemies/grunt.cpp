@@ -1,17 +1,15 @@
 #include "spawners/world/enemies/enemies.h"
 
 #include "raymath.h"
-#include "data/entity.h"
 #include "components/cmpt_helpers.h"
 #include "resources/asset_loader.h"
 
 namespace spwn::enemy {
-    void Grunt(
+    Entity Grunt(
             strg::Registry& world, 
             const Vector3 position, 
             const cmpt::AIMoveMode move_mode, 
             const int hp) {
-
         auto entity = world.CreateEntity();
 
         // for drop in animation
@@ -23,36 +21,36 @@ namespace spwn::enemy {
             tag::Enemy{}
         );
 
-        world.AddComponent<cmpt::DropsLoot>(
-            entity,
-            cmpt::DropsLoot{ data::cnst::GRUNT_LOOT_MULTIPLIER }
-        );
-        
-        world.AddComponent<cmpt::Transform>(
-            entity,
-            cmpt::Transform{ 
-                .position = start_position,
-                .rotation = QuaternionIdentity()
-            }
-        );
-        
-        world.AddComponent<cmpt::Velocity>(
-            entity,
-            cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
-        );
-
         cmpt::AttachAIMovementComponent(world, entity, move_mode);
-
         world.AddComponent<cmpt::AIMoveIntent>(
             entity,
             cmpt::AIMoveIntent{
                 .mode = move_mode,
+                .position = Vector3Zero(),
                 .direction = Vector3Zero(),
                 .start_rotation = QuaternionIdentity(),
                 .rotation_complete = true,
                 .rotation_duration = data::cnst::ENEMY_ROTATION_DURATION,
                 .rotation_elapsed = 0.0f,
                 .stuck = false,
+            }
+        );
+
+        world.AddComponent<cmpt::AttackIntent>(
+            entity,
+            cmpt::AttackIntent {
+                .active = false,
+                .from_position = start_position,
+                .to_position = Vector3Zero(),
+                .direction = Vector3Zero(),
+            }
+        );
+
+        world.AddComponent<cmpt::AppliesKnockback>(
+            entity,
+            cmpt::AppliesKnockback{
+                .scale = data::cnst::GRUNT_KNOCKBACK_SCALE,
+                .duration = data::cnst::GRUNT_KNOCKBACK_DURATION
             }
         );
 
@@ -66,9 +64,9 @@ namespace spwn::enemy {
             }
         );
 
-        world.AddComponent<cmpt::Health>(
+        world.AddComponent<cmpt::DamageDealer>(
             entity,
-            cmpt::Health{ hp, hp }
+            cmpt::DamageDealer{ data::cnst::GRUNT_MELEE_DMG }
         );
 
         world.AddComponent<cmpt::DamageReceiver>(
@@ -76,26 +74,24 @@ namespace spwn::enemy {
             cmpt::DamageReceiver{ 0 }
         );
 
-        world.AddComponent<cmpt::AppliesKnockback>(
+        world.AddComponent<cmpt::Draw>(
             entity,
-            cmpt::AppliesKnockback{
-                .scale = data::cnst::GRUNT_KNOCKBACK_SCALE,
-                .duration = data::cnst::GRUNT_KNOCKBACK_DURATION
+            cmpt::Draw{ 
+                .size = data::cnst::GRUNT_SIZE, 
+                .scale = data::cnst::BASE_SCALE,
+                .color = data::cnst::GRUNT_COLOR, 
+                .model = &rsrc::asset::grunt_model,
             }
         );
 
-        world.AddComponent<cmpt::Speed>(
+        world.AddComponent<cmpt::DropsLoot>(
             entity,
-            cmpt::Speed{ 
-                .speed = data::cnst::GRUNT_SPEED, 
-                .speed_multiplier = 1.0f, 
-                .dash_multiplier = 1.0f,
-            }
+            cmpt::DropsLoot{ data::cnst::GRUNT_LOOT_MULTIPLIER }
         );
-
-        world.AddComponent<cmpt::DamageDealer>(
+        
+        world.AddComponent<cmpt::Health>(
             entity,
-            cmpt::DamageDealer{ data::cnst::GRUNT_MELEE_DMG }
+            cmpt::Health{ hp, hp }
         );
 
         world.AddComponent<cmpt::SpawnAnimation>(
@@ -106,14 +102,28 @@ namespace spwn::enemy {
             }
         );
         
-        world.AddComponent<cmpt::Draw>(
+        world.AddComponent<cmpt::Speed>(
             entity,
-            cmpt::Draw{ 
-                .size = data::cnst::GRUNT_SIZE, 
-                .scale = data::cnst::BASE_SCALE,
-                .color = data::cnst::GRUNT_COLOR, 
-                .model = &rsrc::asset::grunt_model,
+            cmpt::Speed{ 
+                .speed = data::cnst::GRUNT_SPEED, 
+                .speed_multiplier = 1.0f, 
+                .dash_multiplier = 1.0f,
             }
         );
+
+        world.AddComponent<cmpt::Transform>(
+            entity,
+            cmpt::Transform{ 
+                .position = start_position,
+                .rotation = QuaternionIdentity()
+            }
+        );
+        
+        world.AddComponent<cmpt::Velocity>(
+            entity,
+            cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
+        );
+
+        return entity;
     }
 }

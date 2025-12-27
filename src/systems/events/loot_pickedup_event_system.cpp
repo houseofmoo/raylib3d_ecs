@@ -63,16 +63,32 @@ namespace sys::evt {
         // otherwise give baselist to player
         switch (kind) {
             case data::loot::WeaponKind::Pistol: {
-                spwn::weapon::EquipPistol(world, id);
+                spwn::weapon::EquipPistol(
+                    world, 
+                    id, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+                );
                 spwn::evt::Notification(world, data::notif::GAIN_PISTOL);
                 break;
             }
             case data::loot::WeaponKind::Shotgun: {
-                spwn::weapon::EquipShotgun(world, id);
+                spwn::weapon::EquipShotgun(
+                    world, 
+                    id, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+                );
                 spwn::evt::Notification(world, data::notif::GAIN_SHOTGUN);
                 break;
             }
             case data::loot::WeaponKind::Rifle: {
+                spwn::weapon::EquipRifle(
+                    world, 
+                    id, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+                );
                 spwn::evt::Notification(world, data::notif::GAIN_RIFLE);
                 break;
             }
@@ -85,11 +101,22 @@ namespace sys::evt {
                 break;
             }
             case data::loot::WeaponKind::SMG: {
+                spwn::weapon::EquipSMG(
+                    world, 
+                    id, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+                );
                 spwn::evt::Notification(world, data::notif::GAIN_SMG);
                 break;
             }
             case data::loot::WeaponKind::GrenadeLauncher: {
-                spwn::weapon::EquipGrenadeLauncher(world, id);
+                spwn::weapon::EquipGrenadeLauncher(
+                    world, 
+                    id, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER, 
+                    data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+                );
                 spwn::evt::Notification(world, data::notif::GAIN_GRENADE_LAUNCHER);
                 break;
             }
@@ -134,6 +161,7 @@ namespace sys::evt {
                 }
 
                 case data::loot::LootKind::Weapon: {
+                    PRINT("old, delete me - found weapon drop")
                     auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(entity);
                     ApplyWeapon(world, wepkind.kind, evt.id);
                     break;

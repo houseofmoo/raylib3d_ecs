@@ -9,7 +9,7 @@
 #include "utils/debug.h"
 
 namespace sys::atk {
-    inline void FireSpread(
+    void FireSpread(
         strg::Registry& world,
         int pellet_count,
         float spread_degrees,
@@ -32,48 +32,49 @@ namespace sys::atk {
 
     void PistolAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("PistolAttack()");
-        for (auto entity : world.View<cmpt::Pistol>()) {
-            auto& trans = world.GetComponent<cmpt::Transform>(entity);
-            auto& input = world.GetComponent<cmpt::Input>(entity);
+        for (auto entity : world.View<cmpt::Pistol, cmpt::AttackIntent>()) {
             auto& wep = world.GetComponent<cmpt::Pistol>(entity);
-     
+            auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
+
+            if (!atk.active) continue;
             wep.base_stats.countdown -= delta_time;
             if (wep.base_stats.countdown > 0.0f) continue;
 
-            wep.base_stats.countdown = wep.base_stats.cooldown / data::g_player.attack_speed_multiplier;
+            wep.base_stats.countdown = wep.base_stats.cooldown;
+            if (world.HasComponent<tag::Player>(entity)) {
+                wep.base_stats.countdown /= data::g_player.attack_speed_multiplier;
+            }
+
             if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
                 wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
-            } 
+            }
 
-            Vector3 direction = utils::DirectionFlattenThenNormalize(
-                trans.position, 
-                input.mouse_world_position
-            );
-
-            direction = Vector3Scale(direction, wep.base_stats.projectile_speed);
             spwn::proj::Bullet(
-                world,
+                world, 
                 spwn::proj::BulletConfig{
-                    .position = trans.position,
-                    .direction = direction,
-                    .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
+                    .position = atk.from_position,
+                    .direction = atk.direction * wep.base_stats.projectile_speed,
+                    .damage = static_cast<int>(wep.base_stats.damage * data::g_player.damage_multiplier),
                     .penetration = wep.base_stats.penetration,
                     .knockback_scale = wep.base_stats.knockback_scale,
-                    .knockback_duration = wep.base_stats.knockback_duration
+                    .knockback_duration = wep.base_stats.knockback_duration,
+                    .layer = wep.base_stats.layer,
+                    .mask = wep.base_stats.mask
                 }
             );
             PlaySound(sound_fx);
             SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
+          
         }
     }
 
     void ShotgunAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("ShotgunAttack()");
-        for (auto entity : world.View<cmpt::Shotgun>()) {
-            auto& trans = world.GetComponent<cmpt::Transform>(entity);
-            auto& input = world.GetComponent<cmpt::Input>(entity);
+        for (auto entity : world.View<cmpt::Shotgun, cmpt::AttackIntent>()) {
             auto& wep = world.GetComponent<cmpt::Shotgun>(entity);
+            auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
      
+            if (!atk.active) continue;
             wep.base_stats.countdown -= delta_time;
             if (wep.base_stats.countdown > 0.0f) continue;
 
@@ -81,26 +82,20 @@ namespace sys::atk {
             if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
                 wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
             } 
-
-            Vector3 direction = Vector3Scale(
-                utils::DirectionFlattenThenNormalize(
-                    trans.position, 
-                    input.mouse_world_position
-                ),
-                wep.base_stats.projectile_speed
-            );
 
             FireSpread(
                 world, 
                 wep.pellet_count, 
                 wep.spread_deg,
                 spwn::proj::BulletConfig{
-                    .position = trans.position,
-                    .direction = direction,
-                    .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
+                    .position = atk.from_position,
+                    .direction = atk.direction * wep.base_stats.projectile_speed,
+                    .damage = static_cast<int>(wep.base_stats.damage * data::g_player.damage_multiplier),
                     .penetration = wep.base_stats.penetration,
                     .knockback_scale = wep.base_stats.knockback_scale,
-                    .knockback_duration = wep.base_stats.knockback_duration
+                    .knockback_duration = wep.base_stats.knockback_duration,
+                    .layer = wep.base_stats.layer,
+                    .mask = wep.base_stats.mask
                 }
             );
             PlaySound(sound_fx);
@@ -110,32 +105,28 @@ namespace sys::atk {
 
     void RifleAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("RifleAttack()");
-        for (auto entity : world.View<cmpt::Rifle>()) {
-            auto& trans = world.GetComponent<cmpt::Transform>(entity);
-            auto& input = world.GetComponent<cmpt::Input>(entity);
+        for (auto entity : world.View<cmpt::Rifle, cmpt::AttackIntent>()) {
             auto& wep = world.GetComponent<cmpt::Rifle>(entity);
+            auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
      
-            // if doing a burst
+            // if burst not complete
             if (wep.burst_completed < wep.burst_count) {
-                // check if burst is ready
+                // check if burst is ready            
+                if (!atk.active) continue;
                 wep.burst_countdown -= delta_time;
                 if (wep.burst_countdown > 0.0f) continue;
                 
-                Vector3 direction = utils::DirectionFlattenThenNormalize(
-                    trans.position, 
-                    input.mouse_world_position
-                );
-
-                direction = Vector3Scale(direction, wep.base_stats.projectile_speed);
                 spwn::proj::Bullet(
                     world,
                     spwn::proj::BulletConfig{
-                        .position = trans.position,
-                        .direction = direction,
-                        .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
+                        .position = atk.from_position,
+                        .direction = atk.direction * wep.base_stats.projectile_speed,
+                        .damage = static_cast<int>(wep.base_stats.damage * data::g_player.damage_multiplier),
                         .penetration = wep.base_stats.penetration,
                         .knockback_scale = wep.base_stats.knockback_scale,
-                        .knockback_duration = wep.base_stats.knockback_duration
+                        .knockback_duration = wep.base_stats.knockback_duration,
+                        .layer = wep.base_stats.layer,
+                        .mask = wep.base_stats.mask
                     }
                 );
                 PlaySound(sound_fx);
@@ -144,7 +135,8 @@ namespace sys::atk {
                 wep.burst_completed += 1;
                 wep.burst_countdown = wep.burst_cooldown;
             } else {
-                // check if ready to fire
+                // check if ready to fire            
+                if (!atk.active) continue;
                 wep.base_stats.countdown -= delta_time;
                 if (wep.base_stats.countdown > 0.0f) continue;
 
@@ -161,11 +153,11 @@ namespace sys::atk {
 
     void SMGAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("SMGAttack()");
-        for (auto entity : world.View<cmpt::SMG>()) {
-            auto& trans = world.GetComponent<cmpt::Transform>(entity);
-            auto& input = world.GetComponent<cmpt::Input>(entity);
+        for (auto entity : world.View<cmpt::SMG, cmpt::AttackIntent>()) {
             auto& wep = world.GetComponent<cmpt::SMG>(entity);
-     
+            auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
+            
+            if (!atk.active) continue;
             wep.base_stats.countdown -= delta_time;
             if (wep.base_stats.countdown > 0.0f) continue;
 
@@ -174,21 +166,17 @@ namespace sys::atk {
                 wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
             } 
 
-            Vector3 direction = utils::DirectionFlattenThenNormalize(
-                trans.position, 
-                input.mouse_world_position
-            );
-
-            direction = Vector3Scale(direction, wep.base_stats.projectile_speed);
             spwn::proj::Bullet(
                 world,
                 spwn::proj::BulletConfig{
-                    .position = trans.position,
-                    .direction = direction,
-                    .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
+                    .position = atk.from_position,
+                    .direction = atk.direction * wep.base_stats.projectile_speed,
+                    .damage = static_cast<int>(wep.base_stats.damage * data::g_player.damage_multiplier),
                     .penetration = wep.base_stats.penetration,
                     .knockback_scale = wep.base_stats.knockback_scale,
-                    .knockback_duration = wep.base_stats.knockback_duration
+                    .knockback_duration = wep.base_stats.knockback_duration,
+                    .layer = wep.base_stats.layer,
+                    .mask = wep.base_stats.mask
                 }
             );
             PlaySound(sound_fx);
@@ -198,11 +186,11 @@ namespace sys::atk {
 
     void GrenadeLauncherAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("GrenadeAttack()");
-        for (auto entity : world.View<cmpt::GrenadeLauncher>()) {
-            auto& trans = world.GetComponent<cmpt::Transform>(entity);
-            auto& input = world.GetComponent<cmpt::Input>(entity);
+        for (auto entity : world.View<cmpt::GrenadeLauncher, cmpt::AttackIntent>()) {
             auto& wep = world.GetComponent<cmpt::GrenadeLauncher>(entity);
-     
+            auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
+            
+            if (!atk.active) continue;
             wep.base_stats.countdown -= delta_time;
             if (wep.base_stats.countdown > 0.0f) continue;
 
@@ -213,23 +201,23 @@ namespace sys::atk {
 
             spwn::proj::Grenade(
                 world, 
-                trans.position, 
-                input.mouse_world_position,
+                atk.from_position, 
+                atk.to_position,
                 spwn::proj::GrenadeConfig {
                     .damage = static_cast<int>(wep.base_stats.damage * data::g_player.damage_multiplier),
                     .penetration = wep.base_stats.penetration,
                     .knockback_scale = wep.base_stats.knockback_scale,
                     .knockback_duration = wep.base_stats.knockback_duration,
-                    
                     .arch_duration = wep.arch_duration,
                     .arch_max_height = wep.arch_max_height,
-
                     .explosion_damage = static_cast<int>(wep.explosion_damage * data::g_player.damage_multiplier),
                     .explosion_start_size = wep.explosion_start_size,
                     .explosion_end_size = wep.explosion_end_size,
                     .explosion_duration = wep.explosion_duration,
                     .explosion_knockback_scale = wep.explosion_knockback_scale,
-                    .explosion_knockback_duration = wep.explosion_knockback_duration
+                    .explosion_knockback_duration = wep.explosion_knockback_duration,
+                    .layer = wep.base_stats.layer,
+                    .mask = wep.base_stats.mask
                 }
             );
             PlaySound(sound_fx);
@@ -248,7 +236,8 @@ namespace sys::atk {
             exp.elapsed += delta_time;
             float t = Clamp(exp.elapsed / exp.duration, 0.0f, 1.0f);
 
-            // collider grows larger over time
+            // collider grows larger over time, draw is smaller than collider
+            // to make it feel more "fair"
             col.size = Vector3Lerp(exp.start_size, exp.end_size, t);
             draw.size = Vector3Scale(col.size, 0.9); // for wires
 
@@ -256,6 +245,10 @@ namespace sys::atk {
             float scale = (col.size.x / data::cnst::GRENADE_SIZE.x) * 0.9f;
             draw.scale = { scale, scale, scale };
         }
+    }
+
+    void DamagePulse(strg::Registry& world, const float delta_time) {
+        // this is damage that pulses out from the player
     }
 
     void WeaponAttacks(strg::Registry& world, const float delta_time, Sound& sound_fx) {

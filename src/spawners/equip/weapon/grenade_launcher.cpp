@@ -2,7 +2,7 @@
 #include "components/components.h"
 
 namespace spwn::weapon {
-    void EquipGrenadeLauncher(strg::Registry& world, const Entity id) {
+    void EquipGrenadeLauncher(strg::Registry& world, const Entity id, Layer layer, Layer mask) {
          if (!world.HasComponent<cmpt::GrenadeLauncher>(id)) {
             world.AddComponent<cmpt::GrenadeLauncher>(
                 id,
@@ -16,7 +16,9 @@ namespace spwn::weapon {
                         .penetration = data::cnst::GRENADE_PENETRATION,
                         .projectile_speed = data::cnst::GRENADE_PROJECTILE_SPEED,
                         .knockback_scale = data::cnst::GRENADE_KNOCKBACK_SCALE,
-                        .knockback_duration = data::cnst::GRENADE_KNOCKBACK_DURATION
+                        .knockback_duration = data::cnst::GRENADE_KNOCKBACK_DURATION,
+                        .layer = layer,
+                        .mask = mask
                     },
                     .arch_duration = data::cnst::GRENADE_ARCH_DURATION,
                     .arch_max_height = data::cnst::GRENADE_ARCH_MAX_HEIGHT,

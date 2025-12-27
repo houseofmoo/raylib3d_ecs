@@ -21,8 +21,8 @@ namespace spwn::test {
         world.AddComponent<cmpt::Collider>(
             entity,
             cmpt::Collider{
-                .layer = data::cnst::PROJECTILE_LAYER,
-                .mask = data::cnst::PROJECTILE_LAYER_MASK,
+                .layer = data::cnst::PLAYER_PROJECTILE_LAYER,
+                .mask = data::cnst::PLAYER_PROJECTILE_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = { 7.0f, 7.0f, 7.0f }
             }

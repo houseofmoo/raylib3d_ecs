@@ -2,7 +2,7 @@
 #include "components/components.h"
 
 namespace spwn::weapon {
-    void EquipRifle(strg::Registry& world, const Entity id) {
+    void EquipRifle(strg::Registry& world, const Entity id, Layer layer, Layer mask) {
         // if entity does not have a shotgun, give them one
         if (!world.HasComponent<cmpt::Rifle>(id)) {
             world.AddComponent<cmpt::Rifle>(
@@ -17,7 +17,9 @@ namespace spwn::weapon {
                         .penetration = data::cnst::RIFLE_PENETRATION,
                         .projectile_speed = data::cnst::RIFLE_PROJECTILE_SPEED,
                         .knockback_scale = data::cnst::RIFLE_KNOCKBACK_SCALE,
-                        .knockback_duration = data::cnst::RIFLE_KNOCKBACK_DURATION
+                        .knockback_duration = data::cnst::RIFLE_KNOCKBACK_DURATION,
+                        .layer = layer,
+                        .mask = mask
                     },
                     .burst_count = data::cnst::RIFLE_BURST_COUNT,
                     .burst_completed = 0,

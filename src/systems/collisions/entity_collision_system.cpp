@@ -34,9 +34,8 @@ namespace sys::col {
                 break;
             }
 
-            // TODO: check if this is an explosion (large collider)
-            // if so skip it, example:
-            if (world.HasComponent<cmpt::Explosion>(e)) continue;
+            // if large aoe, handle later
+            if (world.HasComponent<cmpt::LargeAoE>(e)) continue;
 
             broad.dense_to_entity[broad.count] = (uint32_t)e;
 
@@ -65,12 +64,10 @@ namespace sys::col {
         });
 
 
-        // TODO: insert a check for explosions specifically
-        // example below
-        // this should fix the explosions not hitting all enemies
+        // check for large AOEs, find those collisions
         {
-            PROFILE_SCOPE("EntityCollision() - Explosion checks");
-            for (auto e : world.View<cmpt::Explosion, cmpt::Transform, cmpt::Collider>()) {
+            PROFILE_SCOPE("EntityCollision() - Large aoe check");
+            for (auto e : world.View<cmpt::LargeAoE, cmpt::Transform, cmpt::Collider>()) {
                 auto& etrans = world.GetComponent<cmpt::Transform>(e);
                 auto& ecol = world.GetComponent<cmpt::Collider>(e);
                 auto ebox = utils::GetBoundingBox(etrans, ecol);

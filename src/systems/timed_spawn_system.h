@@ -22,11 +22,17 @@ namespace sys {
             int roll = GetRandomValue(0, 99);
 
             if (roll < 50) {
-                spwn::enemy::Grunt(
+                Entity id = spwn::enemy::Grunt(
                     world, 
                     Vector3{ pos.x, 0.0f, pos.z }, 
                     cmpt::AIMoveMode::Random, 
                     data::g_game.GetModifiedHp(data::cnst::GRUNT_MIN_HP, data::cnst::GRUNT_HP_MULTIPLIER)
+                );
+                spwn::weapon::EquipPistol(
+                    world, 
+                    id, 
+                    data::cnst::ENEMY_PROJECTILE_LAYER, 
+                    data::cnst::ENEMY_PROJECTILE_LAYER_MASK
                 );
             } else if (roll >= 50 && roll < 80) {
                 spwn::enemy::Grunt(

@@ -2,7 +2,7 @@
 #include "components/components.h"
 
 namespace spwn::weapon {
-    void EquipPistol(strg::Registry& world, const Entity id) {
+    void EquipPistol(strg::Registry& world, const Entity id, Layer layer, Layer mask) {
         if (!world.HasComponent<cmpt::Pistol>(id)) {
             world.AddComponent<cmpt::Pistol>(
                 id,
@@ -16,7 +16,9 @@ namespace spwn::weapon {
                         .penetration = data::cnst::PISTOL_PENETRATION,
                         .projectile_speed = data::cnst::PISTOL_PROJECTILE_SPEED,
                         .knockback_scale = data::cnst::PISTOL_KNOCKBACK_SCALE,
-                        .knockback_duration = data::cnst::PISTOL_KNOCKBACK_DURATION
+                        .knockback_duration = data::cnst::PISTOL_KNOCKBACK_DURATION,
+                        .layer = layer,
+                        .mask = mask
                     },
                 }
             );

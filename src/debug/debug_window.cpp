@@ -121,7 +121,12 @@ namespace debug {
     void DrawWeapsTab(strg::Registry& world) {
         ImVec2 size = ImVec2{100, 30};
         if (ImGui::Button("+pistol", size)) {
-            spwn::weapon::EquipPistol(world, data::g_player.id);
+            spwn::weapon::EquipPistol(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
         }
         ImGui::SameLine();
         if (ImGui::Button("-pistol", size)) {
@@ -129,7 +134,12 @@ namespace debug {
         }
 
         if (ImGui::Button("+shotgun", size)) {
-            spwn::weapon::EquipShotgun(world, data::g_player.id);
+            spwn::weapon::EquipShotgun(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
         }
         ImGui::SameLine();
         if (ImGui::Button("-shotgun", size)) {
@@ -137,7 +147,12 @@ namespace debug {
         }
 
         if (ImGui::Button("+rifle", size)) {
-            spwn::weapon::EquipRifle(world, data::g_player.id);
+            spwn::weapon::EquipRifle(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
         }
         ImGui::SameLine();
         if (ImGui::Button("-rifle", size)) {
@@ -145,7 +160,12 @@ namespace debug {
         }
 
         if (ImGui::Button("+smg", size)) {
-            spwn::weapon::EquipSMG(world, data::g_player.id);
+            spwn::weapon::EquipSMG(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
         }
         ImGui::SameLine();
         if (ImGui::Button("-smg", size)) {
@@ -153,7 +173,12 @@ namespace debug {
         }
         
         if (ImGui::Button("+grenade", size)) {
-            spwn::weapon::EquipGrenadeLauncher(world, data::g_player.id);
+            spwn::weapon::EquipGrenadeLauncher(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
         }
         ImGui::SameLine();
         if (ImGui::Button("-grenade", size)) {
@@ -253,6 +278,13 @@ namespace debug {
         if (ImGui::Button("spawn brute line")) {
             for (int x = -10; x < 10; x+= 4) {
                 spwn::enemy::Brute(world, Vector3{(float)x, 0.0f, 0.0f}, cmpt::AIMoveMode::None, 500);
+            }
+        }
+        ImGui::Separator();
+
+        if (ImGui::Button("wipe loot")) {
+            for (auto entity : world.View<cmpt::Loot>()) {
+                world.AddComponent<tag::Destroy>(entity);
             }
         }
     }

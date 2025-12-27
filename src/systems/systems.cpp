@@ -25,7 +25,7 @@
 #include "systems/timed_spawn_system.h"
 #include "systems/events/loot_pickedup_event_system.h"
 #include "systems/events/notification_event_system.h"
-#include "systems/input_system.h"
+#include "systems/input/input_system.h"
 #include "systems/movement_system.h"
 #include "systems/status_effects_system.h"
 #include "systems/velocity_system.h"
@@ -46,7 +46,12 @@ namespace sys {
         data::g_player.Reset();
         spwn::map::GenerateMap(world, data::cnst::PLAY_AREA);
         data::g_player.id = spwn::player::Player(world);
-        spwn::weapon::EquipPistol(world, data::g_player.id);
+        spwn::weapon::EquipPistol(
+            world, 
+            data::g_player.id, 
+            data::cnst::PLAYER_PROJECTILE_LAYER, 
+            data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+        );
         //spwn::test::DamageZone(world);
     }
 
@@ -73,6 +78,7 @@ namespace sys {
         // input/move ai move intent
         sys::input::PlayerInput(world, camera);
         sys::input::AIMoveIntent(world, delta_time);
+        sys::input::AttackIntent(world);
 
         // apply movement to velocity
         sys::se::ApplyStatusEffects(world);
@@ -243,27 +249,58 @@ namespace sys {
         DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175});
 
         // display choices
-        auto rec = Rectangle{ (screen_width * 0.5f) - 50.0f, 300.0f, 100.0f, 50.0f };
+        auto rec = Rectangle{ (screen_width * 0.5f) - 75.0f, 300.0f, 150.0f, 50.0f };
         if (::GuiButton(rec, "Pistol")) {
-            spwn::weapon::EquipPistol(world, data::g_player.id);
+            spwn::weapon::EquipPistol(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
             data::g_weapon_select_menu.show = false;
         }
 
         rec.y += 50.0f;
         if (::GuiButton(rec, "Shotgun")) {
-            spwn::weapon::EquipShotgun(world, data::g_player.id);
-            data::g_weapon_select_menu.show = false;
-        }
-
-        rec.y += 50.0f;
-        if (::GuiButton(rec, "Grenade Launcher")) {
-            spwn::weapon::EquipGrenadeLauncher(world, data::g_player.id);
+            spwn::weapon::EquipShotgun(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
             data::g_weapon_select_menu.show = false;
         }
 
         rec.y += 50.0f;
         if (::GuiButton(rec, "Rifle")) {
-            spwn::weapon::EquipRifle(world, data::g_player.id);
+            spwn::weapon::EquipRifle(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
+            data::g_weapon_select_menu.show = false;
+        }
+
+        rec.y += 50.0f;
+        if (::GuiButton(rec, "SMG")) {
+            spwn::weapon::EquipSMG(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
+            data::g_weapon_select_menu.show = false;
+        }
+
+        rec.y += 50.0f;
+        if (::GuiButton(rec, "Grenade Launcher")) {
+            spwn::weapon::EquipGrenadeLauncher(
+                world, 
+                data::g_player.id, 
+                data::cnst::PLAYER_PROJECTILE_LAYER, 
+                data::cnst::PLAYER_PROJECTILE_LAYER_MASK
+            );
             data::g_weapon_select_menu.show = false;
         }
     }

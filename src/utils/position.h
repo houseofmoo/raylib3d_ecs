@@ -5,6 +5,7 @@
 #include "storage/registry.h"
 #include "data/game/game.h"
 #include "data/entity.h"
+#include "utils/debug.h"
 
 namespace utils {
     inline Vector3 GetRandomValidPosition() {

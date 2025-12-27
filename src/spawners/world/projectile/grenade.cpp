@@ -49,8 +49,8 @@ namespace spwn::proj {
         world.AddComponent<cmpt::Collider>(
             entity,
             cmpt::Collider{
-                .layer = data::cnst::PROJECTILE_LAYER,
-                .mask = data::cnst::PROJECTILE_LAYER_MASK,
+                .layer = config.layer,
+                .mask = config.mask,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = data::cnst::GRENADE_SIZE
             }
@@ -80,6 +80,8 @@ namespace spwn::proj {
                 .duration = config.explosion_duration,
                 .knockback_scale = config.explosion_knockback_scale,
                 .knockback_duration = config.explosion_duration,
+                .layer = config.layer,
+                .mask = config.mask,
             }
         );
 

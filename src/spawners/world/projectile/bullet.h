@@ -11,6 +11,8 @@ namespace spwn::proj {
         int penetration;
         float knockback_scale;
         float knockback_duration;
+        Layer layer;
+        Layer mask;
     };
 
     void Bullet(strg::Registry& world, const BulletConfig config);

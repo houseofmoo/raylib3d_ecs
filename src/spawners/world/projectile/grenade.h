@@ -21,6 +21,9 @@ namespace spwn::proj {
         float explosion_duration;
         float explosion_knockback_scale;
         float explosion_knockback_duration;
+
+        Layer layer;
+        Layer mask;
     };
 
     void Grenade(

@@ -2,7 +2,7 @@
 #include "components/components.h"
 
 namespace spwn::weapon {
-    void EquipShotgun(strg::Registry& world, const Entity id) {
+    void EquipShotgun(strg::Registry& world, const Entity id, Layer layer, Layer mask) {
         // if entity does not have a shotgun, give them one
         if (!world.HasComponent<cmpt::Shotgun>(id)) {
             world.AddComponent<cmpt::Shotgun>(
@@ -17,7 +17,9 @@ namespace spwn::weapon {
                         .penetration = data::cnst::SHOTGUN_PENETRATION,
                         .projectile_speed = data::cnst::SHOTGUN_PROJECTILE_SPEED,
                         .knockback_scale = data::cnst::SHOTGUN_KNOCKBACK_SCALE,
-                        .knockback_duration = data::cnst::SHOTGUN_KNOCKBACK_DURATION
+                        .knockback_duration = data::cnst::SHOTGUN_KNOCKBACK_DURATION,
+                        .layer = layer,
+                        .mask = mask
                     },
                     .spread_deg = data::cnst::SHOTGUN_SPREAD,
                     .pellet_count = data::cnst::SHOTGUN_PELLET_COUNT

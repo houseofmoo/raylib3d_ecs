@@ -61,11 +61,12 @@ namespace data {
     
     // layer masks
     namespace layer {
-        constexpr Layer NONE       = 0;
-        constexpr Layer PLAYER     = 1 << 0;
-        constexpr Layer ENEMY      = 1 << 1;
-        constexpr Layer PROJECTILE = 1 << 2;
-        constexpr Layer LOOT       = 1 << 3;
+        constexpr Layer NONE              = 0;
+        constexpr Layer PLAYER            = 1 << 0;
+        constexpr Layer ENEMY             = 1 << 1;
+        constexpr Layer PLAYER_PROJECTILE = 1 << 2;
+        constexpr Layer ENEMY_PROJECTILE  = 1 << 2;
+        constexpr Layer LOOT              = 1 << 3;
 
         inline bool InteractsOneWay(Layer layer_a, Mask mask_a, Layer layer_b, Mask mask_b) {
             // if either interact with the other
@@ -96,7 +97,7 @@ namespace data {
             .max = Vector3{60.0f, 55.0f, 30.0f}
         };
         constexpr Layer   ENEMY_LAYER      = data::layer::ENEMY;
-        constexpr Layer   ENEMY_LAYER_MASK = data::layer::PLAYER | data::layer::ENEMY | data::layer::PROJECTILE;
+        constexpr Layer   ENEMY_LAYER_MASK = data::layer::PLAYER | data::layer::ENEMY | data::layer::PLAYER_PROJECTILE;
         constexpr float   IMPACT_FREZE     = 0.1f;
         constexpr float   DAMAGE_FLASH     = 0.1f;
         constexpr Vector3 BASE_SCALE       = { 1.0f, 1.0f, 1.0f };
@@ -107,7 +108,7 @@ namespace data {
         constexpr int     PLAYER_START_HP           = 50;
         constexpr float   PLAYER_SPEED              = 10.0f;
         constexpr Layer   PLAYER_LAYER              = data::layer::PLAYER;
-        constexpr Layer   PLAYER_LAYER_MASK         = data::layer::ENEMY | data::layer::LOOT;
+        constexpr Layer   PLAYER_LAYER_MASK         = data::layer::ENEMY | data::layer::ENEMY_PROJECTILE | data::layer::LOOT;
         constexpr float   PLAYER_DASH_RANGE         = 3.0f;
         constexpr float   PLAYER_DASH_DURATION      = 0.11f;
 
@@ -219,8 +220,12 @@ namespace data {
         constexpr Vector3 BULLET_SIZE           = { 0.25f, 0.25f, 0.25f };
         constexpr Color   GRENADE_COLOR         = Color{ 230, 41, 55, 255 };
         constexpr Vector3 GRENADE_SIZE          = { 0.5f, 0.5f, 0.5f };
-        constexpr Layer   PROJECTILE_LAYER      = data::layer::PROJECTILE;
-        constexpr Layer   PROJECTILE_LAYER_MASK = data::layer::ENEMY;
+        
+        constexpr Layer   PLAYER_PROJECTILE_LAYER      = data::layer::PLAYER_PROJECTILE;
+        constexpr Layer   PLAYER_PROJECTILE_LAYER_MASK = data::layer::ENEMY;
+        constexpr Layer   ENEMY_PROJECTILE_LAYER       = data::layer::ENEMY_PROJECTILE;
+        constexpr Layer   ENEMY_PROJECTILE_LAYER_MASK  = data::layer::PLAYER;
+
         constexpr float   PROJECTILE_LIFETIME   = 10.0f;
 
         // status effects

@@ -8,18 +8,21 @@
 namespace sys {
     inline void SpawnAnimation(strg::Registry& world) {
         PROFILE_SCOPE("SpawnAnimation()");
-        for (auto enemy : world.View<cmpt::SpawnAnimation,
+        for (auto entity : world.View<cmpt::SpawnAnimation,
                                     cmpt::Transform,
                                     cmpt::Velocity>()) {
             
-            auto& anim = world.GetComponent<cmpt::SpawnAnimation>(enemy);
-            auto& etrans = world.GetComponent<cmpt::Transform>(enemy);
-            auto& evel = world.GetComponent<cmpt::Velocity>(enemy);
+            auto& anim = world.GetComponent<cmpt::SpawnAnimation>(entity);
+            auto& etrans = world.GetComponent<cmpt::Transform>(entity);
+            auto& evel = world.GetComponent<cmpt::Velocity>(entity);
 
             if (Vector3Distance(etrans.position, anim.end_position) <= 1.0f) {
                 etrans.position.y = anim.end_position.y;
                 evel.y = 0.0f;
-                world.RemoveComponent<cmpt::SpawnAnimation>(enemy);
+                world.RemoveComponent<cmpt::SpawnAnimation>(entity);
+                if (auto* atk = world.TryGetComponent<cmpt::AttackIntent>(entity)) {
+                    atk->active = true;
+                }
                 continue;
             }
 
@@ -32,12 +35,15 @@ namespace sys {
 
     inline void DeathAnimation(strg::Registry& world, float delta_time) {
         PROFILE_SCOPE("DeathAnimation()");
-        for (auto enemy : world.View<cmpt::DeathAnimation,
+        for (auto entity : world.View<cmpt::DeathAnimation,
                                     cmpt::Transform,
                                     cmpt::Velocity>()) {
             // turn off death animation for now
-            world.RemoveComponent<cmpt::DeathAnimation>(enemy);
-            world.AddComponent<tag::Destroy>(enemy);
+            if (auto* atk = world.TryGetComponent<cmpt::AttackIntent>(entity)) {
+                atk->active = false;
+            }
+            world.RemoveComponent<cmpt::DeathAnimation>(entity);
+            world.AddComponent<tag::Destroy>(entity);
 
             // auto& anim = world.GetComponent<cmpt::DeathAnimation>(enemy);
             // auto& etrans = world.GetComponent<cmpt::Transform>(enemy);

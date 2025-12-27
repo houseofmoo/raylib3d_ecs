@@ -7,20 +7,20 @@
 namespace spwn::player {
     Entity Player(strg::Registry& world) {
 
-        auto player = world.CreateEntity();
+        auto entity = world.CreateEntity();
         
         world.AddComponent<tag::Player>(
-            player,
+            entity,
             tag::Player{}
         );
 
         world.AddComponent<tag::CameraFollow>(
-            player,
+            entity,
             tag::CameraFollow{}
         );
         
         world.AddComponent<cmpt::Transform>(
-            player,
+            entity,
             cmpt::Transform{ 
                 Vector3{ 0.0f, data::cnst::PLAYER_SIZE.y * 0.5f, 0.0f },
                 QuaternionIdentity()
@@ -28,12 +28,12 @@ namespace spwn::player {
         );
         
         world.AddComponent<cmpt::Velocity>(
-            player,
+            entity,
             cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
         world.AddComponent<cmpt::Collider>(
-            player,
+            entity,
             cmpt::Collider{
                 .layer = data::cnst::PLAYER_LAYER,
                 .mask = data::cnst::PLAYER_LAYER_MASK,
@@ -43,17 +43,27 @@ namespace spwn::player {
         );
 
         world.AddComponent<cmpt::Health>(
-            player,
+            entity,
             cmpt::Health{ data::cnst::PLAYER_START_HP, data::cnst::PLAYER_START_HP }
         );
 
+        world.AddComponent<cmpt::AttackIntent>(
+            entity,
+            cmpt::AttackIntent {
+                .active = true,
+                .from_position = { 0.0f, data::cnst::PLAYER_SIZE.y * 0.5f, 0.0f },
+                .to_position = Vector3Zero(),
+                .direction = Vector3Zero(),
+            }
+        );
+
         world.AddComponent<cmpt::DamageReceiver>(
-            player,
+            entity,
             cmpt::DamageReceiver{0}
         );
 
         world.AddComponent<cmpt::Speed>(
-            player,
+            entity,
             cmpt::Speed{ 
                 .speed = data::cnst::PLAYER_SPEED, 
                 .speed_multiplier = 1.0f, 
@@ -62,7 +72,7 @@ namespace spwn::player {
         );
 
         world.AddComponent<cmpt::Input>(
-            player,
+            entity,
             cmpt::Input{ 
                 .direction = Vector3Zero(), 
                 .mouse_world_position = Vector3Zero() 
@@ -70,7 +80,7 @@ namespace spwn::player {
         );
 
         world.AddComponent<cmpt::Draw>(
-            player,
+            entity,
             cmpt::Draw{ 
                 .size = data::cnst::PLAYER_SIZE,
                 .scale = data::cnst::BASE_SCALE,
@@ -79,6 +89,6 @@ namespace spwn::player {
             }
         );
 
-        return player;
+        return entity;
     }
 }

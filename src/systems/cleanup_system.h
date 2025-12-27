@@ -39,8 +39,9 @@ namespace sys::cleanup {
                         .damage = static_cast<int>(exp.damage * data::g_player.damage_multiplier),
                         .duration = exp.duration,
                         .knockback_scale = exp.knockback_scale,
-                        .knockback_duration = exp.knockback_duration
-
+                        .knockback_duration = exp.knockback_duration,
+                        .layer = exp.layer,
+                        .mask = exp.mask
                     }
                 );
             }

@@ -5,8 +5,8 @@
 #include "components/components.h"
 
 namespace spwn::proj {
+
     void Bullet(strg::Registry& world, const BulletConfig config) {
-        
         auto entity = world.CreateEntity();
         
         world.AddComponent<cmpt::Projectile>(
@@ -37,8 +37,8 @@ namespace spwn::proj {
         world.AddComponent<cmpt::Collider>(
             entity,
             cmpt::Collider{
-                .layer = data::cnst::PROJECTILE_LAYER,
-                .mask = data::cnst::PROJECTILE_LAYER_MASK,
+                .layer = config.layer,
+                .mask = config.mask,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = data::cnst::BULLET_SIZE
             }

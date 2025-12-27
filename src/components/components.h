@@ -67,6 +67,7 @@ namespace cmpt {
     // non-player characters have this value for AI movement
     struct AIMoveIntent { 
         AIMoveMode mode;
+        Vector3 position;
         Vector3 direction;
 
         Quaternion start_rotation;
@@ -104,6 +105,13 @@ namespace cmpt {
     struct Input {
         Vector3 direction;
         Vector3 mouse_world_position;
+    };
+
+    struct AttackIntent {
+        bool active;
+        Vector3 from_position;
+        Vector3 to_position;
+        Vector3 direction;
     };
 
     ////////////////////////////////////////////////
@@ -231,6 +239,8 @@ namespace cmpt {
         float projectile_speed;
         float knockback_scale;
         float knockback_duration;
+        Layer layer;      // layer projectiles will be spawned on
+        Layer mask;       // layer those projectiles interact with
     };
 
     struct Pistol {
@@ -288,7 +298,7 @@ namespace cmpt {
     };
 
     ////////////////////////////////////////////////
-    // PROJECTILE SPECIFIC
+    // ATTACKa SPECIFIC
     ////////////////////////////////////////////////
     struct Projectile {
         int penetration;
@@ -301,6 +311,8 @@ namespace cmpt {
         float duration;
         float knockback_scale;
         float knockback_duration;
+        Layer layer;      // layer projectiles will be spawned on
+        Layer mask;       // layer those projectiles interact with
     };
 
     struct Explosion {
@@ -309,6 +321,8 @@ namespace cmpt {
         Vector3 start_size;
         Vector3 end_size;
     };
+
+    struct LargeAoE {}; // indicates this hurt box is larger than normal
 
     ////////////////////////////////////////////////
     // EVENTS

@@ -19,8 +19,8 @@ namespace spwn::proj {
         world.AddComponent<cmpt::Collider>(
             entity,
             cmpt::Collider{
-                .layer = data::cnst::PROJECTILE_LAYER,
-                .mask = data::cnst::PROJECTILE_LAYER_MASK,
+                .layer = config.layer,
+                .mask = config.mask,
                 .offset = { 0.0f, 0.0f, 0.0f },
                 .size = config.start_size
             }
@@ -47,6 +47,11 @@ namespace spwn::proj {
                 .scale = config.knockback_scale,
                 .duration = config.knockback_duration
             }
+        );
+        
+        world.AddComponent<cmpt::LargeAoE>(
+            entity,
+            cmpt::LargeAoE{}
         );
 
         world.AddComponent<cmpt::Explosion>(
