@@ -159,6 +159,43 @@ namespace sys::atk {
         }
     }
 
+    void SMGAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
+        PROFILE_SCOPE("SMGAttack()");
+        for (auto entity : world.View<cmpt::SMG>()) {
+            auto& trans = world.GetComponent<cmpt::Transform>(entity);
+            auto& input = world.GetComponent<cmpt::Input>(entity);
+            auto& wep = world.GetComponent<cmpt::SMG>(entity);
+     
+            wep.base_stats.countdown -= delta_time;
+            if (wep.base_stats.countdown > 0.0f) continue;
+
+            wep.base_stats.countdown = wep.base_stats.cooldown / data::g_player.attack_speed_multiplier;
+            if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+            } 
+
+            Vector3 direction = utils::DirectionFlattenThenNormalize(
+                trans.position, 
+                input.mouse_world_position
+            );
+
+            direction = Vector3Scale(direction, wep.base_stats.projectile_speed);
+            spwn::proj::Bullet(
+                world,
+                spwn::proj::BulletConfig{
+                    .position = trans.position,
+                    .direction = direction,
+                    .damage = (int)(wep.base_stats.damage * data::g_player.damage_multiplier),
+                    .penetration = wep.base_stats.penetration,
+                    .knockback_scale = wep.base_stats.knockback_scale,
+                    .knockback_duration = wep.base_stats.knockback_duration
+                }
+            );
+            PlaySound(sound_fx);
+            SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
+        }
+    }
+
     void GrenadeLauncherAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PROFILE_SCOPE("GrenadeAttack()");
         for (auto entity : world.View<cmpt::GrenadeLauncher>()) {
@@ -225,6 +262,7 @@ namespace sys::atk {
         PistolAttack(world, delta_time, sound_fx);
         ShotgunAttack(world, delta_time, sound_fx);
         RifleAttack(world, delta_time, sound_fx);
+        SMGAttack(world, delta_time, sound_fx);
         GrenadeLauncherAttack(world, delta_time, sound_fx);
         ExplosionAttack(world, delta_time);
     }

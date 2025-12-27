@@ -191,6 +191,13 @@ namespace data {
         constexpr int   RIFLE_BURST_COUNT        = 3;
         constexpr float RIFLE_BURST_COOLDOWN     = 0.10f;
 
+        constexpr float SMG_COOLDOWN           = 0.2f;
+        constexpr int   SMG_DAMAGE             = 3;
+        constexpr int   SMG_PENETRATION        = 1;
+        constexpr float SMG_PROJECTILE_SPEED   = 18.0f;
+        constexpr float SMG_KNOCKBACK_SCALE    = 3.0f;
+        constexpr float SMG_KNOCKBACK_DURATION = 0.10f;
+
         constexpr float GRENADE_COOLDOWN           = 2.0f;
         constexpr int   GRENADE_DAMAGE             = 5;
         constexpr int   GRENADE_PENETRATION        = 1;

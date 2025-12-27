@@ -143,6 +143,14 @@ namespace debug {
         if (ImGui::Button("-rifle", size)) {
             spwn::weapon::DequipRifle(world, data::g_player.id);
         }
+
+        if (ImGui::Button("+smg", size)) {
+            spwn::weapon::EquipSMG(world, data::g_player.id);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("-smg", size)) {
+            spwn::weapon::DequipSMG(world, data::g_player.id);
+        }
         
         if (ImGui::Button("+grenade", size)) {
             spwn::weapon::EquipGrenadeLauncher(world, data::g_player.id);
@@ -157,7 +165,7 @@ namespace debug {
             ImGui::Text("pistol:");
             ImGui::Text("  dmg:         %d", wep->base_stats.damage);
             ImGui::Text("  pen:         %d", wep->base_stats.penetration);
-            ImGui::Text("  atk spd:     %d", wep->base_stats.cooldown);
+            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
             ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
             ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
             ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
@@ -168,7 +176,7 @@ namespace debug {
             ImGui::Text("shotgun:");
             ImGui::Text("  dmg:         %d", wep->base_stats.damage);
             ImGui::Text("  pen:         %d", wep->base_stats.penetration);
-            ImGui::Text("  atk spd:     %d", wep->base_stats.cooldown);
+            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
             ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
             ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
             ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
@@ -181,7 +189,7 @@ namespace debug {
             ImGui::Text("rifle:");
             ImGui::Text("  dmg:         %d", wep->base_stats.damage);
             ImGui::Text("  pen:         %d", wep->base_stats.penetration);
-            ImGui::Text("  atk spd:     %d", wep->base_stats.cooldown);
+            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
             ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
             ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
             ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
@@ -190,11 +198,22 @@ namespace debug {
             ImGui::Separator();
         }
 
+        if (auto* wep = world.TryGetComponent<cmpt::SMG>(data::g_player.id)) {
+            ImGui::Text("smg:");
+            ImGui::Text("  dmg:         %d", wep->base_stats.damage);
+            ImGui::Text("  pen:         %d", wep->base_stats.penetration);
+            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
+            ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
+            ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
+            ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
+            ImGui::Separator();
+        }
+
         if (auto* wep = world.TryGetComponent<cmpt::GrenadeLauncher>(data::g_player.id)) {
             ImGui::Text("grenade:");
             ImGui::Text("  dmg:         %d", wep->base_stats.damage);
             ImGui::Text("  pen:         %d", wep->base_stats.penetration);
-            ImGui::Text("  atk spd:     %d", wep->base_stats.cooldown);
+            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
             ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
             ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
             ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
