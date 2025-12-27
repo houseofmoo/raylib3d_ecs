@@ -6,17 +6,17 @@
 #include "raylib.h"
 #include "data/entity.h"
 
+namespace cmpttest {
+    struct DamageZone{};
+}
+
 namespace tag {
     struct Player {};
-    struct Projectile {}; // TODO: move this to cmpt and add penetration to it instead of having penetration on "damage dealer"
     struct Enemy {};
+    struct Event {};
+    struct CameraFollow {};    
     struct Destroy {};
     struct DestroyOnTerrainCollision {};
-    //struct Terrain {};
-    struct Event {};
-    struct CameraFollow {};
-
-    struct DamageZone{};
 }
 
 namespace cmpt {
@@ -154,7 +154,6 @@ namespace cmpt {
 
     struct DamageDealer {
         int amount;
-        int penetration;
     };
 
     struct DamageReceiver {
@@ -291,8 +290,8 @@ namespace cmpt {
     ////////////////////////////////////////////////
     // PROJECTILE SPECIFIC
     ////////////////////////////////////////////////
-    struct Penetration {
-        int amount;
+    struct Projectile {
+        int penetration;
     };
 
     struct ExplodeOnDestroy {

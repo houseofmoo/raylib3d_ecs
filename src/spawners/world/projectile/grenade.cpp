@@ -15,9 +15,11 @@ namespace spwn::proj {
 
         auto entity = world.CreateEntity();
         
-        world.AddComponent<tag::Projectile>(
+        world.AddComponent<cmpt::Projectile>(
             entity,
-            tag::Projectile{}
+            cmpt::Projectile{
+                .penetration = config.penetration
+            }
         );
 
         world.AddComponent<tag::DestroyOnTerrainCollision>(
@@ -66,7 +68,6 @@ namespace spwn::proj {
             entity,
             cmpt::DamageDealer{ 
                 .amount = config.damage,
-                .penetration = config.penetration
             }
         );
 

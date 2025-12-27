@@ -48,24 +48,18 @@ namespace sys::col {
             if (!sys::col::collision_cache.IsEnter(col)) continue;
 
             // if A is a projectile
-            if (world.HasComponent<tag::Projectile>(col.entity_a)) {
-                // penetration -> destroy once penetration value is 0
-                if (auto* pen = world.TryGetComponent<cmpt::Penetration>(col.entity_a)) {
-                    pen->amount -= 1;
-                    if (pen->amount <= 0) {
-                        world.AddComponent<tag::Destroy>(col.entity_a);
-                    }
+            if (auto* proj = world.TryGetComponent<cmpt::Projectile>(col.entity_a)) {
+                proj->penetration -= 1;
+                if (proj->penetration <= 0) {
+                    world.AddComponent<tag::Destroy>(col.entity_a);
                 }
             }
 
             // if B is a projectile
-            if (world.HasComponent<tag::Projectile>(col.entity_b)) {
-                // penetration -> destroy once penetration value is 0
-                if (auto* pen = world.TryGetComponent<cmpt::Penetration>(col.entity_b)) {
-                    pen->amount -= 1;
-                    if (pen->amount <= 0) {
-                        world.AddComponent<tag::Destroy>(col.entity_b);
-                    }
+            if (auto* proj = world.TryGetComponent<cmpt::Projectile>(col.entity_b)) {
+                proj->penetration -= 1;
+                if (proj->penetration <= 0) {
+                    world.AddComponent<tag::Destroy>(col.entity_b);
                 }
             }
         }

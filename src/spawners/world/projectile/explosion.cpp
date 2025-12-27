@@ -38,7 +38,6 @@ namespace spwn::proj {
             entity,
             cmpt::DamageDealer{ 
                 .amount = config.damage,
-                .penetration = 999
             }
         );
 

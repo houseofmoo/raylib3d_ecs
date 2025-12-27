@@ -9,9 +9,11 @@ namespace spwn::proj {
         
         auto entity = world.CreateEntity();
         
-        world.AddComponent<tag::Projectile>(
+        world.AddComponent<cmpt::Projectile>(
             entity,
-            tag::Projectile{}
+            cmpt::Projectile{
+                .penetration = config.penetration
+            }
         );
 
         world.AddComponent<tag::DestroyOnTerrainCollision>(
@@ -61,11 +63,6 @@ namespace spwn::proj {
                 .scale = config.knockback_scale, 
                 .duration = config.knockback_duration
             }
-        );
-
-        world.AddComponent<cmpt::Penetration>(
-            entity,
-            cmpt::Penetration { config.penetration }
         );
 
         world.AddComponent<cmpt::Draw>(

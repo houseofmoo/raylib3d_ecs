@@ -8,7 +8,7 @@
 namespace spwn::test {
     inline void DamageZone(strg::Registry& world) {
         auto entity = world.CreateEntity();
-        world.AddComponent<tag::DamageZone>(entity, tag::DamageZone{});
+        world.AddComponent<cmpttest::DamageZone>(entity, cmpttest::DamageZone{});
 
         world.AddComponent<cmpt::Transform>(
             entity,
@@ -32,7 +32,6 @@ namespace spwn::test {
             entity,
             cmpt::DamageDealer{ 
                 .amount = 1,
-                .penetration = 999
             }
         );
 
