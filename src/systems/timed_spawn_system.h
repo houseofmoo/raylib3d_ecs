@@ -2,8 +2,7 @@
 
 #include "storage/registry.h"
 #include "data/game/game.h"
-#include "spawners/world/enemies/grunt.h"
-#include "spawners/world/enemies/brute.h"
+#include "spawners/world/enemies/enemies.h"
 #include "utils/rl_utils.h"
 #include "utils/position.h"
 #include "utils/debug.h"

@@ -202,7 +202,7 @@ namespace data {
 
         constexpr int     GRENADE_EXPLOSION_DAMAGE             = 20;
         constexpr Vector3 GRENADE_EXPLOSION_START_SIZE         = { 0.1f, 0.1f, 0.1f };
-        constexpr Vector3 GRENADE_EXPLOSION_END_SIZE           = { 7.0f, 7.0f, 7.0f };
+        constexpr Vector3 GRENADE_EXPLOSION_END_SIZE           = { 8.0f, 8.0f, 8.0f };
         constexpr float   GRENADE_EXPLOSION_DURATION           = 0.25f;
         constexpr float   GRENADE_EXPLOSION_KNOCKBACK_SCALE    = 20.0f;
         constexpr float   GRENADE_EXPLOSION_KNOCKBACK_DURATION = 0.2f;

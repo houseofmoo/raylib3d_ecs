@@ -8,13 +8,15 @@
 
 namespace tag {
     struct Player {};
-    struct Projectile {};
+    struct Projectile {}; // TODO: move this to cmpt and add penetration to it instead of having penetration on "damage dealer"
     struct Enemy {};
     struct Destroy {};
     struct DestroyOnTerrainCollision {};
     //struct Terrain {};
     struct Event {};
     struct CameraFollow {};
+
+    struct DamageZone{};
 }
 
 namespace cmpt {

@@ -64,7 +64,7 @@ namespace spwn::proj {
             entity,
             cmpt::Draw{ 
                 .size = config.start_size,
-                .scale  = data::cnst::BASE_SCALE,
+                .scale = data::cnst::BASE_SCALE,
                 .color = ORANGE,
                 .model = &rsrc::asset::grenade_model,
             }

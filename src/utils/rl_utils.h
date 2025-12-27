@@ -27,12 +27,9 @@ namespace utils {
     }
 
     inline BoundingBox GetBoundingBox(const Vector3 position, const Vector3 offset, const Vector3 size) {
-        Vector3 center = Vector3Add(position, offset);
-        Vector3 half_size =  Vector3Scale(size, 0.5f);
-
         return BoundingBox{
-            Vector3Subtract(center, half_size),
-            Vector3Add(center, half_size)
+            (position + offset) - (size * 0.5f),
+            (position + offset) + (size * 0.5f)
         };
     }
 
@@ -51,7 +48,7 @@ namespace utils {
     }
 
     inline Quaternion GetRotationToLocation(Vector3 source, Vector3 location) {
-        Vector3 dir =  Vector3Subtract(location, source);
+        Vector3 dir = Vector3Subtract(location, source);
         dir.y = 0.0f;
 
         if (Vector3LengthSqr(dir) > 0.0001f) {

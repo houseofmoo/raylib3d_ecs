@@ -24,7 +24,7 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             exp,
             cmpt::Transform{ 
-                .position = utils::GetRandomValidPisitionNearTarget(
+                .position = utils::GetRandomValidPositionNearTarget(
                     Vector3{ position.x, data::cnst::EXP_SIZE.y * 0.5f, position.z },
                     1
                 ),
@@ -85,7 +85,7 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             money,
             cmpt::Transform{ 
-                .position = utils::GetRandomValidPisitionNearTarget(
+                .position = utils::GetRandomValidPositionNearTarget(
                     Vector3{ position.x, data::cnst::MONEY_SIZE.y * 0.5f, position.z },
                     1
                 ),
@@ -146,7 +146,7 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             powerup,
             cmpt::Transform{ 
-                .position = utils::GetRandomValidPisitionNearTarget(
+                .position = utils::GetRandomValidPositionNearTarget(
                     Vector3{ position.x, data::cnst::POWERUP_SIZE.y * 0.5f, position.z },
                     1
                 ),
@@ -207,7 +207,7 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             weapon,
             cmpt::Transform{
-                .position = utils::GetRandomValidPisitionNearTarget(
+                .position = utils::GetRandomValidPositionNearTarget(
                     Vector3{ position.x, data::cnst::WEAPON_SIZE.y * 0.5f, position.z },
                     1
                 ),
@@ -263,7 +263,7 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Transform>(
             entity,
             cmpt::Transform{
-                .position = utils::GetRandomValidPisitionNearTarget(
+                .position = utils::GetRandomValidPositionNearTarget(
                     Vector3{ position.x, data::cnst::WEAPON_CRATE_SIZE.y * 0.5f, position.z },
                     1
                 ),

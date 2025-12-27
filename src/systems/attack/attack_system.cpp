@@ -210,9 +210,6 @@ namespace sys::atk {
 
             exp.elapsed += delta_time;
             float t = Clamp(exp.elapsed / exp.duration, 0.0f, 1.0f);
-  
-            // we want the collider to be a bit larger than the
-            // draw animations to make it feel better
 
             // collider grows larger over time
             col.size = Vector3Lerp(exp.start_size, exp.end_size, t);

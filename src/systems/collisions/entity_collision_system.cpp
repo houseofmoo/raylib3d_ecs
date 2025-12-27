@@ -33,6 +33,11 @@ namespace sys::col {
                 PRINT("too many entities for Grid2D to handle");
                 break;
             }
+
+            // TODO: check if this is an explosion (large collider)
+            // if so skip it, example:
+            if (world.HasComponent<cmpt::Explosion>(e)) continue;
+
             broad.dense_to_entity[broad.count] = (uint32_t)e;
 
             auto& t = world.GetComponent<cmpt::Transform>(e);
@@ -58,5 +63,32 @@ namespace sys::col {
                 collision_cache.current.insert(strg::CollisionPair{a, b});
             }
         });
+
+
+        // TODO: insert a check for explosions specifically
+        // example below
+        // this should fix the explosions not hitting all enemies
+        {
+            PROFILE_SCOPE("EntityCollision() - Explosion checks");
+            for (auto e : world.View<cmpt::Explosion, cmpt::Transform, cmpt::Collider>()) {
+                auto& etrans = world.GetComponent<cmpt::Transform>(e);
+                auto& ecol = world.GetComponent<cmpt::Collider>(e);
+                auto ebox = utils::GetBoundingBox(etrans, ecol);
+
+                for (auto target : world.View<cmpt::DamageReceiver, cmpt::Transform, cmpt::Collider>()) {
+                    if (target == e) continue;
+
+                    auto& tcol = world.GetComponent<cmpt::Collider>(target);
+                    if (!data::layer::InteractsBoth(ecol.layer, ecol.mask, tcol.layer, tcol.mask)) continue;
+
+                    auto& ttrans = world.GetComponent<cmpt::Transform>(target);
+                    auto tbox = utils::GetBoundingBox(ttrans, tcol);
+
+                    if (CheckCollisionBoxes(ebox, tbox)) {
+                        collision_cache.current.insert(strg::CollisionPair{e, target});
+                    }
+                }
+            }
+        }
     }
 }

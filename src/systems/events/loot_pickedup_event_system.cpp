@@ -3,9 +3,7 @@
 
 #include "components/components.h"
 #include "spawners/system/events/notification.h"
-#include "spawners/equip/weapon/shotgun.h"
-#include "spawners/equip/weapon/pistol.h"
-#include "spawners/equip/weapon/grenade_launcher.h"
+#include "spawners/equip/weapon/weapons.h"
 #include "data/player/player.h"
 #include "data/game/game.h"
 #include "data/entity.h"

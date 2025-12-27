@@ -1,6 +1,5 @@
-#include "spawners/equip/weapon/shotgun.h"
+#include "spawners/equip/weapon/weapons.h"
 #include "components/components.h"
-#include "utils/debug.h"
 
 namespace spwn::weapon {
     void EquipShotgun(strg::Registry& world, const Entity id) {

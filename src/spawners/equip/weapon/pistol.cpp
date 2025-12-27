@@ -1,4 +1,4 @@
-#include "spawners/equip/weapon/pistol.h"
+#include "spawners/equip/weapon/weapons.h"
 #include "components/components.h"
 
 namespace spwn::weapon {

@@ -1,13 +1,14 @@
-#pragma once
+// #pragma once
 
-#include "raylib.h"
-#include "storage/registry.h"
-#include "components/components.h"
+// #include "raylib.h"
+// #include "storage/registry.h"
+// #include "components/components.h"
 
-namespace spwn::enemy {
-    void Brute(
-        strg::Registry& world, 
-        const Vector3 position, 
-        const cmpt::AIMoveMode move_mode, 
-        const int hp);
-}
+// namespace spwn::enemy {
+//     void Brute(
+//         strg::Registry& world, 
+//         const Vector3 position, 
+//         const cmpt::AIMoveMode move_mode, 
+//         const int hp
+//     );
+// }

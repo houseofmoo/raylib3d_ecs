@@ -7,33 +7,6 @@
 #include "data/entity.h"
 
 namespace utils {
-    inline Vector3 GetRandomValidPositionNearTarget(const Vector3 target, const int offset) {
-        // assumes looking for a position that is valid at 0.0f height
-        float new_x = 0.0f;
-        float new_z = 0.0f;
-        int attempts = 0;
-        while (true) {
-            new_x = (float)GetRandomValue(
-                (int)std::floor(target.x - offset), 
-                (int)std::ceil(target.x + offset)
-            );
-            new_z = (float)GetRandomValue(
-                (int)std::floor(target.z - offset), 
-                (int)std::ceil(target.z + offset)
-            );
-
-            if (data::g_terrain.ValidMove(new_x, new_z, 0.0f)) break;
-            
-            attempts += 1;
-            if (attempts > 5) {
-                PRINT("took more than 5 attempts to GetRandomValidPisitionNearTarget()");
-                return GetRandomValidPosition(); // failed, get global random position
-            }
-        }
-
-        return Vector3{new_x, 0.0f, new_z};
-    }
-
     inline Vector3 GetRandomValidPosition() {
         // assumes looking for a position that is valid at 0.0f height
         float new_x = 0.0f;
@@ -55,6 +28,33 @@ namespace utils {
             if (attempts > 5) {
                 PRINT("took more than 5 attempts to GetRandomValidPosition()");
                 return Vector3{ 0.0f, 0.0f, 0.0f };
+            }
+        }
+
+        return Vector3{new_x, 0.0f, new_z};
+    }
+
+    inline Vector3 GetRandomValidPositionNearTarget(const Vector3 target, const int offset) {
+        // assumes looking for a position that is valid at 0.0f height
+        float new_x = 0.0f;
+        float new_z = 0.0f;
+        int attempts = 0;
+        while (true) {
+            new_x = (float)GetRandomValue(
+                (int)std::floor(target.x - offset), 
+                (int)std::ceil(target.x + offset)
+            );
+            new_z = (float)GetRandomValue(
+                (int)std::floor(target.z - offset), 
+                (int)std::ceil(target.z + offset)
+            );
+
+            if (data::g_terrain.ValidMove(new_x, new_z, 0.0f)) break;
+            
+            attempts += 1;
+            if (attempts > 5) {
+                PRINT("took more than 5 attempts to GetRandomValidPisitionNearTarget()");
+                return GetRandomValidPosition(); // failed, get global random position
             }
         }
 

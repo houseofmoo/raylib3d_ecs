@@ -1,4 +1,4 @@
-#include "spawners/world/enemies/grunt.h"
+#include "spawners/world/enemies/enemies.h"
 
 #include "raymath.h"
 #include "data/entity.h"
