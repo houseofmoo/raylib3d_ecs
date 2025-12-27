@@ -21,27 +21,28 @@ namespace sys {
             Vector3 pos = utils::GetRandomValidPosition();
             int roll = GetRandomValue(0, 99);
 
-            if (roll < 50) {
-                Entity id = spwn::enemy::Grunt(
+            if (roll < 35) {
+                spwn::enemy::Grunt(
                     world, 
                     Vector3{ pos.x, 0.0f, pos.z }, 
                     cmpt::AIMoveMode::Random, 
                     data::g_game.GetModifiedHp(data::cnst::GRUNT_MIN_HP, data::cnst::GRUNT_HP_MULTIPLIER)
                 );
-                spwn::weapon::EquipPistol(
+            } else if (roll >= 35 < 55) {
+                spwn::enemy::GruntWithAPistol(
                     world, 
-                    id, 
-                    data::cnst::ENEMY_PROJECTILE_LAYER, 
-                    data::cnst::ENEMY_PROJECTILE_LAYER_MASK
+                    Vector3{ pos.x, 0.0f, pos.z }, 
+                    cmpt::AIMoveMode::Random, 
+                    data::g_game.GetModifiedHp(data::cnst::GRUNT_MIN_HP, data::cnst::GRUNT_HP_MULTIPLIER)
                 );
-            } else if (roll >= 50 && roll < 80) {
+            } else if (roll >= 55 && roll < 75) {
                 spwn::enemy::Grunt(
                     world, 
                     Vector3{ pos.x, 0.0f, pos.z }, 
                     cmpt::AIMoveMode::Lazy, 
                     data::g_game.GetModifiedHp(data::cnst::GRUNT_MIN_HP, data::cnst::GRUNT_HP_MULTIPLIER)
                 );
-            } else if (roll >= 80 && roll < 90) {
+            } else if (roll >= 75 && roll < 90) {
                 spwn::enemy::Grunt(
                     world, 
                     Vector3{ pos.x, 0.0f, pos.z }, 

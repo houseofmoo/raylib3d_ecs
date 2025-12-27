@@ -65,8 +65,8 @@ namespace data {
         constexpr Layer PLAYER            = 1 << 0;
         constexpr Layer ENEMY             = 1 << 1;
         constexpr Layer PLAYER_PROJECTILE = 1 << 2;
-        constexpr Layer ENEMY_PROJECTILE  = 1 << 2;
-        constexpr Layer LOOT              = 1 << 3;
+        constexpr Layer ENEMY_PROJECTILE  = 1 << 3;
+        constexpr Layer LOOT              = 1 << 4;
 
         inline bool InteractsOneWay(Layer layer_a, Mask mask_a, Layer layer_b, Mask mask_b) {
             // if either interact with the other
