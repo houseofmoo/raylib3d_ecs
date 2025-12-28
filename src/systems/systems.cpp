@@ -44,7 +44,7 @@ namespace sys {
         world.Reset();
         data::g_game.Reset();
         data::g_player.Reset();
-        spwn::map::GenerateMap(world, data::cnst::PLAY_AREA);
+        spwn::map::GenerateMap(world);
         data::g_player.id = spwn::player::Player(world);
         spwn::weapon::EquipPistol(
             world, 
@@ -82,7 +82,7 @@ namespace sys {
 
         // apply movement to velocity
         sys::se::ApplyStatusEffects(world);
-        sys::mov::ApplyPlayerMovement(world, delta_time);
+        sys::mov::ApplyPlayerMovement(world);
         sys::mov::ApplyAIMovement(world, delta_time);
         sys::cam::CameraMovement(world, camera, delta_time, false);
 
@@ -120,7 +120,7 @@ namespace sys {
 
         //sys::lvl::PlayerLevelup(world);
         sys::SpawnAnimation(world);
-        sys::DeathAnimation(world, delta_time);
+        sys::DeathAnimation(world);
         sys::loot::LootDrop(world);
         sys::evt::HandleLootPickedupEvents(world);
 

@@ -45,7 +45,7 @@ namespace debug {
         }
     }
     
-    void DrawStatsTab(strg::Registry& world) {
+    void DrawStatsTab() {
         ImGui::Text("fps:        %d", GetFPS());
         ImGui::Text("entities:   %d", data::g_game.entity_count);
         ImGui::Text("enemies:    %d", data::g_game.enemy_count);
@@ -60,11 +60,11 @@ namespace debug {
         ImGui::Text("explvl:     %d", data::g_player.exp_to_next_level);
         ImGui::Separator();
 
-        ImGui::Text("dmg%:       %.2f", data::g_player.damage_multiplier);
-        ImGui::Text("a-spd%:     %.2f", data::g_player.attack_speed_multiplier);
-        ImGui::Text("m-spd%:     %.2f", data::g_player.move_speed_multiplier);
-        ImGui::Text("d-rng%:     %.2f", data::g_player.dash_range_multiplier);
-        ImGui::Text("pu-rng%:    %.2f", data::g_player.pickup_range_multiplier);
+        ImGui::Text("dmg:       %.2f", data::g_player.damage_multiplier);
+        ImGui::Text("a-spd:     %.2f", data::g_player.attack_speed_multiplier);
+        ImGui::Text("m-spd:     %.2f", data::g_player.move_speed_multiplier);
+        ImGui::Text("d-rng:     %.2f", data::g_player.dash_range_multiplier);
+        ImGui::Text("pu-rng:    %.2f", data::g_player.pickup_range_multiplier);
         ImGui::Separator();
 
         // add stats
@@ -319,11 +319,6 @@ namespace debug {
     }
 
     void DrawDebugUI(strg::Registry& world, ImGuiIO& io) {
-        static bool show_demo_window = false;
-        static float position_x = 0;
-        static float position_z = 0;
-        static bool position_blocked = false;
-
         rlImGuiBegin();
         SetImGuiDocking(io);
         // State& state = GetState_Debug();
@@ -334,7 +329,7 @@ namespace debug {
         if (ImGui::BeginTabBar("main")) {
             // stats Tab
             if (ImGui::BeginTabItem("stats")) {
-                DrawStatsTab(world);
+                DrawStatsTab();
                 ImGui::EndTabItem();
             }
 

@@ -38,13 +38,13 @@ namespace strg {
     class Tilemap {
         int width;
         int height;
-        Vector3 grid_max;
         Vector3 grid_min;
+        Vector3 grid_max;
         float tile_size;
         std::vector<Tile> tiles; // [tz * width + tx]
 
         public:
-        Tilemap(Vector3 grid_min, Vector3 grid_max, float tile_size = 1.0f);
+        Tilemap(Vector3 g_min, Vector3 g_max, float tile_size = 1.0f);
         int WorldToTileX(const float world_x) const;
         int WorldToTileZ(const float world_z) const;
         bool InBoundsWorld(const float world_x, const float world_z) const;

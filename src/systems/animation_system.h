@@ -33,7 +33,7 @@ namespace sys {
         }
     }
 
-    inline void DeathAnimation(strg::Registry& world, float delta_time) {
+    inline void DeathAnimation(strg::Registry& world) {
         PROFILE_SCOPE("DeathAnimation()");
         for (auto entity : world.View<cmpt::DeathAnimation,
                                     cmpt::Transform,

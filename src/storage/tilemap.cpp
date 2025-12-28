@@ -5,11 +5,11 @@
 
 
 namespace strg {
-    Tilemap::Tilemap(Vector3 grid_min, Vector3 grid_max, float tile_size) : 
-            width((int)std::ceil((grid_max.x - grid_min.x) / tile_size)), 
-            height((int)std::ceil((grid_max.z - grid_min.z) / tile_size)), 
-            grid_min(grid_min),
-            grid_max(grid_max),
+    Tilemap::Tilemap(Vector3 g_min, Vector3 g_max, float tile_size) : 
+            width((int)std::ceil((g_max.x - g_min.x) / tile_size)), 
+            height((int)std::ceil((g_max.z - g_min.z) / tile_size)), 
+            grid_min(g_min),
+            grid_max(g_max),
             tile_size(tile_size),
             tiles(width * height, Tile{.type = TileType::OPEN, .height = 0.0f }) {}
 

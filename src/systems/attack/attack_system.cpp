@@ -40,6 +40,8 @@ namespace sys::atk {
             wep.base_stats.countdown -= delta_time;
             if (wep.base_stats.countdown > 0.0f) continue;
 
+            // TODO: all weapons are currently getting player bonuses
+            // so even monsters are getting them, fix this!
             wep.base_stats.countdown = wep.base_stats.cooldown;
             if (world.HasComponent<tag::Player>(entity)) {
                 wep.base_stats.countdown /= data::g_player.attack_speed_multiplier;
@@ -247,9 +249,9 @@ namespace sys::atk {
         }
     }
 
-    void DamagePulse(strg::Registry& world, const float delta_time) {
-        // this is damage that pulses out from the player
-    }
+    // void DamagePulse(strg::Registry& world, const float delta_time) {
+    //     // this is damage that pulses out from the player
+    // }
 
     void WeaponAttacks(strg::Registry& world, const float delta_time, Sound& sound_fx) {
         PistolAttack(world, delta_time, sound_fx);

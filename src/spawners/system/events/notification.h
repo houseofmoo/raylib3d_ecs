@@ -23,8 +23,9 @@ namespace spwn::evt {
 
         world.AddComponent<cmpt::Lifetime>(
             noti,
-            cmpt::Lifetime{ 
-                .countdown = data::notif::NOTIFICATION_DURATION 
+            cmpt::Lifetime{
+                .start_time = static_cast<double>(0.0f),
+                .countdown = static_cast<double>(data::notif::NOTIFICATION_DURATION)
             }
         );
     }

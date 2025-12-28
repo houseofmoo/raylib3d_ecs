@@ -21,7 +21,7 @@ namespace sys::input {
 
             auto& input = world.GetComponent<cmpt::Input>(entity);
 
-            input.direction = { 0.0f, 0.0f };
+            input.direction = { 0.0f, 0.0f, 0.0f };
             if (IsKeyDown(KEY_W)) input.direction.z -= 1.0f;
             if (IsKeyDown(KEY_S)) input.direction.z += 1.0f;
             if (IsKeyDown(KEY_A)) input.direction.x -= 1.0f;

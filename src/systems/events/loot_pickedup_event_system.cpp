@@ -10,7 +10,7 @@
 #include "utils/debug.h"
 
 namespace sys::evt {
-    void ApplyPowerup(strg::Registry& world, data::loot::PowerupKind kind, Entity id) {
+    void ApplyPowerup(strg::Registry& world, data::loot::PowerupKind kind) {
         switch (kind) {
             case data::loot::PowerupKind::Damage: {
                 data::g_player.damage_multiplier += data::cnst::DAMAGE_POWERUP_VALUE;
@@ -156,7 +156,7 @@ namespace sys::evt {
 
                 case data::loot::LootKind::Powerup: {
                     auto& pukind = world.GetComponent<cmpt::PowerupLoot>(entity);
-                    ApplyPowerup(world, pukind.kind, evt.id);
+                    ApplyPowerup(world, pukind.kind);
                     break;
                 }
 

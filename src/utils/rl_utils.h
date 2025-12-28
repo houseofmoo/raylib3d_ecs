@@ -58,7 +58,7 @@ namespace utils {
         return QuaternionIdentity();
     }
 
-    inline Quaternion GetRotationToDirection(Vector3 source, Vector3 direction) {
+    inline Quaternion GetRotationToDirection(Vector3 direction) {
         direction.y = 0.0f;
         if (Vector3LengthSqr(direction) > 0.0001f) {
             float angle = -(atan2f(direction.z, direction.x) - PI/2.0f);

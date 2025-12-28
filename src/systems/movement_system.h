@@ -8,7 +8,7 @@
 #include "utils/debug.h"
 
 namespace sys::mov {
-    inline void ApplyPlayerMovement(strg::Registry& world, const float delta_time) {
+    inline void ApplyPlayerMovement(strg::Registry& world) {
         PROFILE_SCOPE("ApplyPlayerMovement()");
         for (auto entity : world.View<cmpt::Input, 
                                         cmpt::Transform,
@@ -93,7 +93,7 @@ namespace sys::mov {
 
                         trans.rotation = QuaternionSlerp(
                             intent.start_rotation,
-                            utils::GetRotationToDirection(trans.position, intent.direction),
+                            utils::GetRotationToDirection(intent.direction),
                             amount
                         );
 
@@ -101,7 +101,7 @@ namespace sys::mov {
                         break;
                     }
                     default: {
-                        trans.rotation = utils::GetRotationToDirection(trans.position, intent.direction);
+                        trans.rotation = utils::GetRotationToDirection(intent.direction);
                         break;
                     }
                 }

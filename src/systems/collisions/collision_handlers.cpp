@@ -141,6 +141,7 @@ namespace sys::col {
             }
             case data::loot::LootKind::WeaponCrate: {
                 spwn::evt::WeaponCratePickedupEvent(world, player);
+                break;
             }
             default: {
                 PRINT("Unknown loot type found in PickupOnCollision() a->b");
@@ -167,6 +168,9 @@ namespace sys::col {
 
     void TriggerOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("TriggerOnCollision()");
+        if (world.HasComponent<tag::Player>(0)) {
+            PRINT("hello");
+        }
     }
 
     void RepositionOnCollision(strg::Registry& world) {

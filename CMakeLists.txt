@@ -1,118 +1,134 @@
 cmake_minimum_required(VERSION 3.15)
 project(raylib_3d LANGUAGES C CXX)
 
-# cpp version
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# c version
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
-# use build directory
-set(CMAKE_BUILD_DIR ${CMAKE_SOURCE_DIR}/build)
+# Default build type if not set
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+endif()
+
+# Use build directory for runtime output
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build)
 
-# optional feature
+# Optional feature
 option(PROFILER_ENABLED "Enable function profiling" OFF)
 
-# add all local include files
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/components)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/data)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/data/game)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/data/player)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/debug)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/raygui_styles)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/resources)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip/weapon)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system/camera)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system/events)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system/map)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/enemies)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/loot)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/player)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/projectile)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/terrain)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/storage)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/systems)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/systems/attack)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/systems/camera)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/systems/collisions)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/systems/events)
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/utils)
-
-# add all local cpp files
+# Project sources
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     ${CMAKE_SOURCE_DIR}/src/*.cpp
     ${CMAKE_SOURCE_DIR}/src/*.c
 )
 
+# Executable target
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Build type: Debug")
     add_executable(${PROJECT_NAME} ${SOURCES})
     target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG)
-    if (PROFILER_ENABLED)
-        message(STATUS "Profiler: Enabled")
-        target_compile_definitions(${PROJECT_NAME} PRIVATE PROFILER_ENABLED)
-    else()
-        message(STATUS "Profiler: Disabled")
-    endif()
 else()
     message(STATUS "Build type: Release")
+    # WIN32 to hide the console window on Windows
     add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 endif()
 
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+# Strict warnings only for *your* code (your TUs)
+target_compile_options(${PROJECT_NAME} PRIVATE
+    -Wall -Wextra -Wpedantic -Werror -Wunused
+)
 
-# add raylib
+if (PROFILER_ENABLED)
+    message(STATUS "Profiler: Enabled")
+    target_compile_definitions(${PROJECT_NAME} PRIVATE PROFILER_ENABLED)
+else()
+    message(STATUS "Profiler: Disabled")
+endif()
+
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin
+)
+
+# Local headers
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/components
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/data
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/data/game
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/data/player
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/debug
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/resources
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip/weapon
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system/camera
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system/events
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system/map
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/enemies
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/loot
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/player
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/projectile
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/terrain
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/storage
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/attack
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/camera
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/collisions
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/events
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
+)
+
+# External system headers
+target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
+    # raygui + styles
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui_styles
+
+    # raylib
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/raylib/src
+
+    # ImGui
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui/backends
+
+    # rlImGui
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/rlImGui
+)
+
+# raylib
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/raylib)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raylib/src)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
-# add raygui
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui/src)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui/styles)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui/styles/default)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/raygui/styles/dark)
-
-# add OpenGL (for imgui)
-#find_package(OpenGL REQUIRED)
-#target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL)
-
-
-# add glfw
-#add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glfw-3.4)
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/glfw-3.4/include/GLFW)
-#target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
-
-# add imgui
+# ImGui
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui/backends)
-target_link_libraries(${PROJECT_NAME} PRIVATE IMGUI)
+target_include_directories(IMGUI SYSTEM PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui/backends
+)
 
-# add raylib imgui bridge
+# rlImGui
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/rlImGui)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/rlImGui)
-target_link_libraries(${PROJECT_NAME} PRIVATE RL_IMGUI)
+target_include_directories(RL_IMGUI SYSTEM PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/libs/rlImGui
+)
+target_link_libraries(RL_IMGUI PUBLIC IMGUI raylib)
+target_link_libraries(${PROJECT_NAME} PRIVATE IMGUI RL_IMGUI)
 
-# copy assets to output directory
+# Copy assets to output directory
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/assets"

@@ -4,5 +4,5 @@
 #include "storage/registry.h"
 
 namespace spwn::map {
-    void GenerateMap(strg::Registry& world, const BoundingBox& boundary);
+    void GenerateMap(strg::Registry& world);
 }

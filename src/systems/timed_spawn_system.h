@@ -28,7 +28,7 @@ namespace sys {
                     cmpt::AIMoveMode::Random, 
                     data::g_game.GetModifiedHp(data::cnst::GRUNT_MIN_HP, data::cnst::GRUNT_HP_MULTIPLIER)
                 );
-            } else if (roll >= 35 < 55) {
+            } else if (roll >= 35  && roll < 55) {
                 spwn::enemy::GruntWithAPistol(
                     world, 
                     Vector3{ pos.x, 0.0f, pos.z }, 
