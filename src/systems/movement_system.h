@@ -3,7 +3,6 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "data/player/player.h"
 #include "utils/rl_utils.h"
 #include "utils/debug.h"
 
@@ -13,7 +12,7 @@ namespace sys::mov {
         for (auto entity : world.View<cmpt::Input, 
                                         cmpt::Transform,
                                         cmpt::Velocity, 
-                                        cmpt::Speed>()) {
+                                        cmpt::Stats>()) {
 
             if (world.HasComponent<cmpt::SpawnAnimation>(entity)) {
                 continue;
@@ -33,11 +32,12 @@ namespace sys::mov {
             } else {
                 auto& input = world.GetComponent<cmpt::Input>(entity);
                 auto& trans = world.GetComponent<cmpt::Transform>(entity);
-                auto& spd = world.GetComponent<cmpt::Speed>(entity);
-                float speed = spd.speed * 
-                            spd.speed_multiplier * 
-                            spd.dash_multiplier * 
-                            data::g_player.move_speed_multiplier;
+                auto& stats = world.GetComponent<cmpt::Stats>(entity);
+                float speed = stats.move_speed * stats.move_speed_modifier;
+
+                if (world.HasComponent<cmpt::Dash>(entity)) {
+                    speed *= stats.dash_speed_modifier;
+                }
 
                 vel.x = input.direction.x * speed;
                 vel.y = 0.0f;
@@ -54,7 +54,7 @@ namespace sys::mov {
         for (auto entity : world.View<cmpt::AIMoveIntent,
                                         cmpt::Transform, 
                                         cmpt::Velocity,
-                                        cmpt::Speed>()) {
+                                        cmpt::Stats>()) {
 
             if (world.HasComponent<cmpt::SpawnAnimation>(entity)) {
                 continue;
@@ -74,11 +74,11 @@ namespace sys::mov {
             } else {
                 auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
                 auto& trans = world.GetComponent<cmpt::Transform>(entity);
-                auto& spd = world.GetComponent<cmpt::Speed>(entity);
+                auto& stats = world.GetComponent<cmpt::Stats>(entity);
            
-                vel.x = intent.direction.x * spd.speed * spd.speed_multiplier * spd.dash_multiplier;
+                vel.x = intent.direction.x * stats.move_speed * stats.move_speed_modifier;
                 vel.y = 0.0f;
-                vel.z = intent.direction.z * spd.speed * spd.speed_multiplier * spd.dash_multiplier;
+                vel.z = intent.direction.z * stats.move_speed * stats.move_speed_modifier;
 
                 // rotation
                 switch (intent.mode) {

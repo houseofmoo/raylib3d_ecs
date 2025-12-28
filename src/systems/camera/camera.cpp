@@ -44,12 +44,12 @@ namespace sys::cam {
         Vector3 rotated_cam_offset = Vector3RotateByQuaternion(base_cam_offset, q);
         Vector3 rotated_target_offset = Vector3RotateByQuaternion(base_target_offset, q);
 
-        Vector3 cam_desired_pos = Vector3Add(position, rotated_cam_offset);
-        Vector3 cam_desired_target = Vector3Add(position, rotated_target_offset);
+        Vector3 cam_desired_pos = position + rotated_cam_offset;
+        Vector3 cam_desired_target = position + rotated_target_offset;
         float tightness = 1.0f - expf(-data::cnst::CAMERA_FOLLOW_SHARPNESS * delta_time);
 
         if (shake_cam) {
-            Vector3 forward = Vector3Normalize(Vector3Subtract(cam_desired_target, cam_desired_pos));
+            Vector3 forward = Vector3Normalize(cam_desired_target - cam_desired_pos);
             Vector3 right = Vector3Normalize(Vector3CrossProduct(forward, camera.up));
             Vector3 up = Vector3Normalize(Vector3CrossProduct(right, forward));
 
@@ -58,11 +58,11 @@ namespace sys::cam {
             float x = cosf(shakePhase * 1.7f) * data::cnst::CAMERA_SHAKE_STR;
             float y = sinf(shakePhase * 2.3f) * data::cnst::CAMERA_SHAKE_STR;
 
-            Vector3 shake_offset = Vector3Add(Vector3Scale(right, x), Vector3Scale(up, y));
+            Vector3 shake_offset = (right * x) + (up * y);
             
-            cam_desired_pos = Vector3Add(cam_desired_pos, shake_offset);
+            cam_desired_pos = cam_desired_pos + shake_offset;
             // optional: smaller target shake (or comment out to keep aim stable)
-            cam_desired_target = Vector3Add(cam_desired_target, Vector3Scale(shake_offset, 0.35f));
+            cam_desired_target = cam_desired_target + (shake_offset * 0.35f);
         }
 
         camera.position = Vector3Lerp(camera.position, cam_desired_pos, tightness);
@@ -82,12 +82,12 @@ namespace sys::cam {
                 break;
             }
 
-            Vector3 cam_desired_pos = Vector3Add(position, data::cnst::CAMERA_OFFSET);
-            Vector3 cam_desired_target = Vector3Add(position, data::cnst::CAMERA_TARGET_OFFSET);
+            Vector3 cam_desired_pos = position + data::cnst::CAMERA_OFFSET;
+            Vector3 cam_desired_target = position + data::cnst::CAMERA_TARGET_OFFSET;
             float tightness = 1.0f - expf(-data::cnst::CAMERA_FOLLOW_SHARPNESS * delta_time);
 
             if (shake_cam) {
-                Vector3 forward = Vector3Normalize(Vector3Subtract(cam_desired_target, cam_desired_pos));
+                Vector3 forward = Vector3Normalize(cam_desired_target - cam_desired_pos);
                 Vector3 right = Vector3Normalize(Vector3CrossProduct(forward, camera.up));
                 Vector3 up = Vector3Normalize(Vector3CrossProduct(right, forward));
 
@@ -96,10 +96,10 @@ namespace sys::cam {
                 float x = cosf(shakePhase * 1.7f) * data::cnst::CAMERA_SHAKE_STR;
                 float y = sinf(shakePhase * 2.3f) * data::cnst::CAMERA_SHAKE_STR;
 
-                Vector3 shakeOffset = Vector3Add(Vector3Scale(right, x), Vector3Scale(up, y));
+                Vector3 shakeOffset = (right * x) + (up * y);
 
-                cam_desired_pos = Vector3Add(cam_desired_pos, shakeOffset);
-                cam_desired_target = Vector3Add(cam_desired_target, Vector3Scale(shakeOffset, 0.35f));
+                cam_desired_pos = cam_desired_pos + shakeOffset;
+                cam_desired_target = cam_desired_target + (shakeOffset * 0.35f);
             }
 
             camera.position = Vector3Lerp(camera.position, cam_desired_pos, tightness);

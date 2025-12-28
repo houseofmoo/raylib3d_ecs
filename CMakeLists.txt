@@ -61,7 +61,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/data
     ${CMAKE_CURRENT_SOURCE_DIR}/src/data/game
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/data/player
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/debug
 

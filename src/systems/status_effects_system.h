@@ -7,15 +7,11 @@
 #include "utils/debug.h"
 
 namespace sys::se {
+    DISABLE_UNUSED_WARNINGS
     inline void ApplyStatusEffects(strg::Registry& world) {
         PROFILE_SCOPE("ApplyStatusEffects()");
-        // dash
-        for (auto entity : world.View<cmpt::Dash, cmpt::Speed>()) {
-            auto& spd = world.GetComponent<cmpt::Speed>(entity);
-            auto& dash = world.GetComponent<cmpt::Dash>(entity);
-            spd.dash_multiplier = dash.multiplier;
-        }
     }
+    RESTORE_WARNINGS
 
     inline void RemoveStatsusEffects(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("RemoveStatsusEffects()");
@@ -55,13 +51,11 @@ namespace sys::se {
         }
 
         // remove dash
-        for (auto entity : world.View<cmpt::Dash, cmpt::Speed>()) {
+        for (auto entity : world.View<cmpt::Dash, cmpt::Stats>()) {
             auto& dash = world.GetComponent<cmpt::Dash>(entity);
             dash.countdown -= delta_time;
 
             if (dash.countdown <= 0.0f) {
-                auto& spd = world.GetComponent<cmpt::Speed>(entity);
-                spd.dash_multiplier = 1.0f;
                 world.RemoveComponent<cmpt::Dash>(entity);
                 world.AddComponent<cmpt::DashExhausted>(entity, cmpt::DashExhausted{1.5f});
             }

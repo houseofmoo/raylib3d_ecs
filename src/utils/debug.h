@@ -109,6 +109,27 @@
         #define PROFILER_PRINT
         #define PROFILER_CLEAR
     #endif
+
+    #ifdef _MSC_VER
+        // MSVC
+        #define DISABLE_UNUSED_WARNINGS \
+            __pragma(warning(push)) \
+            __pragma(warning(disable:4100)) /* unused parameter */ \
+            __pragma(warning(disable:4189)) /* unused variable */
+
+        #define RESTORE_WARNINGS \
+            __pragma(warning(pop))
+    #else
+        // GCC / Clang
+        #define DISABLE_UNUSED_WARNINGS \
+            _Pragma("GCC diagnostic push") \
+            _Pragma("GCC diagnostic ignored \"-Wunused-parameter\"") \
+            _Pragma("GCC diagnostic ignored \"-Wunused-variable\"")
+
+        #define RESTORE_WARNINGS \
+            _Pragma("GCC diagnostic pop")
+    #endif
+
 #else
     // disable all debug when !DEBUG
     #define PRINT(...)
@@ -117,4 +138,6 @@
     #define PROFILE_SCOPE(name)
     #define PROFILER_PRINT
     #define PROFILER_CLEAR
+    #define DISABLE_UNUSED_WARNINGS
+    #define RESTORE_WARNINGS
 #endif

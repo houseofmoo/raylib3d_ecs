@@ -3,7 +3,6 @@
 #include "storage/registry.h"
 #include "spawners/world/projectile/explosion.h"
 #include "components/components.h"
-#include "data/player/player.h"
 #include "data/game/game.h"
 #include "utils/debug.h"
 
@@ -36,7 +35,7 @@ namespace sys::cleanup {
                         .position = trans.position,
                         .start_size = exp.start_size,
                         .end_size = exp.end_size,
-                        .damage = static_cast<int>(exp.damage * data::g_player.damage_multiplier),
+                        .damage = exp.damage,
                         .duration = exp.duration,
                         .knockback_scale = exp.knockback_scale,
                         .knockback_duration = exp.knockback_duration,
@@ -61,10 +60,12 @@ namespace sys::cleanup {
             //     // world.AddComponent<tag::Destroy>(entity);
             // }
             if (world.HasComponent<tag::Enemy>(entity)) {
-                data::g_player.enemies_defeated += 1;
+                if (auto* player = world.TryGetComponent<cmpt::Player>(data::g_player_id)) {
+                    player->enemies_defeated += 1;
+                }
             }
 
-            if (world.HasComponent<tag::Player>(entity)) {
+            if (world.HasComponent<cmpt::Player>(entity)) {
                 data::g_game.state = data::GameState_E::Dead;
             }
 

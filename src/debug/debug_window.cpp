@@ -2,7 +2,6 @@
 
 #include "rlImGui.h"
 #include "data/game/game.h"
-#include "data/player/player.h"
 #include "utils/debug.h"
 #include "components/components.h"
 #include "spawners/world/enemies/enemies.h"
@@ -45,7 +44,10 @@ namespace debug {
         }
     }
     
-    void DrawStatsTab() {
+    void DrawStatsTab(strg::Registry& world) {
+        auto* info = world.TryGetComponent<cmpt::Player>(data::g_player_id);
+        auto* stats = world.TryGetComponent<cmpt::Stats>(data::g_player_id);
+
         ImGui::Text("fps:        %d", GetFPS());
         ImGui::Text("entities:   %d", data::g_game.entity_count);
         ImGui::Text("enemies:    %d", data::g_game.enemy_count);
@@ -53,68 +55,77 @@ namespace debug {
         ImGui::Text("difficulty: %d", data::g_game.difficulty);
         ImGui::Separator();
 
-        ImGui::Text("id:         %d", data::g_player.id);
-        ImGui::Text("level:      %d", data::g_player.level);
-        ImGui::Text("gold:       %d", data::g_player.money);
-        ImGui::Text("exp:        %d", data::g_player.exp);
-        ImGui::Text("explvl:     %d", data::g_player.exp_to_next_level);
-        ImGui::Separator();
+        if (info != nullptr) {
+            ImGui::Text("id:         %d", data::g_player_id);
+            ImGui::Text("level:      %d", info->level);
+            ImGui::Text("gold:       %d", info->money);
+            ImGui::Text("exp:        %d", info->exp);
+            ImGui::Text("explvl:     %d", info->exp_to_level);
+            ImGui::Separator();
+        }
 
-        ImGui::Text("dmg:       %.2f", data::g_player.damage_multiplier);
-        ImGui::Text("a-spd:     %.2f", data::g_player.attack_speed_multiplier);
-        ImGui::Text("m-spd:     %.2f", data::g_player.move_speed_multiplier);
-        ImGui::Text("d-rng:     %.2f", data::g_player.dash_range_multiplier);
-        ImGui::Text("pu-rng:    %.2f", data::g_player.pickup_range_multiplier);
-        ImGui::Separator();
+        if (stats != nullptr) {
+            ImGui::Text("dmg:       %.2f", stats->damage_modifier);
+            ImGui::Text("a-spd:     %.2f", stats->attack_speed_modifier);
+            ImGui::Text("m-spd:     %.2f", stats->move_speed_modifier);
+            ImGui::Text("d-rng:     %.2f", stats->dash_speed_modifier);
+            ImGui::Text("pu-rng:    %.2f", stats->pickup_range_modifier);
+            ImGui::Separator();
+        }
+
 
         // add stats
         ImVec2 bsize = ImVec2{100, 30};
-        if (ImGui::Button("+exp", bsize)) {
-            data::g_player.exp += data::cnst::EXP_VALUE;
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("+mny", bsize)) {
-            data::g_player.money += data::cnst::MONEY_VALUE;
-        }
-
-        if (ImGui::Button("+dmg", bsize)) {
-            data::g_player.damage_multiplier += data::cnst::DAMAGE_POWERUP_VALUE;
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("-dmg", bsize)) {
-            data::g_player.damage_multiplier -= data::cnst::DAMAGE_POWERUP_VALUE;
+        if (info != nullptr) {
+            if (ImGui::Button("+exp", bsize)) {
+                info->exp += data::cnst::EXP_VALUE;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("+mny", bsize)) {
+                info->money += data::cnst::MONEY_VALUE;
+            }
         }
 
-        if (ImGui::Button("+atkspd", bsize)) {
-            data::g_player.attack_speed_multiplier += data::cnst::ATTACK_SPEED_POWERUP_VALUE;
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("-atkspd", bsize)) {
-            data::g_player.attack_speed_multiplier -= data::cnst::ATTACK_SPEED_POWERUP_VALUE;
-        }
+        if (stats != nullptr) {
+            if (ImGui::Button("+dmg", bsize)) {
+                stats->damage_modifier += data::cnst::DAMAGE_POWERUP_VALUE;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("-dmg", bsize)) {
+                stats->damage_modifier -= data::cnst::DAMAGE_POWERUP_VALUE;
+            }
 
-        if (ImGui::Button("+mspd", bsize)) {
-            data::g_player.move_speed_multiplier += data::cnst::MOVE_SPEED_POWERUP_VALUE;
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("-mspd", bsize)) {
-            data::g_player.move_speed_multiplier -= data::cnst::MOVE_SPEED_POWERUP_VALUE;
-        }
+            if (ImGui::Button("+atkspd", bsize)) {
+                stats->attack_speed_modifier += data::cnst::ATTACK_SPEED_POWERUP_VALUE;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("-atkspd", bsize)) {
+                stats->attack_speed_modifier -= data::cnst::ATTACK_SPEED_POWERUP_VALUE;
+            }
 
-        if (ImGui::Button("+prng", bsize)) {
-            data::g_player.pickup_range_multiplier += data::cnst::PICKUP_RANGE_POWERUP_VALUE;
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("-prng", bsize)) {
-            data::g_player.pickup_range_multiplier -= data::cnst::PICKUP_RANGE_POWERUP_VALUE;
-        }
+            if (ImGui::Button("+mspd", bsize)) {
+                stats->move_speed_modifier += data::cnst::MOVE_SPEED_POWERUP_VALUE;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("-mspd", bsize)) {
+                stats->move_speed_modifier -= data::cnst::MOVE_SPEED_POWERUP_VALUE;
+            }
 
-        if (ImGui::Button("+dash", bsize)) {
-            data::g_player.dash_range_multiplier += data::cnst::DASH_DISTANCE_POWERUP_VALUE;
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("-dash", bsize)) {
-            data::g_player.dash_range_multiplier -= data::cnst::DASH_DISTANCE_POWERUP_VALUE;
+            if (ImGui::Button("+prng", bsize)) {
+                stats->pickup_range_modifier += data::cnst::PICKUP_RANGE_POWERUP_VALUE;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("-prng", bsize)) {
+                stats->pickup_range_modifier -= data::cnst::PICKUP_RANGE_POWERUP_VALUE;
+            }
+
+            if (ImGui::Button("+dash", bsize)) {
+                stats->dash_speed_modifier += data::cnst::DASH_DISTANCE_POWERUP_VALUE;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("-dash", bsize)) {
+                stats->dash_speed_modifier -= data::cnst::DASH_DISTANCE_POWERUP_VALUE;
+            }
         }
     }
 
@@ -123,70 +134,70 @@ namespace debug {
         if (ImGui::Button("+pistol", size)) {
             spwn::weapon::EquipPistol(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-pistol", size)) {
-            spwn::weapon::DequipPistol(world, data::g_player.id);
+            spwn::weapon::DequipPistol(world, data::g_player_id);
         }
 
         if (ImGui::Button("+shotgun", size)) {
             spwn::weapon::EquipShotgun(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-shotgun", size)) {
-            spwn::weapon::DequipShotgun(world, data::g_player.id);
+            spwn::weapon::DequipShotgun(world, data::g_player_id);
         }
 
         if (ImGui::Button("+rifle", size)) {
             spwn::weapon::EquipRifle(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-rifle", size)) {
-            spwn::weapon::DequipRifle(world, data::g_player.id);
+            spwn::weapon::DequipRifle(world, data::g_player_id);
         }
 
         if (ImGui::Button("+smg", size)) {
             spwn::weapon::EquipSMG(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-smg", size)) {
-            spwn::weapon::DequipSMG(world, data::g_player.id);
+            spwn::weapon::DequipSMG(world, data::g_player_id);
         }
         
         if (ImGui::Button("+grenade", size)) {
             spwn::weapon::EquipGrenadeLauncher(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-grenade", size)) {
-            spwn::weapon::DequipGrenadeLauncher(world, data::g_player.id);
+            spwn::weapon::DequipGrenadeLauncher(world, data::g_player_id);
         }
         ImGui::Separator();
 
-        if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::g_player_id)) {
             ImGui::Text("pistol:");
             ImGui::Text("  dmg:         %d", wep->base_stats.damage);
             ImGui::Text("  pen:         %d", wep->base_stats.penetration);
@@ -197,7 +208,7 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::Shotgun>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Shotgun>(data::g_player_id)) {
             ImGui::Text("shotgun:");
             ImGui::Text("  dmg:         %d", wep->base_stats.damage);
             ImGui::Text("  pen:         %d", wep->base_stats.penetration);
@@ -210,7 +221,7 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::Rifle>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Rifle>(data::g_player_id)) {
             ImGui::Text("rifle:");
             ImGui::Text("  dmg:         %d", wep->base_stats.damage);
             ImGui::Text("  pen:         %d", wep->base_stats.penetration);
@@ -223,7 +234,7 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::SMG>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::SMG>(data::g_player_id)) {
             ImGui::Text("smg:");
             ImGui::Text("  dmg:         %d", wep->base_stats.damage);
             ImGui::Text("  pen:         %d", wep->base_stats.penetration);
@@ -234,7 +245,7 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::GrenadeLauncher>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::GrenadeLauncher>(data::g_player_id)) {
             ImGui::Text("grenade:");
             ImGui::Text("  dmg:         %d", wep->base_stats.damage);
             ImGui::Text("  pen:         %d", wep->base_stats.penetration);
@@ -329,7 +340,7 @@ namespace debug {
         if (ImGui::BeginTabBar("main")) {
             // stats Tab
             if (ImGui::BeginTabItem("stats")) {
-                DrawStatsTab();
+                DrawStatsTab(world);
                 ImGui::EndTabItem();
             }
 

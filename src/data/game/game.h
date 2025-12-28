@@ -77,5 +77,6 @@ namespace data {
     extern Cheats g_cheats;
     extern strg::Tilemap g_terrain;
     extern GameState g_game;
+    extern Entity g_player_id;
     extern WeaponSelectMenu g_weapon_select_menu;
 }

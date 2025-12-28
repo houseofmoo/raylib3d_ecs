@@ -8,44 +8,6 @@ namespace spwn::player {
     Entity Player(strg::Registry& world) {
 
         auto entity = world.CreateEntity();
-        
-        world.AddComponent<tag::Player>(
-            entity,
-            tag::Player{}
-        );
-
-        world.AddComponent<tag::CameraFollow>(
-            entity,
-            tag::CameraFollow{}
-        );
-        
-        world.AddComponent<cmpt::Transform>(
-            entity,
-            cmpt::Transform{ 
-                Vector3{ 0.0f, data::cnst::PLAYER_SIZE.y * 0.5f, 0.0f },
-                QuaternionIdentity()
-            }
-        );
-        
-        world.AddComponent<cmpt::Velocity>(
-            entity,
-            cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
-        );
-
-        world.AddComponent<cmpt::Collider>(
-            entity,
-            cmpt::Collider{
-                .layer = data::cnst::PLAYER_LAYER,
-                .mask = data::cnst::PLAYER_LAYER_MASK,
-                .offset = { 0.0f, 0.0f, 0.0f },
-                .size = data::cnst::PLAYER_SIZE
-            }
-        );
-
-        world.AddComponent<cmpt::Health>(
-            entity,
-            cmpt::Health{ data::cnst::PLAYER_START_HP, data::cnst::PLAYER_START_HP }
-        );
 
         world.AddComponent<cmpt::AttackIntent>(
             entity,
@@ -57,25 +19,25 @@ namespace spwn::player {
             }
         );
 
-        world.AddComponent<cmpt::DamageReceiver>(
+        world.AddComponent<tag::CameraFollow>(
             entity,
-            cmpt::DamageReceiver{0}
+            tag::CameraFollow{}
         );
-
-        world.AddComponent<cmpt::Speed>(
+        
+        world.AddComponent<cmpt::Collider>(
             entity,
-            cmpt::Speed{ 
-                .speed = data::cnst::PLAYER_SPEED, 
-                .speed_multiplier = 1.0f, 
-                .dash_multiplier = 1.0f,
+            cmpt::Collider{
+                .layer = data::cnst::PLAYER_LAYER,
+                .mask = data::cnst::PLAYER_LAYER_MASK,
+                .offset = { 0.0f, 0.0f, 0.0f },
+                .size = data::cnst::PLAYER_SIZE
             }
         );
 
-        world.AddComponent<cmpt::Input>(
+        world.AddComponent<cmpt::DamageReceiver>(
             entity,
-            cmpt::Input{ 
-                .direction = Vector3Zero(), 
-                .mouse_world_position = Vector3Zero() 
+            cmpt::DamageReceiver{ 
+                .total = 0,
             }
         );
 
@@ -87,6 +49,53 @@ namespace spwn::player {
                 .color = data::cnst::PLAYER_COLOR,
                 .model = &rsrc::asset::player_model
             }
+        );
+
+        world.AddComponent<cmpt::Input>(
+            entity,
+            cmpt::Input{ 
+                .direction = Vector3Zero(), 
+                .mouse_world_position = Vector3Zero() 
+            }
+        );
+
+        world.AddComponent<cmpt::Player>(
+            entity,
+            cmpt::Player{
+                .level = 1,
+                .exp = 0,
+                .exp_to_level = data::cnst::PLAYER_START_LEVEL_EXP,
+                .money = 0,
+                .enemies_defeated = 0
+            }
+        );
+
+        world.AddComponent<cmpt::Stats>(
+            entity,
+            cmpt::Stats{ 
+                .current_hp = data::cnst::PLAYER_START_HP,
+                .max_hp = data::cnst::PLAYER_START_HP,
+                .move_speed = data::cnst::PLAYER_SPEED,
+                // modifiers
+                .damage_modifier = 1.0f,
+                .attack_speed_modifier = 1.0f,
+                .move_speed_modifier = 1.0f,
+                .dash_speed_modifier = data::cnst::PLAYER_DASH_RANGE,
+                .pickup_range_modifier = 1.0f, 
+            }
+        );
+
+        world.AddComponent<cmpt::Transform>(
+            entity,
+            cmpt::Transform{ 
+                Vector3{ 0.0f, data::cnst::PLAYER_SIZE.y * 0.5f, 0.0f },
+                QuaternionIdentity()
+            }
+        );
+        
+        world.AddComponent<cmpt::Velocity>(
+            entity,
+            cmpt::Velocity{ 0.0f, 0.0f, 0.0f }
         );
 
         return entity;

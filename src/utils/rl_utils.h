@@ -48,7 +48,7 @@ namespace utils {
     }
 
     inline Quaternion GetRotationToLocation(Vector3 source, Vector3 location) {
-        Vector3 dir = Vector3Subtract(location, source);
+        Vector3 dir = location - source;
         dir.y = 0.0f;
 
         if (Vector3LengthSqr(dir) > 0.0001f) {
@@ -87,7 +87,7 @@ namespace utils {
 
     // Get the direction from ME to THEM
     inline Vector3 Direction(const Vector3& me, const Vector3& them) noexcept {
-        return Vector3Subtract(them, me);
+        return them - me;
     }
 
     // Get the direction from ME to THEM then normalize

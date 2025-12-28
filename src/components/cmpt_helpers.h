@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cassert>
 #include "raylib.h"
 #include "raymath.h"
 #include "storage/registry.h"
@@ -15,6 +15,28 @@ namespace cmpt {
             return data::cnst::MIN_LOOT_COLLIDER;
         }
         return col_size;
+    }
+
+    inline void AttachPlayerInvulnerability(strg::Registry& world, const Entity id, const float duration) {
+        auto* collider = world.TryGetComponent<cmpt::Collider>(id);
+        assert(collider != nullptr && "Colldier missing, AttachPlayerInvulnerability()");
+
+        if (world.HasComponent<cmpt::Invulnerable>(id)) {
+            auto& invul = world.GetComponent<cmpt::Invulnerable>(id);
+            invul.countdown = invul.countdown > duration ? invul.countdown : duration;
+        } else {
+            world.AddComponent<cmpt::Invulnerable>(
+                id,
+                cmpt::Invulnerable{
+                    .mask = collider->mask,
+                    .countdown = duration
+                }
+            );
+
+            // do not interact with enemy layer while invul
+            collider->mask &= ~data::layer::ENEMY;
+            collider->mask &= ~data::layer::ENEMY_PROJECTILE;
+        }
     }
 
     // attach movement system component for AI based on move type
@@ -57,7 +79,7 @@ namespace cmpt {
             }
 
             default: {
-                PRINT("Tried to add unknown MoveIntentType component AddMovementType()");
+                assert(false && "Tried to add unknown MoveIntentType component AddMovementType()");
                 break;
             }
         }

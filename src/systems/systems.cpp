@@ -4,7 +4,6 @@
 #include "rlgl.h"
 #include "raygui.h"
 
-#include "data/player/player.h"
 #include "data/game/game.h"
 #include "resources/asset_loader.h"
 #include "utils/debug.h"
@@ -43,16 +42,14 @@ namespace sys {
     void StartGame() {
         world.Reset();
         data::g_game.Reset();
-        data::g_player.Reset();
         spwn::map::GenerateMap(world);
-        data::g_player.id = spwn::player::Player(world);
+        data::g_player_id = spwn::player::Player(world);
         spwn::weapon::EquipPistol(
             world, 
-            data::g_player.id, 
+            data::g_player_id, 
             data::cnst::PLAYER_PROJECTILE_LAYER, 
             data::cnst::PLAYER_PROJECTILE_LAYER_MASK
         );
-        //spwn::test::DamageZone(world);
     }
 
     void RunUpdateSystems(const float delta_time) {
@@ -62,48 +59,29 @@ namespace sys {
         }
 
         // TODO: re-add the sound for pickups
-        if (world.HasComponent<cmpt::FreezeTime>(data::g_player.id)) {
-            auto& ft = world.GetComponent<cmpt::FreezeTime>(data::g_player.id);
+        if (world.HasComponent<cmpt::FreezeTime>(data::g_player_id)) {
+            auto& ft = world.GetComponent<cmpt::FreezeTime>(data::g_player_id);
             ft.countdown -= delta_time;
             if (ft.countdown <= 0.0f) {
-                world.RemoveComponent<cmpt::FreezeTime>(data::g_player.id);
+                world.RemoveComponent<cmpt::FreezeTime>(data::g_player_id);
             }
             sys::cam::CameraMovement(world, camera, delta_time, true);
             return;
         }
 
-        // spawn additional enemies
         sys::SpawnEnemyInterval(world, delta_time);
 
-        // input/move ai move intent
         sys::input::PlayerInput(world, camera);
         sys::input::AIMoveIntent(world, delta_time);
         sys::input::AttackIntent(world);
 
-        // apply movement to velocity
         sys::se::ApplyStatusEffects(world);
         sys::mov::ApplyPlayerMovement(world);
         sys::mov::ApplyAIMovement(world, delta_time);
         sys::cam::CameraMovement(world, camera, delta_time, false);
 
-        // // apply velocity to position
-        // sys::vel::ApplyVelocity(world, delta_time);
-        // sys::vel::ApplyArch(world, delta_time);
-        // sys::vel::ApplyRotateInPlace(world, delta_time);
-        
-        // sys::loot::LootMovement(world, delta_time);
-        // sys::player::PlayerMovement(world, delta_time);
-        // sys::enemy::EnemyMovement(world, delta_time);
-        // sys::proj::BulletMovement(world, delta_time);
-        // sys::proj::GrenadeMovement(world, delta_time);
-        // sys::cam::CameraMovement(world, camera, delta_time);
-        //sys::ApplyVelocity(world, delta_time);
-
         sys::atk::WeaponAttacks(world, delta_time, rsrc::asset::shoot_fx); // shoot_fx
-        // sys::loot::LootPlayerCollision(world, rsrc::asset::powerup_fx); // powerup_fx
-        // sys::proj::BulletEnemyCollision(world, rsrc::asset::damage_fx); // damage_fx
-        // sys::enemy::EnemyPlayerCollision(world);
-        //sys::col::TerrainCollision(world);
+        
         sys::col::EntityCollision(world);
         sys::col::DamageOnCollision(world);
         sys::col::DestroyOnCollision(world);
@@ -111,20 +89,16 @@ namespace sys {
         sys::col::PickupOnCollision(world);
         sys::col::TriggerOnCollision(world);
         sys::col::RepositionOnCollision(world);
+
         sys::dmg::ApplyDamage(world);
         sys::se::RemoveStatsusEffects(world, delta_time);
-
-        // sys::enemy::EnemyTerrainCollision(world);
-        // sys::proj::BulletTerrainCollision(world);
-        // sys::player::PlayerTerrainCollision(world);
-
-        //sys::lvl::PlayerLevelup(world);
+        
         sys::SpawnAnimation(world);
         sys::DeathAnimation(world);
+        
         sys::loot::LootDrop(world);
         sys::evt::HandleLootPickedupEvents(world);
 
-        // apply velocity to position
         sys::vel::ApplyVelocity(world, delta_time);
         sys::vel::ApplyArch(world, delta_time);
         sys::vel::ApplyRotateInPlace(world, delta_time);
@@ -132,7 +106,6 @@ namespace sys {
         sys::cleanup::Cleanup(world, delta_time);
         sys::cleanup::OnDestroy(world);
         sys::cleanup::Destroy(world);
-        //sys::ConstraintToWorld(world, data::size::PLAY_AREA);
     }
 
     void RunEntityDrawSystems(const float delta_time) {
@@ -227,20 +200,15 @@ namespace sys {
 
     void RunUIDrawSystems(const float delta_time) {
         PROFILE_SCOPE("RunUIDrawSystems()");
-        int player_hp = 0;
-        int player_max_hp = 0;
-        if (sys::world.HasComponent<cmpt::Health>(data::g_player.id)) {
-            auto& hp_comp = sys::world.GetComponent<cmpt::Health>(data::g_player.id);
-            player_hp = hp_comp.amount;
-            player_max_hp = hp_comp.max;
-        }
+        auto& player_stats = world.GetComponent<cmpt::Stats>(data::g_player_id);
+        auto& player_info = world.GetComponent<cmpt::Player>(data::g_player_id);
         
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 30, 20, 20, RAYWHITE);
         DrawText(std::format("Entities Drawn: {}", data::g_game.entity_count).c_str(), 30, 40, 20, RAYWHITE);
-        DrawText(std::format("HP: {}/{}", player_hp, player_max_hp).c_str(), 30, 80, 20, RAYWHITE);
-        DrawText(std::format("Level: {}", data::g_player.level).c_str(), 30, 100, 20, RAYWHITE);
+        DrawText(std::format("HP: {}/{}", player_stats.current_hp, player_stats.max_hp).c_str(), 30, 80, 20, RAYWHITE);
+        DrawText(std::format("Level: {}", player_info.level).c_str(), 30, 100, 20, RAYWHITE);
         DrawText(std::format("Difficulty : {}", data::g_game.difficulty).c_str(), 30, 140, 20, RAYWHITE);
-        DrawText(std::format("Enemies Defeated: {}", data::g_player.enemies_defeated).c_str(), 30, 160, 20, RAYWHITE);
+        DrawText(std::format("Enemies Defeated: {}", player_info.enemies_defeated).c_str(), 30, 160, 20, RAYWHITE);
         sys::evt::DrawNotifications(world, delta_time);
     }
 
@@ -253,7 +221,7 @@ namespace sys {
         if (::GuiButton(rec, "Pistol")) {
             spwn::weapon::EquipPistol(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
@@ -264,7 +232,7 @@ namespace sys {
         if (::GuiButton(rec, "Shotgun")) {
             spwn::weapon::EquipShotgun(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
@@ -275,7 +243,7 @@ namespace sys {
         if (::GuiButton(rec, "Rifle")) {
             spwn::weapon::EquipRifle(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
@@ -286,7 +254,7 @@ namespace sys {
         if (::GuiButton(rec, "SMG")) {
             spwn::weapon::EquipSMG(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
@@ -297,7 +265,7 @@ namespace sys {
         if (::GuiButton(rec, "Grenade Launcher")) {
             spwn::weapon::EquipGrenadeLauncher(
                 world, 
-                data::g_player.id, 
+                data::g_player_id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );

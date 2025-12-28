@@ -29,4 +29,6 @@ namespace data {
         .never_drop_loot = false,
         .profiler_enabled = false,
     };
+
+    Entity g_player_id;
 }

@@ -111,6 +111,8 @@ namespace data {
         constexpr Layer   PLAYER_LAYER_MASK         = data::layer::ENEMY | data::layer::ENEMY_PROJECTILE | data::layer::LOOT;
         constexpr float   PLAYER_DASH_RANGE         = 3.0f;
         constexpr float   PLAYER_DASH_DURATION      = 0.11f;
+        constexpr int     PLAYER_START_LEVEL_EXP    = 10;
+        constexpr float   PLAYER_EXP_MODIFIER       = 1.15f;
 
         // loot
         constexpr int     LOOT_CHANCE             = 50;
@@ -138,6 +140,13 @@ namespace data {
         constexpr float DASH_DISTANCE_POWERUP_VALUE = 0.1f;
         constexpr int   HP_POWERUP_VALUE            = 5;
         constexpr int   HPMAX_POWERUP_VALUE         = 10;
+
+        // level up stats modifications
+        constexpr float LEVEL_UP_DAMAGE_VALUE        = 0.01f;
+        constexpr float LEVEL_UP_ATTACK_SPEED_VALUE  = 0.01f;
+        constexpr float LEVEL_UP_MOVE_SPEED_VALUE    = 0.01f;
+        constexpr float LEVEL_UP_PICKUP_RANGE_VALUE  = 0.05f;
+        constexpr float LEVEL_UP_DASH_DISTANCE_VALUE = 0.01f;
 
         // powerup colors
         constexpr std::array<Color, static_cast<int>(data::loot::PowerupKind::Last)> POWERUP_COLORS = {

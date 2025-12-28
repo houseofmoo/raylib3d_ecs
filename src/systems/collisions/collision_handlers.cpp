@@ -3,7 +3,6 @@
 #include "raylib.h"
 #include "raymath.h"
 
-#include "data/player/player.h"
 #include "data/game/game.h"
 #include "storage/collision_pairs.h"
 #include "systems/collisions/entity_collision_system.h"
@@ -85,10 +84,9 @@ namespace sys::col {
                 world.AddComponent<cmpt::Knockback>(
                     col.entity_b, 
                     cmpt::Knockback{ 
-                        .direction = Vector3Scale(
-                            utils::DirectionFlattenThenNormalize(atrans.position, btrans.position),
-                            a->scale
-                        ), 
+                        .direction = 
+                            utils::DirectionFlattenThenNormalize(atrans.position, btrans.position) *
+                            a->scale,
                         .countdown = a->duration 
                     }
                 );
@@ -102,10 +100,9 @@ namespace sys::col {
                 world.AddComponent<cmpt::Knockback>(
                     col.entity_a, 
                     cmpt::Knockback{ 
-                        .direction = Vector3Scale(
-                            utils::DirectionFlattenThenNormalize(btrans.position, atrans.position),
-                            b->scale
-                        ),
+                        .direction = 
+                            utils::DirectionFlattenThenNormalize(btrans.position, atrans.position) *
+                            b->scale,
                         .countdown = b->duration 
                     }
                 );
@@ -154,12 +151,12 @@ namespace sys::col {
        for (auto& col : sys::col::collision_cache.current) {
 
             // only players can pick up loot
-            if (world.HasComponent<tag::Player>(col.entity_a) &&
+            if (world.HasComponent<cmpt::Player>(col.entity_a) &&
                 world.HasComponent<cmpt::Loot>(col.entity_b)) {
                 HandleLootPickup(world, col.entity_a, col.entity_b);
             }
 
-            if (world.HasComponent<tag::Player>(col.entity_b) &&
+            if (world.HasComponent<cmpt::Player>(col.entity_b) &&
                 world.HasComponent<cmpt::Loot>(col.entity_a)) {
                 HandleLootPickup(world, col.entity_b, col.entity_a);
             }
@@ -168,7 +165,7 @@ namespace sys::col {
 
     void TriggerOnCollision(strg::Registry& world) {
         PROFILE_SCOPE("TriggerOnCollision()");
-        if (world.HasComponent<tag::Player>(0)) {
+        if (world.HasComponent<cmpt::Player>(0)) {
             PRINT("hello");
         }
     }
@@ -198,13 +195,13 @@ namespace sys::col {
                 // TODO: maybe set stuck=true here? so enemies colliding also results in them wandering off in a new direction
                 atrans.position = utils::ValidateMovePosition(
                     atrans.position,
-                    Vector3Add(atrans.position, Vector3Scale(direction, 0.5f)),
+                    atrans.position + (direction * 0.5f),
                     utils::GetEntityHeight(atrans.position, acol.size)
                 );
 
                 btrans.position = utils::ValidateMovePosition(
                     btrans.position,
-                    Vector3Add(btrans.position, Vector3Scale(direction, -0.5f)),
+                    btrans.position + (direction * -0.5f),
                     utils::GetEntityHeight(btrans.position, bcol.size)
                 );
             }

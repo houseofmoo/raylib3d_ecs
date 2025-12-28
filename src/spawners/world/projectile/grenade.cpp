@@ -2,7 +2,6 @@
 
 #include "raymath.h"
 #include "data/entity.h"
-#include "data/player/player.h"
 #include "resources/asset_loader.h"
 #include "components/components.h"
 

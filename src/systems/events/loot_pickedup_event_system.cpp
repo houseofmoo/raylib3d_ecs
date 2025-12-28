@@ -4,50 +4,76 @@
 #include "components/components.h"
 #include "spawners/system/events/notification.h"
 #include "spawners/equip/weapon/weapons.h"
-#include "data/player/player.h"
 #include "data/game/game.h"
 #include "data/entity.h"
 #include "utils/debug.h"
 
 namespace sys::evt {
-    void ApplyPowerup(strg::Registry& world, data::loot::PowerupKind kind) {
+    void UpgradeStats(strg::Registry& world, Entity id) {
+        auto* stats = world.TryGetComponent<cmpt::Stats>(id);
+        stats->damage_modifier += data::cnst::LEVEL_UP_DAMAGE_VALUE;
+        stats->attack_speed_modifier += data::cnst::LEVEL_UP_ATTACK_SPEED_VALUE;
+        stats->move_speed_modifier += data::cnst::LEVEL_UP_MOVE_SPEED_VALUE;
+        stats->pickup_range_modifier += data::cnst::LEVEL_UP_PICKUP_RANGE_VALUE;
+        stats->dash_speed_modifier += data::cnst::LEVEL_UP_DASH_DISTANCE_VALUE;
+    }
+
+    void ApplyExp(strg::Registry& world, Entity id, int exp_amount) {
+        auto* player = world.TryGetComponent<cmpt::Player>(id);
+        if (player == nullptr) return;
+
+        player->exp += exp_amount;
+        if (player->exp > player->exp_to_level) {
+            while (player->exp >= player->exp_to_level) {
+                player->exp  = player->exp - player->exp_to_level;
+                player->level += 1;
+                player->exp_to_level *= data::cnst::PLAYER_EXP_MODIFIER;
+                spwn::evt::Notification(world, data::notif::GAIN_LEVELUP);
+                UpgradeStats(world, id);
+            }
+        }
+    }
+
+    void ApplyPowerup(strg::Registry& world, data::loot::PowerupKind kind, Entity id) {
+        auto* stats = world.TryGetComponent<cmpt::Stats>(id);
+        if (stats == nullptr) return;
+
         switch (kind) {
             case data::loot::PowerupKind::Damage: {
-                data::g_player.damage_multiplier += data::cnst::DAMAGE_POWERUP_VALUE;
+                stats->damage_modifier += data::cnst::DAMAGE_POWERUP_VALUE;
                 spwn::evt::Notification(world, data::notif::GAIN_DAMAGE);
                 break;
             }
             case data::loot::PowerupKind::AttackSpeed: {
-                data::g_player.attack_speed_multiplier += data::cnst::ATTACK_SPEED_POWERUP_VALUE;
+                stats->attack_speed_modifier += data::cnst::ATTACK_SPEED_POWERUP_VALUE;
                 spwn::evt::Notification(world, data::notif::GAIN_ATTACK_SPEED);
                 break;
             }
             case data::loot::PowerupKind::MoveSpeed: {
-                data::g_player.move_speed_multiplier += data::cnst::MOVE_SPEED_POWERUP_VALUE;
+                stats->move_speed_modifier += data::cnst::MOVE_SPEED_POWERUP_VALUE;
                 spwn::evt::Notification(world, data::notif::GAIN_MOVE_SPEED);
                 break;
             }
             case data::loot::PowerupKind::PickupRange: {
-                data::g_player.pickup_range_multiplier += data::cnst::PICKUP_RANGE_POWERUP_VALUE;
+                stats->pickup_range_modifier += data::cnst::PICKUP_RANGE_POWERUP_VALUE;
                 spwn::evt::Notification(world, data::notif::GAIN_PICKUP_RANGE);
                 break;
             }
             case data::loot::PowerupKind::DashDistance: {
-                data::g_player.dash_range_multiplier += data::cnst::DASH_DISTANCE_POWERUP_VALUE;
+                stats->dash_speed_modifier += data::cnst::DASH_DISTANCE_POWERUP_VALUE;
                 spwn::evt::Notification(world, data::notif::GAIN_DASH_RANGE);
                 break;
             }
             case data::loot::PowerupKind::Health: {
-                auto& hp = world.GetComponent<cmpt::Health>(data::g_player.id);
-                hp.amount += data::cnst::HP_POWERUP_VALUE;
-                if (hp.amount > hp.max) hp.amount = hp.max;
+                stats->current_hp += data::cnst::HP_POWERUP_VALUE;
+                if (stats->current_hp > stats->max_hp) stats->current_hp = stats->max_hp;
                 spwn::evt::Notification(world, data::notif::GAIN_HEALTH);
                 break;
             }
             case data::loot::PowerupKind::MaxHp: {
-                auto& hp = world.GetComponent<cmpt::Health>(data::g_player.id);
-                hp.max += data::cnst::HPMAX_POWERUP_VALUE;
-                hp.amount += data::cnst::HPMAX_POWERUP_VALUE;
+                stats->max_hp += data::cnst::HPMAX_POWERUP_VALUE;
+                stats->current_hp += data::cnst::HPMAX_POWERUP_VALUE;
+                if (stats->current_hp > stats->max_hp) stats->current_hp = stats->max_hp;
                 spwn::evt::Notification(world, data::notif::GAIN_MAX_HEALTH);
                 break;
             }
@@ -60,7 +86,7 @@ namespace sys::evt {
 
     void ApplyWeapon(strg::Registry& world, data::loot::WeaponKind kind, Entity id) {
         // TODO: if weapon exists, upgrade it
-        // otherwise give baselist to player
+        // otherwise give baselist to entity
         switch (kind) {
             case data::loot::WeaponKind::Pistol: {
                 spwn::weapon::EquipPistol(
@@ -140,23 +166,22 @@ namespace sys::evt {
             switch (evt.kind) {
                 case data::loot::LootKind::Exp: {
                     auto& exp = world.GetComponent<cmpt::ExpLoot>(entity);
-                    int levelup = data::g_player.AddExp(exp.amount);
+                    ApplyExp(world, evt.id, exp.amount);
                     spwn::evt::Notification(world, data::notif::GAIN_EXP);
-                    if (levelup > 0) {
-                        spwn::evt::Notification(world, data::notif::GAIN_LEVELUP);
-                    }
                     break;
                 }
                 case data::loot::LootKind::Money: {
                     auto& money = world.GetComponent<cmpt::MoneyLoot>(entity);
-                    data::g_player.money += money.amount;
-                    spwn::evt::Notification(world, data::notif::GAIN_MONEY);
+                    if (auto* player = world.TryGetComponent<cmpt::Player>(evt.id)) {
+                        player->money += money.amount;
+                        spwn::evt::Notification(world, data::notif::GAIN_MONEY);
+                    }
                     break;
                 }
 
                 case data::loot::LootKind::Powerup: {
                     auto& pukind = world.GetComponent<cmpt::PowerupLoot>(entity);
-                    ApplyPowerup(world, pukind.kind);
+                    ApplyPowerup(world, pukind.kind, evt.id);
                     break;
                 }
 

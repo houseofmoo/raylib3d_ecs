@@ -1,14 +1,13 @@
 #include "spawners/world/loot/loot.h"
 #include "raymath.h"
 #include "data/entity.h"
-#include "data/player/player.h"
 #include "resources/asset_loader.h"
 #include "components/components.h"
 #include "components/cmpt_helpers.h"
 #include "utils/position.h"
 
 namespace spwn::loot {
-    void Exp(strg::Registry& world, const Vector3 position, int exp_amount) {
+    void Exp(strg::Registry& world, const Vector3 position, int exp_amount, const float collider_scaler) {
         Entity exp = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
@@ -43,10 +42,7 @@ namespace spwn::loot {
                 .layer = data::cnst::LOOT_LAYER,
                 .mask = data::cnst::LOOT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = Vector3Scale(
-                    cmpt::MinLootColliderSize(data::cnst::EXP_SIZE),
-                    data::g_player.pickup_range_multiplier
-                )
+                .size = cmpt::MinLootColliderSize(data::cnst::EXP_SIZE) * collider_scaler
             }
         );
 
@@ -68,7 +64,7 @@ namespace spwn::loot {
         );
     }
 
-    void Money(strg::Registry& world, const Vector3 position, int money_amount) { 
+    void Money(strg::Registry& world, const Vector3 position, int money_amount, const float collider_scaler) { 
         Entity money = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
@@ -103,10 +99,7 @@ namespace spwn::loot {
                 .layer = data::cnst::LOOT_LAYER,
                 .mask = data::cnst::LOOT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = Vector3Scale(
-                    cmpt::MinLootColliderSize(data::cnst::MONEY_SIZE),
-                    data::g_player.pickup_range_multiplier
-                )
+                .size = cmpt::MinLootColliderSize(data::cnst::MONEY_SIZE) * collider_scaler
             }
         );
 
@@ -128,7 +121,7 @@ namespace spwn::loot {
         );
     }
 
-    void Powerup(strg::Registry& world, const Vector3 position, data::loot::PowerupKind kind) {
+    void Powerup(strg::Registry& world, const Vector3 position, data::loot::PowerupKind kind, const float collider_scaler) {
         Entity powerup = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
@@ -163,10 +156,7 @@ namespace spwn::loot {
                 .layer = data::cnst::LOOT_LAYER,
                 .mask = data::cnst::LOOT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = Vector3Scale(
-                    cmpt::MinLootColliderSize(data::cnst::POWERUP_SIZE),
-                    data::g_player.pickup_range_multiplier
-                )
+                .size = cmpt::MinLootColliderSize(data::cnst::POWERUP_SIZE) * collider_scaler
             }
         );
 
@@ -188,7 +178,7 @@ namespace spwn::loot {
         );
     }
 
-    void Weapon(strg::Registry& world, const Vector3 position, data::loot::WeaponKind kind) {
+    void Weapon(strg::Registry& world, const Vector3 position, data::loot::WeaponKind kind, const float collider_scaler) {
         Entity weapon = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
@@ -223,10 +213,7 @@ namespace spwn::loot {
                 .layer = data::cnst::LOOT_LAYER,
                 .mask = data::cnst::LOOT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = Vector3Scale(
-                    cmpt::MinLootColliderSize(data::cnst::WEAPON_SIZE),
-                    data::g_player.pickup_range_multiplier
-                )
+                .size = cmpt::MinLootColliderSize(data::cnst::WEAPON_SIZE) * collider_scaler
             }
         );
 
@@ -248,7 +235,7 @@ namespace spwn::loot {
         );
     }
 
-    void WeaponCrate(strg::Registry& world, const Vector3 position) {
+    void WeaponCrate(strg::Registry& world, const Vector3 position, const float collider_scaler) {
         Entity entity = world.CreateEntity();
 
         world.AddComponent<cmpt::Loot>(
@@ -278,10 +265,7 @@ namespace spwn::loot {
                 .layer = data::cnst::LOOT_LAYER,
                 .mask = data::cnst::LOOT_LAYER_MASK,
                 .offset = { 0.0f, 0.0f, 0.0f },
-                .size = Vector3Scale(
-                    cmpt::MinLootColliderSize(data::cnst::WEAPON_CRATE_SIZE),
-                    data::g_player.pickup_range_multiplier
-                )
+                .size = cmpt::MinLootColliderSize(data::cnst::WEAPON_CRATE_SIZE) * collider_scaler
             }
         );
 

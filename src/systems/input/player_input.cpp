@@ -1,7 +1,7 @@
 #include "systems/input/input_system.h"
 #include "raymath.h"
 #include "components/components.h"
-#include "data/player/player.h"
+#include "components/cmpt_helpers.h"
 #include "utils/debug.h"
 
 namespace sys::input {
@@ -11,14 +11,13 @@ namespace sys::input {
         float t = (planeY - ray.position.y) / ray.direction.y;
         if (t < 0.0f) return false; // Behind camera
 
-        outPoint = Vector3Add(ray.position, Vector3Scale(ray.direction, t));
+        outPoint = ray.position + (ray.direction * t);
         return true;
     }
 
     void PlayerInput(strg::Registry& world, Camera3D& camera) {
         PROFILE_SCOPE("PlayerInput()");
-        for (auto entity : world.View<tag::Player, cmpt::Input>()) {
-
+        for (auto entity : world.View<cmpt::Player, cmpt::Stats, cmpt::Input>()) {
             auto& input = world.GetComponent<cmpt::Input>(entity);
 
             input.direction = { 0.0f, 0.0f, 0.0f };
@@ -42,10 +41,10 @@ namespace sys::input {
                 world.AddComponent<cmpt::Dash>(
                     entity, 
                     cmpt::Dash{ 
-                        .multiplier = data::cnst::PLAYER_DASH_RANGE * data::g_player.dash_range_multiplier,
                         .countdown = data::cnst::PLAYER_DASH_DURATION
-                     }
+                    }
                 );
+                cmpt::AttachPlayerInvulnerability(world, entity, data::cnst::PLAYER_DASH_DURATION);
             }
         }
     }

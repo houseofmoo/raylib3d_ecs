@@ -89,9 +89,19 @@ namespace spwn::enemy {
             cmpt::DropsLoot{ data::cnst::GRUNT_LOOT_MULTIPLIER }
         );
         
-        world.AddComponent<cmpt::Health>(
+        world.AddComponent<cmpt::Stats>(
             entity,
-            cmpt::Health{ hp, hp }
+            cmpt::Stats{ 
+                .current_hp = hp,
+                .max_hp = hp,
+                .move_speed = data::cnst::GRUNT_SPEED,
+                // modifiers
+                .damage_modifier = 1.0f,
+                .attack_speed_modifier = 1.0f,
+                .move_speed_modifier = 1.0f,
+                .dash_speed_modifier = 1.0f,
+                .pickup_range_modifier = 1.0f, 
+            }
         );
 
         world.AddComponent<cmpt::SpawnAnimation>(
@@ -99,15 +109,6 @@ namespace spwn::enemy {
             cmpt::SpawnAnimation{
                 .start_position = start_position,
                 .end_position = end_position
-            }
-        );
-        
-        world.AddComponent<cmpt::Speed>(
-            entity,
-            cmpt::Speed{ 
-                .speed = data::cnst::GRUNT_SPEED, 
-                .speed_multiplier = 1.0f, 
-                .dash_multiplier = 1.0f,
             }
         );
 

@@ -11,7 +11,7 @@ namespace cmpttest {
 }
 
 namespace tag {
-    struct Player {};
+    // struct Player {};
     struct Enemy {};
     struct Event {};
     struct CameraFollow {};    
@@ -148,15 +148,26 @@ namespace cmpt {
     ////////////////////////////////////////////////
     // ENTITY STATS
     ////////////////////////////////////////////////
-    struct Health {
-        int max;
-        int amount;
+    struct Player {
+        // player only stats
+        int level;
+        int exp;
+        int exp_to_level;
+        int money;
+        int enemies_defeated;
     };
 
-    struct Speed {
-        float speed;
-        float speed_multiplier;
-        float dash_multiplier;
+    struct Stats {
+        int current_hp;
+        int max_hp;
+        float move_speed;
+
+        // modifiers
+        float damage_modifier;
+        float attack_speed_modifier;
+        float move_speed_modifier;
+        float dash_speed_modifier;
+        float pickup_range_modifier;
     };
 
     struct DamageDealer {
@@ -176,7 +187,6 @@ namespace cmpt {
     };
 
     struct Dash {
-        float multiplier;
         float countdown;
     };
 
