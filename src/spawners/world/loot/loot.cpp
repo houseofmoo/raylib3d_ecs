@@ -53,7 +53,6 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Lifetime>(
             exp,
             cmpt::Lifetime{ 
-                .start_time = GetTime(),
                 .countdown = data::cnst::LOOT_LIFETIME 
             }
         );
@@ -114,7 +113,6 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Lifetime>(
             money,
             cmpt::Lifetime{ 
-                .start_time = GetTime(),
                 .countdown = data::cnst::LOOT_LIFETIME 
             }
         );
@@ -175,7 +173,6 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Lifetime>(
             powerup,
             cmpt::Lifetime{ 
-                .start_time = GetTime(),
                 .countdown = data::cnst::LOOT_LIFETIME 
             }
         );
@@ -236,7 +233,6 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Lifetime>(
             weapon,
             cmpt::Lifetime{ 
-                .start_time = GetTime(),
                 .countdown = data::cnst::LOOT_LIFETIME
             }
         );
@@ -292,7 +288,6 @@ namespace spwn::loot {
         world.AddComponent<cmpt::Lifetime>(
             entity,
             cmpt::Lifetime{ 
-                .start_time = GetTime(),
                 .countdown = data::cnst::LOOT_LIFETIME
             }
         );

@@ -138,8 +138,7 @@ namespace cmpt {
     // SPECIAL CASE
     ////////////////////////////////////////////////
     struct Lifetime {
-        double start_time;
-        double countdown;
+        float countdown;
     };
 
     struct FreezeTime {

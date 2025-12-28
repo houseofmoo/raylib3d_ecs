@@ -59,7 +59,6 @@ namespace spwn::proj {
         world.AddComponent<cmpt::Lifetime>(
             entity,
             cmpt::Lifetime{ 
-                .start_time = GetTime(),
                 .countdown = config.arch_duration
             }
         );
