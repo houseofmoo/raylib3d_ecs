@@ -37,12 +37,12 @@ else()
     add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 endif()
 
-# Strict warnings only for *your* code (your TUs)
+# Strict warnings only for non-system code (code in src/)
 target_compile_options(${PROJECT_NAME} PRIVATE
     -Wall -Wextra -Wpedantic -Werror -Wunused
 )
 
-if (PROFILER_ENABLED)
+if (PROFILER_ENABLED AND CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Profiler: Enabled")
     target_compile_definitions(${PROJECT_NAME} PRIVATE PROFILER_ENABLED)
 else()
