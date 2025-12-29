@@ -1,5 +1,7 @@
 #include "systems/attack/attack_system.h"
 #include "raymath.h"
+#include "assets/assets.h"
+#include "sound/sound_player.h"
 #include "data/entity.h"
 #include "spawners/world/projectile/bullet.h"
 #include "spawners/world/projectile/grenade.h"
@@ -29,54 +31,53 @@ namespace sys::atk {
         }
     }
 
-    void PistolAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
+    void PistolAttack(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("PistolAttack()");
         for (auto entity : world.View<cmpt::Pistol, cmpt::AttackIntent, cmpt::Stats>()) {
             auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
             if (!atk.active) continue;
 
             auto& wep = world.GetComponent<cmpt::Pistol>(entity);
-            wep.base_stats.countdown -= delta_time;
-            if (wep.base_stats.countdown > 0.0f) continue;
+            wep.base.countdown -= delta_time;
+            if (wep.base.countdown > 0.0f) continue;
 
             auto& stats = world.GetComponent<cmpt::Stats>(entity);
-            wep.base_stats.countdown = wep.base_stats.cooldown / stats.attack_speed_modifier;
-            if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
-                wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+            wep.base.countdown = wep.base.cooldown / stats.attack_speed_modifier;
+            if (wep.base.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                wep.base.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
             }
 
             spwn::proj::Bullet(
                 world, 
                 spwn::proj::BulletConfig{
                     .position = atk.from_position,
-                    .direction = atk.direction * wep.base_stats.projectile_speed,
-                    .damage = static_cast<int>(wep.base_stats.damage * stats.damage_modifier),
-                    .penetration = wep.base_stats.penetration,
-                    .knockback_scale = wep.base_stats.knockback_scale,
-                    .knockback_duration = wep.base_stats.knockback_duration,
-                    .layer = wep.base_stats.layer,
-                    .mask = wep.base_stats.mask
+                    .direction = atk.direction * wep.base.projectile_speed,
+                    .damage = static_cast<int>(wep.base.damage * stats.damage_modifier),
+                    .penetration = wep.base.penetration,
+                    .knockback_scale = wep.base.knockback_scale,
+                    .knockback_duration = wep.base.knockback_duration,
+                    .layer = wep.base.layer,
+                    .mask = wep.base.mask
                 }
             );
-            PlaySound(sound_fx);
-            SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f); 
+            snd::PlaySoundFxPositional(wep.base.soundfx_type, atk.from_position);
         }
     }
 
-    void ShotgunAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
+    void ShotgunAttack(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("ShotgunAttack()");
         for (auto entity : world.View<cmpt::Shotgun, cmpt::AttackIntent, cmpt::Stats>()) {
             auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
             if (!atk.active) continue;
 
             auto& wep = world.GetComponent<cmpt::Shotgun>(entity);
-            wep.base_stats.countdown -= delta_time;
-            if (wep.base_stats.countdown > 0.0f) continue;
+            wep.base.countdown -= delta_time;
+            if (wep.base.countdown > 0.0f) continue;
 
             auto& stats = world.GetComponent<cmpt::Stats>(entity);
-            wep.base_stats.countdown = wep.base_stats.cooldown / stats.attack_speed_modifier;
-            if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
-                wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+            wep.base.countdown = wep.base.cooldown / stats.attack_speed_modifier;
+            if (wep.base.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                wep.base.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
             }
 
             FireSpread(
@@ -85,21 +86,20 @@ namespace sys::atk {
                 wep.spread_deg,
                 spwn::proj::BulletConfig{
                     .position = atk.from_position,
-                    .direction = atk.direction * wep.base_stats.projectile_speed,
-                    .damage = static_cast<int>(wep.base_stats.damage * stats.damage_modifier),
-                    .penetration = wep.base_stats.penetration,
-                    .knockback_scale = wep.base_stats.knockback_scale,
-                    .knockback_duration = wep.base_stats.knockback_duration,
-                    .layer = wep.base_stats.layer,
-                    .mask = wep.base_stats.mask
+                    .direction = atk.direction * wep.base.projectile_speed,
+                    .damage = static_cast<int>(wep.base.damage * stats.damage_modifier),
+                    .penetration = wep.base.penetration,
+                    .knockback_scale = wep.base.knockback_scale,
+                    .knockback_duration = wep.base.knockback_duration,
+                    .layer = wep.base.layer,
+                    .mask = wep.base.mask
                 }
             );
-            PlaySound(sound_fx);
-            SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
+            snd::PlaySoundFxPositional(wep.base.soundfx_type, atk.from_position);
         }
     }
 
-    void RifleAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
+    void RifleAttack(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("RifleAttack()");
         for (auto entity : world.View<cmpt::Rifle, cmpt::AttackIntent, cmpt::Stats>()) {
             auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
@@ -117,27 +117,26 @@ namespace sys::atk {
                     world,
                     spwn::proj::BulletConfig{
                         .position = atk.from_position,
-                        .direction = atk.direction * wep.base_stats.projectile_speed,
-                        .damage = static_cast<int>(wep.base_stats.damage * stats.damage_modifier),
-                        .penetration = wep.base_stats.penetration,
-                        .knockback_scale = wep.base_stats.knockback_scale,
-                        .knockback_duration = wep.base_stats.knockback_duration,
-                        .layer = wep.base_stats.layer,
-                        .mask = wep.base_stats.mask
+                        .direction = atk.direction * wep.base.projectile_speed,
+                        .damage = static_cast<int>(wep.base.damage * stats.damage_modifier),
+                        .penetration = wep.base.penetration,
+                        .knockback_scale = wep.base.knockback_scale,
+                        .knockback_duration = wep.base.knockback_duration,
+                        .layer = wep.base.layer,
+                        .mask = wep.base.mask
                     }
                 );
-                PlaySound(sound_fx);
-                SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
+                snd::PlaySoundFxPositional(wep.base.soundfx_type, atk.from_position);
 
                 wep.burst_completed += 1;
                 wep.burst_countdown = wep.burst_cooldown;
             } else {
-                wep.base_stats.countdown -= delta_time;
-                if (wep.base_stats.countdown > 0.0f) continue;
+                wep.base.countdown -= delta_time;
+                if (wep.base.countdown > 0.0f) continue;
 
-                wep.base_stats.countdown = wep.base_stats.cooldown / stats.attack_speed_modifier;
-                if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
-                    wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+                wep.base.countdown = wep.base.cooldown / stats.attack_speed_modifier;
+                if (wep.base.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                    wep.base.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
                 }
 
                 wep.burst_completed = 0;
@@ -146,54 +145,53 @@ namespace sys::atk {
         }
     }
 
-    void SMGAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
+    void SMGAttack(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("SMGAttack()");
         for (auto entity : world.View<cmpt::SMG, cmpt::AttackIntent, cmpt::Stats>()) {
             auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
             if (!atk.active) continue;
 
             auto& wep = world.GetComponent<cmpt::SMG>(entity);
-            wep.base_stats.countdown -= delta_time;
-            if (wep.base_stats.countdown > 0.0f) continue;
+            wep.base.countdown -= delta_time;
+            if (wep.base.countdown > 0.0f) continue;
 
             auto& stats = world.GetComponent<cmpt::Stats>(entity);
-            wep.base_stats.countdown = wep.base_stats.cooldown / stats.attack_speed_modifier;
-            if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
-                wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+            wep.base.countdown = wep.base.cooldown / stats.attack_speed_modifier;
+            if (wep.base.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                wep.base.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
             }
 
             spwn::proj::Bullet(
                 world, 
                 spwn::proj::BulletConfig{
                     .position = atk.from_position,
-                    .direction = atk.direction * wep.base_stats.projectile_speed,
-                    .damage = static_cast<int>(wep.base_stats.damage * stats.damage_modifier),
-                    .penetration = wep.base_stats.penetration,
-                    .knockback_scale = wep.base_stats.knockback_scale,
-                    .knockback_duration = wep.base_stats.knockback_duration,
-                    .layer = wep.base_stats.layer,
-                    .mask = wep.base_stats.mask
+                    .direction = atk.direction * wep.base.projectile_speed,
+                    .damage = static_cast<int>(wep.base.damage * stats.damage_modifier),
+                    .penetration = wep.base.penetration,
+                    .knockback_scale = wep.base.knockback_scale,
+                    .knockback_duration = wep.base.knockback_duration,
+                    .layer = wep.base.layer,
+                    .mask = wep.base.mask
                 }
             );
-            PlaySound(sound_fx);
-            SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f); 
+            snd::PlaySoundFxPositional(wep.base.soundfx_type, atk.from_position);
         }
     }
 
-    void GrenadeLauncherAttack(strg::Registry& world, const float delta_time, Sound& sound_fx) {
+    void GrenadeLauncherAttack(strg::Registry& world, const float delta_time) {
         PROFILE_SCOPE("GrenadeAttack()");
         for (auto entity : world.View<cmpt::GrenadeLauncher, cmpt::AttackIntent, cmpt::Stats>()) {
               auto& atk = world.GetComponent<cmpt::AttackIntent>(entity);
             if (!atk.active) continue;
 
             auto& wep = world.GetComponent<cmpt::GrenadeLauncher>(entity);
-            wep.base_stats.countdown -= delta_time;
-            if (wep.base_stats.countdown > 0.0f) continue;
+            wep.base.countdown -= delta_time;
+            if (wep.base.countdown > 0.0f) continue;
 
             auto& stats = world.GetComponent<cmpt::Stats>(entity);
-            wep.base_stats.countdown = wep.base_stats.cooldown / stats.attack_speed_modifier;
-            if (wep.base_stats.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
-                wep.base_stats.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
+            wep.base.countdown = wep.base.cooldown / stats.attack_speed_modifier;
+            if (wep.base.countdown < data::cnst::MIN_WEAPON_COOLDOWN) {
+                wep.base.countdown = data::cnst::MIN_WEAPON_COOLDOWN;
             }
 
             spwn::proj::Grenade(
@@ -201,10 +199,10 @@ namespace sys::atk {
                 atk.from_position, 
                 atk.to_position,
                 spwn::proj::GrenadeConfig {
-                    .damage = static_cast<int>(wep.base_stats.damage * stats.damage_modifier),
-                    .penetration = wep.base_stats.penetration,
-                    .knockback_scale = wep.base_stats.knockback_scale,
-                    .knockback_duration = wep.base_stats.knockback_duration,
+                    .damage = static_cast<int>(wep.base.damage * stats.damage_modifier),
+                    .penetration = wep.base.penetration,
+                    .knockback_scale = wep.base.knockback_scale,
+                    .knockback_duration = wep.base.knockback_duration,
                     .arch_duration = wep.arch_duration,
                     .arch_max_height = wep.arch_max_height,
                     .explosion_damage = static_cast<int>(wep.explosion_damage *  stats.damage_modifier),
@@ -213,12 +211,11 @@ namespace sys::atk {
                     .explosion_duration = wep.explosion_duration,
                     .explosion_knockback_scale = wep.explosion_knockback_scale,
                     .explosion_knockback_duration = wep.explosion_knockback_duration,
-                    .layer = wep.base_stats.layer,
-                    .mask = wep.base_stats.mask
+                    .layer = wep.base.layer,
+                    .mask = wep.base.mask
                 }
             );
-            PlaySound(sound_fx);
-            SetSoundPitch(sound_fx, (float)GetRandomValue(9, 15) * 0.1f);
+            snd::PlaySoundFxPositional(wep.base.soundfx_type, atk.from_position); 
         }
     }
 
@@ -248,12 +245,12 @@ namespace sys::atk {
     //     // this is damage that pulses out from the player
     // }
 
-    void WeaponAttacks(strg::Registry& world, const float delta_time, Sound& sound_fx) {
-        PistolAttack(world, delta_time, sound_fx);
-        ShotgunAttack(world, delta_time, sound_fx);
-        RifleAttack(world, delta_time, sound_fx);
-        SMGAttack(world, delta_time, sound_fx);
-        GrenadeLauncherAttack(world, delta_time, sound_fx);
+    void WeaponAttacks(strg::Registry& world, const float delta_time) {
+        PistolAttack(world, delta_time);
+        ShotgunAttack(world, delta_time);
+        RifleAttack(world, delta_time);
+        SMGAttack(world, delta_time);
+        GrenadeLauncherAttack(world, delta_time);
         ExplosionAttack(world, delta_time);
     }
 }

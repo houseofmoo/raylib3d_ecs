@@ -45,8 +45,8 @@ namespace debug {
     }
     
     void DrawStatsTab(strg::Registry& world) {
-        auto* info = world.TryGetComponent<cmpt::Player>(data::g_player_id);
-        auto* stats = world.TryGetComponent<cmpt::Stats>(data::g_player_id);
+        auto* info = world.TryGetComponent<cmpt::Player>(data::g_player.id);
+        auto* stats = world.TryGetComponent<cmpt::Stats>(data::g_player.id);
 
         ImGui::Text("fps:        %d", GetFPS());
         ImGui::Text("entities:   %d", data::g_game.entity_count);
@@ -56,7 +56,7 @@ namespace debug {
         ImGui::Separator();
 
         if (info != nullptr) {
-            ImGui::Text("id:         %d", data::g_player_id);
+            ImGui::Text("id:         %d", data::g_player.id);
             ImGui::Text("level:      %d", info->level);
             ImGui::Text("gold:       %d", info->money);
             ImGui::Text("exp:        %d", info->exp);
@@ -134,125 +134,125 @@ namespace debug {
         if (ImGui::Button("+pistol", size)) {
             spwn::weapon::EquipPistol(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-pistol", size)) {
-            spwn::weapon::DequipPistol(world, data::g_player_id);
+            spwn::weapon::DequipPistol(world, data::g_player.id);
         }
 
         if (ImGui::Button("+shotgun", size)) {
             spwn::weapon::EquipShotgun(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-shotgun", size)) {
-            spwn::weapon::DequipShotgun(world, data::g_player_id);
+            spwn::weapon::DequipShotgun(world, data::g_player.id);
         }
 
         if (ImGui::Button("+rifle", size)) {
             spwn::weapon::EquipRifle(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-rifle", size)) {
-            spwn::weapon::DequipRifle(world, data::g_player_id);
+            spwn::weapon::DequipRifle(world, data::g_player.id);
         }
 
         if (ImGui::Button("+smg", size)) {
             spwn::weapon::EquipSMG(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-smg", size)) {
-            spwn::weapon::DequipSMG(world, data::g_player_id);
+            spwn::weapon::DequipSMG(world, data::g_player.id);
         }
         
         if (ImGui::Button("+grenade", size)) {
             spwn::weapon::EquipGrenadeLauncher(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-grenade", size)) {
-            spwn::weapon::DequipGrenadeLauncher(world, data::g_player_id);
+            spwn::weapon::DequipGrenadeLauncher(world, data::g_player.id);
         }
         ImGui::Separator();
 
-        if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::g_player_id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::g_player.id)) {
             ImGui::Text("pistol:");
-            ImGui::Text("  dmg:         %d", wep->base_stats.damage);
-            ImGui::Text("  pen:         %d", wep->base_stats.penetration);
-            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
-            ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
-            ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
-            ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
+            ImGui::Text("  dmg:         %d", wep->base.damage);
+            ImGui::Text("  pen:         %d", wep->base.penetration);
+            ImGui::Text("  atk spd:     %.2f", wep->base.cooldown);
+            ImGui::Text("  pjk spd:     %.2f", wep->base.projectile_speed);
+            ImGui::Text("  kb scale:    %.2f", wep->base.knockback_scale);
+            ImGui::Text("  kb dur:      %.2f", wep->base.knockback_duration);
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::Shotgun>(data::g_player_id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Shotgun>(data::g_player.id)) {
             ImGui::Text("shotgun:");
-            ImGui::Text("  dmg:         %d", wep->base_stats.damage);
-            ImGui::Text("  pen:         %d", wep->base_stats.penetration);
-            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
-            ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
-            ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
-            ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
+            ImGui::Text("  dmg:         %d", wep->base.damage);
+            ImGui::Text("  pen:         %d", wep->base.penetration);
+            ImGui::Text("  atk spd:     %.2f", wep->base.cooldown);
+            ImGui::Text("  pjk spd:     %.2f", wep->base.projectile_speed);
+            ImGui::Text("  kb scale:    %.2f", wep->base.knockback_scale);
+            ImGui::Text("  kb dur:      %.2f", wep->base.knockback_duration);
             ImGui::Text("  sprd:        %.2f", wep->spread_deg);
             ImGui::Text("  pcnt:        %d", wep->pellet_count);
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::Rifle>(data::g_player_id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Rifle>(data::g_player.id)) {
             ImGui::Text("rifle:");
-            ImGui::Text("  dmg:         %d", wep->base_stats.damage);
-            ImGui::Text("  pen:         %d", wep->base_stats.penetration);
-            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
-            ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
-            ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
-            ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
+            ImGui::Text("  dmg:         %d", wep->base.damage);
+            ImGui::Text("  pen:         %d", wep->base.penetration);
+            ImGui::Text("  atk spd:     %.2f", wep->base.cooldown);
+            ImGui::Text("  pjk spd:     %.2f", wep->base.projectile_speed);
+            ImGui::Text("  kb scale:    %.2f", wep->base.knockback_scale);
+            ImGui::Text("  kb dur:      %.2f", wep->base.knockback_duration);
             ImGui::Text("  burst cnt:   %d", wep->burst_count);
             ImGui::Text("  burst spd:   %.2f", wep->burst_cooldown);
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::SMG>(data::g_player_id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::SMG>(data::g_player.id)) {
             ImGui::Text("smg:");
-            ImGui::Text("  dmg:         %d", wep->base_stats.damage);
-            ImGui::Text("  pen:         %d", wep->base_stats.penetration);
-            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
-            ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
-            ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
-            ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
+            ImGui::Text("  dmg:         %d", wep->base.damage);
+            ImGui::Text("  pen:         %d", wep->base.penetration);
+            ImGui::Text("  atk spd:     %.2f", wep->base.cooldown);
+            ImGui::Text("  pjk spd:     %.2f", wep->base.projectile_speed);
+            ImGui::Text("  kb scale:    %.2f", wep->base.knockback_scale);
+            ImGui::Text("  kb dur:      %.2f", wep->base.knockback_duration);
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::GrenadeLauncher>(data::g_player_id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::GrenadeLauncher>(data::g_player.id)) {
             ImGui::Text("grenade:");
-            ImGui::Text("  dmg:         %d", wep->base_stats.damage);
-            ImGui::Text("  pen:         %d", wep->base_stats.penetration);
-            ImGui::Text("  atk spd:     %.2f", wep->base_stats.cooldown);
-            ImGui::Text("  pjk spd:     %.2f", wep->base_stats.projectile_speed);
-            ImGui::Text("  kb scale:    %.2f", wep->base_stats.knockback_scale);
-            ImGui::Text("  kb dur:      %.2f", wep->base_stats.knockback_duration);
+            ImGui::Text("  dmg:         %d", wep->base.damage);
+            ImGui::Text("  pen:         %d", wep->base.penetration);
+            ImGui::Text("  atk spd:     %.2f", wep->base.cooldown);
+            ImGui::Text("  pjk spd:     %.2f", wep->base.projectile_speed);
+            ImGui::Text("  kb scale:    %.2f", wep->base.knockback_scale);
+            ImGui::Text("  kb dur:      %.2f", wep->base.knockback_duration);
             ImGui::Text("  ex-dmg:      %d", wep->explosion_damage);
             ImGui::Text("  ex-dur:      %.2f", wep->explosion_duration);
             ImGui::Text("  ex-kb scale: %.2f", wep->explosion_knockback_scale);
@@ -281,6 +281,16 @@ namespace debug {
         ImGui::Separator();
 
         // spawn enemies
+        if (ImGui::Button("destroy all enemies")) {
+            for (auto entity : world.View<tag::Enemy>()) {
+                world.AddComponent<tag::Destroy>(entity);
+            }
+        }
+
+        if (ImGui::Button("single shooter")) {
+            spwn::enemy::GruntWithAPistol(world, Vector3{ 0.0f, 0.0f, 0.0f }, cmpt::AIMoveMode::Random, 500);
+        }
+
         if (ImGui::Button("spawn grunt line")) {
             for (int x = -10; x < 10; x+= 2) {
                 spwn::enemy::Grunt(world, Vector3{(float)x, 0.0f, 0.0f}, cmpt::AIMoveMode::None, 500);

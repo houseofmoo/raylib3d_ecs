@@ -1,7 +1,7 @@
 #include "spawners/world/enemies/enemies.h"
 
 #include "raymath.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
 #include "components/cmpt_helpers.h"
 
 namespace spwn::enemy {
@@ -81,7 +81,7 @@ namespace spwn::enemy {
                 .size = data::cnst::BRUTE_SIZE,
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::BRUTE_COLOR, 
-                .model = &rsrc::asset::brute_model,
+                .model = &asset::models.Get(asset::ModelType::Brute)
             }
         );
 

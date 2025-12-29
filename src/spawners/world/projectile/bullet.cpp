@@ -1,7 +1,7 @@
 #include "spawners/world/projectile/bullet.h"
 #include "raymath.h"
 #include "data/entity.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
 #include "components/components.h"
 
 namespace spwn::proj {
@@ -70,7 +70,7 @@ namespace spwn::proj {
                 .size = data::cnst::BULLET_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::BULLET_COLOR,
-                .model = &rsrc::asset::bullet_model,
+                .model = &asset::models.Get(asset::ModelType::Bullet),
             }
         );
     }

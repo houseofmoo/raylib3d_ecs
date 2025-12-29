@@ -2,7 +2,7 @@
 
 #include "raymath.h"
 #include "components/components.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
 
 namespace spwn::proj {
     void Explosion(strg::Registry& world, const ExplosionConfig config) {
@@ -69,7 +69,7 @@ namespace spwn::proj {
                 .size = config.start_size,
                 .scale = data::cnst::BASE_SCALE,
                 .color = ORANGE,
-                .model = &rsrc::asset::grenade_model,
+                .model = &asset::models.Get(asset::ModelType::Grenade),
             }
         );
     }

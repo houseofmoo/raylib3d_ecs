@@ -64,7 +64,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/debug
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/resources
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/assets
+    
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/sound
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip
@@ -85,6 +87,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/attack
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/camera
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/cleanup
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/collisions
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/events
 

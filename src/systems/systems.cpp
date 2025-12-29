@@ -5,7 +5,7 @@
 #include "raygui.h"
 
 #include "data/game/game.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
 #include "utils/debug.h"
 
 #include "spawners/system/camera/camera.h"
@@ -16,7 +16,7 @@
 #include "systems/animation_system.h"
 #include "systems/attack/attack_system.h"
 #include "systems/camera/camera.h"
-#include "systems/cleanup_system.h"
+#include "systems/cleanup/cleanup.h"
 #include "systems/collisions/entity_collision_system.h"
 #include "systems/collisions/collision_handlers.h"
 #include "systems/damage_system.h"
@@ -43,10 +43,10 @@ namespace sys {
         world.Reset();
         data::g_game.Reset();
         spwn::map::GenerateMap(world);
-        data::g_player_id = spwn::player::Player(world);
+        data::g_player.id = spwn::player::Player(world);
         spwn::weapon::EquipPistol(
             world, 
-            data::g_player_id, 
+            data::g_player.id, 
             data::cnst::PLAYER_PROJECTILE_LAYER, 
             data::cnst::PLAYER_PROJECTILE_LAYER_MASK
         );
@@ -59,11 +59,11 @@ namespace sys {
         }
 
         // TODO: re-add the sound for pickups
-        if (world.HasComponent<cmpt::FreezeTime>(data::g_player_id)) {
-            auto& ft = world.GetComponent<cmpt::FreezeTime>(data::g_player_id);
+        if (world.HasComponent<cmpt::FreezeTime>(data::g_player.id)) {
+            auto& ft = world.GetComponent<cmpt::FreezeTime>(data::g_player.id);
             ft.countdown -= delta_time;
             if (ft.countdown <= 0.0f) {
-                world.RemoveComponent<cmpt::FreezeTime>(data::g_player_id);
+                world.RemoveComponent<cmpt::FreezeTime>(data::g_player.id);
             }
             sys::cam::CameraMovement(world, camera, delta_time, true);
             return;
@@ -80,7 +80,7 @@ namespace sys {
         sys::mov::ApplyAIMovement(world, delta_time);
         sys::cam::CameraMovement(world, camera, delta_time, false);
 
-        sys::atk::WeaponAttacks(world, delta_time, rsrc::asset::shoot_fx); // shoot_fx
+        sys::atk::WeaponAttacks(world, delta_time);
         
         sys::col::EntityCollision(world);
         sys::col::DamageOnCollision(world);
@@ -103,9 +103,9 @@ namespace sys {
         sys::vel::ApplyArch(world, delta_time);
         sys::vel::ApplyRotateInPlace(world, delta_time);
 
-        sys::cleanup::Cleanup(world, delta_time);
-        sys::cleanup::OnDestroy(world);
-        sys::cleanup::Destroy(world);
+        sys::cu::LifetimeTimer(world, delta_time);
+        sys::cu::OnDestroyEffects(world);
+        sys::cu::Destroy(world);
     }
 
     void RunEntityDrawSystems(const float delta_time) {
@@ -200,8 +200,8 @@ namespace sys {
 
     void RunUIDrawSystems(const float delta_time) {
         PROFILE_SCOPE("RunUIDrawSystems()");
-        auto& player_stats = world.GetComponent<cmpt::Stats>(data::g_player_id);
-        auto& player_info = world.GetComponent<cmpt::Player>(data::g_player_id);
+        auto& player_stats = world.GetComponent<cmpt::Stats>(data::g_player.id);
+        auto& player_info = world.GetComponent<cmpt::Player>(data::g_player.id);
         
         DrawText(std::format("FPS: {}", GetFPS()).c_str(), 30, 20, 20, RAYWHITE);
         DrawText(std::format("Entities Drawn: {}", data::g_game.entity_count).c_str(), 30, 40, 20, RAYWHITE);
@@ -221,7 +221,7 @@ namespace sys {
         if (::GuiButton(rec, "Pistol")) {
             spwn::weapon::EquipPistol(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
@@ -232,7 +232,7 @@ namespace sys {
         if (::GuiButton(rec, "Shotgun")) {
             spwn::weapon::EquipShotgun(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
@@ -243,7 +243,7 @@ namespace sys {
         if (::GuiButton(rec, "Rifle")) {
             spwn::weapon::EquipRifle(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
@@ -254,7 +254,7 @@ namespace sys {
         if (::GuiButton(rec, "SMG")) {
             spwn::weapon::EquipSMG(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
@@ -265,7 +265,7 @@ namespace sys {
         if (::GuiButton(rec, "Grenade Launcher")) {
             spwn::weapon::EquipGrenadeLauncher(
                 world, 
-                data::g_player_id, 
+                data::g_player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );

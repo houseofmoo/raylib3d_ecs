@@ -30,5 +30,8 @@ namespace data {
         .profiler_enabled = false,
     };
 
-    Entity g_player_id;
+    constinit PlayerInfo g_player {
+        .id = 0,
+        .position = { 0.0f, 0.0f, 0.0f }
+    };
 }

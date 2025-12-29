@@ -1,5 +1,6 @@
 #include "spawners/equip/weapon/weapons.h"
 #include "components/components.h"
+#include "assets/assets.h"
 
 namespace spwn::weapon {
     void EquipPistol(strg::Registry& world, const Entity id, Layer layer, Layer mask) {
@@ -7,7 +8,7 @@ namespace spwn::weapon {
             world.AddComponent<cmpt::Pistol>(
                 id,
                 cmpt::Pistol{
-                    .base_stats = cmpt::WeaponBaseStats {
+                    .base = cmpt::WeaponBase {
                         .parent = id,
                         .kind = data::loot::WeaponKind::Pistol,
                         .cooldown = data::cnst::PISTOL_COOLDOWN, 
@@ -18,14 +19,15 @@ namespace spwn::weapon {
                         .knockback_scale = data::cnst::PISTOL_KNOCKBACK_SCALE,
                         .knockback_duration = data::cnst::PISTOL_KNOCKBACK_DURATION,
                         .layer = layer,
-                        .mask = mask
+                        .mask = mask,
+                        .soundfx_type = asset::SoundFxType::Pistol
                     },
                 }
             );
         } else {
             // TODO: upgrade random stat
             auto& wep = world.GetComponent<cmpt::Pistol>(id);
-            wep.base_stats.damage += 1;
+            wep.base.damage += 1;
         }
     }
 

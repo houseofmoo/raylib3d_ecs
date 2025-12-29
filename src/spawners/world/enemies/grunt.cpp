@@ -2,7 +2,7 @@
 
 #include "raymath.h"
 #include "components/cmpt_helpers.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
 
 namespace spwn::enemy {
     Entity Grunt(
@@ -80,7 +80,7 @@ namespace spwn::enemy {
                 .size = data::cnst::GRUNT_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::GRUNT_COLOR, 
-                .model = &rsrc::asset::grunt_model,
+                .model = &asset::models.Get(asset::ModelType::Grunt),
             }
         );
 

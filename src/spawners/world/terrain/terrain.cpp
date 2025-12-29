@@ -1,6 +1,7 @@
 #include "spawners/world/terrain/terrain.h"
 #include "raymath.h"
 #include "components/components.h"
+#include "assets/assets.h"
 #include "data/game/game.h"
 
 namespace spwn::terrain {

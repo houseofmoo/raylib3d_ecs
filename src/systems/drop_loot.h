@@ -27,7 +27,7 @@ namespace sys::loot {
             auto& etrans = world.GetComponent<cmpt::Transform>(enemy);
 
             float collider_scale = 1.0f;
-            if (auto* stats = world.TryGetComponent<cmpt::Stats>(data::g_player_id)) {
+            if (auto* stats = world.TryGetComponent<cmpt::Stats>(data::g_player.id)) {
                 collider_scale = stats->pickup_range_modifier;
             }
 

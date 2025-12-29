@@ -1,7 +1,7 @@
 #include "spawners/world/loot/loot.h"
 #include "raymath.h"
 #include "data/entity.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
 #include "components/components.h"
 #include "components/cmpt_helpers.h"
 #include "utils/position.h"
@@ -59,7 +59,7 @@ namespace spwn::loot {
                 .size = data::cnst::EXP_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::EXP_COLOR, 
-                .model = &rsrc::asset::exp_model,
+                .model = &asset::models.Get(asset::ModelType::Exp),
             }
         );
     }
@@ -116,7 +116,7 @@ namespace spwn::loot {
                 .size = data::cnst::MONEY_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = GOLD, 
-                .model = &rsrc::asset::money_model,
+                .model = &asset::models.Get(asset::ModelType::Money),
             }
         );
     }
@@ -173,7 +173,7 @@ namespace spwn::loot {
                 .size = data::cnst::POWERUP_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::POWERUP_COLORS[(int)kind],
-                .model = &rsrc::asset::powerup_model,
+                .model = &asset::models.Get(asset::ModelType::Powerup),
             }
         );
     }
@@ -230,7 +230,7 @@ namespace spwn::loot {
                 .size = data::cnst::WEAPON_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::WEAPON_COLORS[(int)kind],
-                .model = &rsrc::asset::weapon_model,
+                .model = &asset::models.Get(asset::ModelType::Weapon)
             }
         );
     }
@@ -282,7 +282,7 @@ namespace spwn::loot {
                 .size = data::cnst::WEAPON_CRATE_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::WEAPON_CRATE_COLOR,
-                .model = &rsrc::asset::weapon_crate_model,
+                .model = &asset::models.Get(asset::ModelType::WeaponCrate)
             }
         );
 

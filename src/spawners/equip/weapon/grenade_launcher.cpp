@@ -7,7 +7,7 @@ namespace spwn::weapon {
             world.AddComponent<cmpt::GrenadeLauncher>(
                 id,
                 cmpt::GrenadeLauncher{
-                    .base_stats = cmpt::WeaponBaseStats {
+                    .base = cmpt::WeaponBase {
                         .parent = id,
                         .kind = data::loot::WeaponKind::GrenadeLauncher,
                         .cooldown = data::cnst::GRENADE_COOLDOWN, 
@@ -18,7 +18,8 @@ namespace spwn::weapon {
                         .knockback_scale = data::cnst::GRENADE_KNOCKBACK_SCALE,
                         .knockback_duration = data::cnst::GRENADE_KNOCKBACK_DURATION,
                         .layer = layer,
-                        .mask = mask
+                        .mask = mask,
+                        .soundfx_type = asset::SoundFxType::GrenadeLauncher
                     },
                     .arch_duration = data::cnst::GRENADE_ARCH_DURATION,
                     .arch_max_height = data::cnst::GRENADE_ARCH_MAX_HEIGHT,

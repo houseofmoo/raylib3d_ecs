@@ -28,7 +28,7 @@ int main() {
     //rlImGuiEndInitImGui();
     #endif
 
-    rsrc::asset::LoadAssets();
+    asset::LoadAssets();
     sys::InitWorld();
 
     float delta_time = 0.0f;
@@ -40,7 +40,7 @@ int main() {
         screen_width = ::GetScreenWidth();
         screen_height = ::GetScreenHeight();
 
-        ::UpdateMusicStream(rsrc::asset::bg_music);
+        ::UpdateMusicStream(asset::bg_music);
 
         // check for pause key
         HandlePause(false);
@@ -58,7 +58,7 @@ int main() {
         ::EndDrawing();
     }
 
-    rsrc::asset::UnloadAssets();
+    asset::UnloadAssets();
     ::CloseAudioDevice();
     #ifdef DEBUG
     ::rlImGuiShutdown();

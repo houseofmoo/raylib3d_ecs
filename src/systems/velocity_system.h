@@ -38,6 +38,13 @@ namespace sys::vel {
                 trans.position = utils::ValidateMovePosition(trans.position, new_pos, height);
             }
         }
+
+        // TODO: this is ugly, but we need it for testing
+        for (auto entity : world.View<cmpt::Player, cmpt::Transform>()) {
+            auto& trans = world.GetComponent<cmpt::Transform>(entity);
+            data::g_player.position = trans.position;
+            break;
+        }
     }
 
     inline void ApplyArch(strg::Registry& world, const float delta_time) {

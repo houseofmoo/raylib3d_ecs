@@ -8,7 +8,7 @@ namespace spwn::weapon {
             world.AddComponent<cmpt::Shotgun>(
                 id,
                 cmpt::Shotgun{
-                    .base_stats = cmpt::WeaponBaseStats {
+                    .base = cmpt::WeaponBase {
                         .parent = id,
                         .kind = data::loot::WeaponKind::Shotgun,
                         .cooldown = data::cnst::SHOTGUN_COOLDOWN, 
@@ -19,7 +19,8 @@ namespace spwn::weapon {
                         .knockback_scale = data::cnst::SHOTGUN_KNOCKBACK_SCALE,
                         .knockback_duration = data::cnst::SHOTGUN_KNOCKBACK_DURATION,
                         .layer = layer,
-                        .mask = mask
+                        .mask = mask,
+                        .soundfx_type = asset::SoundFxType::Shotgun
                     },
                     .spread_deg = data::cnst::SHOTGUN_SPREAD,
                     .pellet_count = data::cnst::SHOTGUN_PELLET_COUNT
@@ -28,7 +29,7 @@ namespace spwn::weapon {
         } else {
             // upgrade random stat on the shotgun
             auto& wep = world.GetComponent<cmpt::Shotgun>(id);
-            wep.base_stats.damage += 1;
+            wep.base.damage += 1;
         }
     }
 

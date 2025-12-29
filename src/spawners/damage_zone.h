@@ -3,7 +3,7 @@
 #include "raymath.h"
 #include "storage./registry.h"
 #include "components/components.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
 
 namespace spwn::test {
     inline void DamageZone(strg::Registry& world) {

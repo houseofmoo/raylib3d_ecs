@@ -7,7 +7,8 @@
 #include "components/components.h"
 #include "components/cmpt_helpers.h"
 #include "spawners/system/events/notification.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
+#include "sound/sound_player.h"
 #include "utils/debug.h"
 
 namespace sys::dmg {
@@ -50,8 +51,9 @@ namespace sys::dmg {
             stats.current_hp -= dmg.total;
             dmg.total = 0;
 
-            PlaySound(rsrc::asset::damage_fx);
-            SetSoundPitch(rsrc::asset::damage_fx, (float)GetRandomValue(9, 15) * 0.1f);
+            if (auto* trans = world.TryGetComponent<cmpt::Transform>(entity)) {
+                snd::PlaySoundFxPositional(asset::SoundFxType::BulletHit, trans->position);
+            }
 
             if (stats.current_hp <= 0) {
                 world.AddComponent<cmpt::DeathAnimation>(

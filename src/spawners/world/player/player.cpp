@@ -1,7 +1,7 @@
 #include "spawners/world/player/player.h"
 #include "raymath.h"
 #include "data/entity.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
 #include "components/components.h"
 
 namespace spwn::player {
@@ -47,7 +47,7 @@ namespace spwn::player {
                 .size = data::cnst::PLAYER_SIZE,
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::PLAYER_COLOR,
-                .model = &rsrc::asset::player_model
+                .model = &asset::models.Get(asset::ModelType::Player)
             }
         );
 

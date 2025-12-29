@@ -7,7 +7,7 @@ namespace spwn::weapon {
             world.AddComponent<cmpt::SMG>(
                 id,
                 cmpt::SMG{
-                    .base_stats = cmpt::WeaponBaseStats {
+                    .base = cmpt::WeaponBase {
                         .parent = id,
                         .kind = data::loot::WeaponKind::SMG,
                         .cooldown = data::cnst::SMG_COOLDOWN, 
@@ -18,14 +18,15 @@ namespace spwn::weapon {
                         .knockback_scale = data::cnst::SMG_KNOCKBACK_SCALE,
                         .knockback_duration = data::cnst::SMG_KNOCKBACK_DURATION,
                         .layer = layer,
-                        .mask = mask
+                        .mask = mask,
+                        .soundfx_type = asset::SoundFxType::SMG
                     },
                 }
             );
         } else {
             // TODO: upgrade random stat
             auto& wep = world.GetComponent<cmpt::SMG>(id);
-            wep.base_stats.damage += 1;
+            wep.base.damage += 1;
         }
     }
 

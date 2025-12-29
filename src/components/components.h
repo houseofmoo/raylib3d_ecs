@@ -5,6 +5,7 @@
 #include <string_view>
 #include "raylib.h"
 #include "data/entity.h"
+#include "assets/assets.h"
 
 namespace cmpttest {
     struct DamageZone{};
@@ -238,7 +239,7 @@ namespace cmpt {
         std::array<data::loot::WeaponKind, 4> weapons;
     };
 
-    struct WeaponBaseStats { 
+    struct WeaponBase { 
         Entity parent;
         data::loot::WeaponKind kind;
         float cooldown;
@@ -250,20 +251,21 @@ namespace cmpt {
         float knockback_duration;
         Layer layer;      // layer projectiles will be spawned on
         Layer mask;       // layer those projectiles interact with
+        asset::SoundFxType soundfx_type;
     };
 
     struct Pistol {
-        WeaponBaseStats base_stats;
+        WeaponBase base;
     };
 
     struct Shotgun {
-        WeaponBaseStats base_stats;
+        WeaponBase base;
         float spread_deg;
         int pellet_count;
     };
 
     struct Rifle {
-        WeaponBaseStats base_stats;
+        WeaponBase base;
         int burst_count;
         int burst_completed;
         float burst_cooldown;
@@ -271,19 +273,19 @@ namespace cmpt {
     };
 
     struct Sniper {
-        WeaponBaseStats base_stats;
+        WeaponBase base;
     };
 
     struct RailGun {
-        WeaponBaseStats base_stats;
+        WeaponBase base;
     };
 
     struct SMG {
-        WeaponBaseStats base_stats;
+        WeaponBase base;
     };
 
     struct GrenadeLauncher {
-        WeaponBaseStats base_stats;
+        WeaponBase base;
         
         float arch_duration;
         float arch_max_height;
@@ -297,7 +299,7 @@ namespace cmpt {
     };
 
     struct RocketLauncher {
-        WeaponBaseStats base_stats;
+        WeaponBase base_stats;
         int explosion_damage;
         Vector3 explosion_start_size;
         Vector3 explosion_end_size;

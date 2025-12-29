@@ -74,9 +74,14 @@ namespace data {
         std::array<int, 3> selections;
     };
 
+    struct PlayerInfo {
+        Entity id;
+        Vector3 position;
+    };
+
     extern Cheats g_cheats;
     extern strg::Tilemap g_terrain;
     extern GameState g_game;
-    extern Entity g_player_id;
+    extern PlayerInfo g_player;
     extern WeaponSelectMenu g_weapon_select_menu;
 }

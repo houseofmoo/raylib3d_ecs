@@ -2,7 +2,7 @@
 
 #include "raymath.h"
 #include "data/entity.h"
-#include "resources/asset_loader.h"
+#include "assets/assets.h"
 #include "components/components.h"
 
 namespace spwn::proj {
@@ -89,7 +89,7 @@ namespace spwn::proj {
                 .size = data::cnst::GRENADE_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::GRENADE_COLOR,
-                .model = &rsrc::asset::grenade_model,
+                .model = &asset::models.Get(asset::ModelType::Grenade),
             }
         );
     }

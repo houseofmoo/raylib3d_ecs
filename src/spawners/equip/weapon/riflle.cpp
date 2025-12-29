@@ -8,7 +8,7 @@ namespace spwn::weapon {
             world.AddComponent<cmpt::Rifle>(
                 id,
                 cmpt::Rifle{
-                    .base_stats = cmpt::WeaponBaseStats {
+                    .base = cmpt::WeaponBase {
                         .parent = id,
                         .kind = data::loot::WeaponKind::Rifle,
                         .cooldown = data::cnst::RIFLE_COOLDOWN, 
@@ -19,7 +19,8 @@ namespace spwn::weapon {
                         .knockback_scale = data::cnst::RIFLE_KNOCKBACK_SCALE,
                         .knockback_duration = data::cnst::RIFLE_KNOCKBACK_DURATION,
                         .layer = layer,
-                        .mask = mask
+                        .mask = mask,
+                        .soundfx_type = asset::SoundFxType::Rifle
                     },
                     .burst_count = data::cnst::RIFLE_BURST_COUNT,
                     .burst_completed = 0,
@@ -30,7 +31,7 @@ namespace spwn::weapon {
         } else {
             // upgrade random stat on the shotgun
             auto& wep = world.GetComponent<cmpt::Rifle>(id);
-            wep.base_stats.damage += 1;
+            wep.base.damage += 1;
         }
     }
 
