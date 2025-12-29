@@ -34,9 +34,11 @@
 namespace sys {
     Camera3D camera;
     strg::Registry world;
+    Texture2D g_shadowTex;
 
     void InitWorld() {
         camera = spwn::camera::Camera();
+        g_shadowTex = LoadTexture("assets/images/shadow_blob.png");
      }
 
     void StartGame() {
@@ -110,6 +112,10 @@ namespace sys {
 
     void RunEntityDrawSystems(const float delta_time) {
         PROFILE_SCOPE("RunEntityDrawSystems()");
+        constexpr float SHADOW_ALPHA     = 0.35f;   // how dark the blob is
+        constexpr float SHADOW_OFFSET_Y  = 0.02f;   // float slightly above ground to avoid z-fighting
+        constexpr float GROUND_Y         = 0.0f;    // your ground plane (visually looks like 0)
+
         // draw all drawable entities
         int entities_count = 0;
         int enemies_count = 0;
@@ -119,6 +125,61 @@ namespace sys {
             auto& trans = sys::world.GetComponent<cmpt::Transform>(entity);
 
             entities_count += 1;
+
+           Vector3 shadowPos {
+                trans.position.x,
+                GROUND_Y + SHADOW_OFFSET_Y,
+                trans.position.z
+            };
+
+            float halfX = 0.5f * draw.size.x * draw.scale.x;
+            float halfZ = 0.5f * draw.size.z * draw.scale.z;
+            float height = draw.size.y * draw.scale.y;
+
+            // Bigger for taller entities
+            float baseRadius   = std::max(halfX, halfZ);
+            float shadowRadius = baseRadius + 0.35f * height;
+
+            // Optional tweaks:
+            // if (world.HasComponent<tag::Player>(entity)) shadowRadius *= 1.2f;
+
+            if (shadowRadius > 0.05f) {
+                // Texture source (full image)
+                Rectangle src {
+                    0.0f,
+                    0.0f,
+                    (float)g_shadowTex.width,
+                    (float)g_shadowTex.height
+                };
+
+                // World size of billboard (diameter in X/Y)
+                Vector2 size {
+                    shadowRadius * 2.0f,
+                    shadowRadius * 2.0f
+                };
+
+                // Origin in billboard local space (center)
+                Vector2 origin {
+                    size.x * 0.5f,
+                    size.y * 0.5f
+                };
+
+                // "Up" direction: billboard stays vertical, but that’s fine for a top-down camera
+                Vector3 up { 0.0f, 1.0f, 0.0f };
+
+                DrawBillboardPro(
+                    camera,                     // your 3D camera
+                    g_shadowTex,                // soft blob texture
+                    src,                        // which part of the texture
+                    shadowPos,                  // world-space position
+                    up,                         // up vector
+                    size,                       // size in world units
+                    origin,                     // origin (center)
+                    0.0f,                       // rotation in degrees
+                    Fade(BLACK, SHADOW_ALPHA)   // tint
+                );
+            }
+
             if (draw.model == nullptr) { // terrain does not have a model atm
                 DrawCubeV(trans.position, draw.size, draw.color);
                 DrawCubeWiresV(trans.position, draw.size, BLACK);

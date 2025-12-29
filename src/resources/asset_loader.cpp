@@ -18,9 +18,24 @@ namespace rsrc::asset {
 
     Music bg_music;
 
-    Sound powerup_fx;
-    Sound shoot_fx;
-    Sound damage_fx;;
+    // Sound powerup_fx;
+    // Sound shoot_fx;
+    // Sound damage_fx;
+
+    Sound sfx_bullet_hit;
+    Sound sfx_dash;
+    Sound sfx_explosion;
+    Sound sfx_melee_hit;
+    Sound sfx_pistol;
+    Sound sfx_shotgun;
+    Sound sfx_sniper;
+    Sound sfx_pickup;
+
+    Sound LoadSoundAndSetVolume(std::string_view path) {
+        Sound s = LoadSound(path.data());
+        SetSoundVolume(s, 0.1f);
+        return s;
+    }
 
     void LoadSoundAssets() {
         bg_music = LoadMusicStream("assets/music/background.mp3");
@@ -28,16 +43,38 @@ namespace rsrc::asset {
         SetMusicPan(bg_music, 0.5f);
         SetMusicVolume(bg_music, 0.1f);
 
-        //Sound powerup_fx1 = LoadSound("assets/soundfx/powerup1.wav");
-        powerup_fx = LoadSound("assets/soundfx/powerup2.wav");
-        //SetSoundVolume(powerup_fx1, 0.1f);
-        SetSoundVolume(powerup_fx, 0.1f);
+        sfx_bullet_hit = LoadSoundAndSetVolume("assets/soundfx/new/bullet_hit.wav");
+        sfx_dash = LoadSoundAndSetVolume("assets/soundfx/new/dash.wav");
+        sfx_explosion = LoadSoundAndSetVolume("assets/soundfx/new/explosion.wav");
+        sfx_melee_hit = LoadSoundAndSetVolume("assets/soundfx/new/melee_hit.wav");
+        sfx_pistol = LoadSoundAndSetVolume("assets/soundfx/new/pistol.wav");
+        sfx_shotgun = LoadSoundAndSetVolume("assets/soundfx/new/shotgun.wav");
+        sfx_sniper = LoadSoundAndSetVolume("assets/soundfx/new/sniper.wav");
+        sfx_pickup = LoadSoundAndSetVolume("assets/soundfx/new/pickup.wav");
 
-        shoot_fx = LoadSound("assets/soundfx/shoot3.wav");
-        SetSoundVolume(shoot_fx, 0.1f);
+        // //Sound powerup_fx1 = LoadSound("assets/soundfx/powerup1.wav");
+        // powerup_fx = LoadSound("assets/soundfx/powerup2.wav");
+        // //SetSoundVolume(powerup_fx1, 0.1f);
+        // SetSoundVolume(powerup_fx, 0.1f);
 
-        damage_fx = LoadSound("assets/soundfx/damage.wav");
-        SetSoundVolume(damage_fx, 0.12f);
+        // shoot_fx = LoadSound("assets/soundfx/shoot3.wav");
+        // SetSoundVolume(shoot_fx, 0.1f);
+
+        // damage_fx = LoadSound("assets/soundfx/damage.wav");
+        // SetSoundVolume(damage_fx, 0.12f);
+    }
+
+    void UnloadSoundAssets() {
+        UnloadMusicStream(bg_music);
+
+        UnloadSound(sfx_bullet_hit);
+        UnloadSound(sfx_dash);
+        UnloadSound(sfx_explosion);
+        UnloadSound(sfx_melee_hit);
+        UnloadSound(sfx_pistol);
+        UnloadSound(sfx_shotgun);
+        UnloadSound(sfx_sniper);
+        UnloadSound(sfx_pickup);
     }
 
     void LoadModelAssets() {
@@ -75,30 +112,26 @@ namespace rsrc::asset {
         weapon_crate_model = LoadModelFromMesh(weapon_crate_mesh);
     }
     
+    void UnloadModelAssets() {
+        UnloadModel(player_model);
+        UnloadModel(grunt_model);
+        UnloadModel(brute_model);
+        UnloadModel(bullet_model);
+        UnloadModel(grenade_model);
+        UnloadModel(exp_model);
+        UnloadModel(money_model);
+        UnloadModel(powerup_model);
+        UnloadModel(weapon_model);
+        UnloadModel(weapon_crate_model);
+    }
+
     void LoadAssets() {
         LoadModelAssets();
         LoadSoundAssets();
     }
 
     void UnloadAssets() {
-        UnloadMusicStream(bg_music);
-
-        UnloadSound(damage_fx);
-        UnloadSound(shoot_fx);
-        UnloadSound(powerup_fx);
-
-        UnloadModel(player_model);
-
-        UnloadModel(grunt_model);
-        UnloadModel(brute_model);
-
-        UnloadModel(bullet_model);
-        UnloadModel(grenade_model);
-
-        UnloadModel(exp_model);
-        UnloadModel(money_model);
-        UnloadModel(powerup_model);
-        UnloadModel(weapon_model);
-        UnloadModel(weapon_crate_model);
+        UnloadSoundAssets();
+        UnloadModelAssets();
     }
 }

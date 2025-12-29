@@ -21,7 +21,15 @@ namespace rsrc::asset {
     extern Model weapon_crate_model;
 
     extern Music bg_music;
-    extern Sound powerup_fx;
-    extern Sound shoot_fx;
-    extern Sound damage_fx;;
+    // extern Sound powerup_fx;
+    // extern Sound shoot_fx;
+    // extern Sound damage_fx;
+    extern Sound sfx_bullet_hit;
+    extern Sound sfx_dash;
+    extern Sound sfx_explosion;
+    extern Sound sfx_melee_hit;
+    extern Sound sfx_pistol;
+    extern Sound sfx_shotgun;
+    extern Sound sfx_sniper;
+    extern Sound sfx_pickup;
 }
