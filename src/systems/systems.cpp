@@ -5,6 +5,7 @@
 #include "raygui.h"
 
 #include "data/game/game.h"
+#include "assets/asset_loader.h"
 #include "assets/assets.h"
 #include "utils/debug.h"
 
@@ -114,6 +115,9 @@ namespace sys {
         int entities_count = 0;
         int enemies_count = 0;
 
+        // temp test vars
+        
+
         for (auto entity : sys::world.View<cmpt::Draw, cmpt::Transform>()) {
             auto& draw = sys::world.GetComponent<cmpt::Draw>(entity);
             auto& trans = sys::world.GetComponent<cmpt::Transform>(entity);
@@ -144,11 +148,13 @@ namespace sys {
                 axis = Vector3Normalize(axis);
 
                 DrawModelEx(*draw.model, trans.position, axis, RAD2DEG * angle, draw.scale, color);
-                rlPushMatrix();
-                    rlTranslatef(trans.position.x, trans.position.y, trans.position.z);   // pivot at model position
-                    rlRotatef(RAD2DEG * angle, axis.x, axis.y, axis.z);                   // apply same rotation
-                    DrawCubeWiresV({0,0,0}, draw.size, BLACK);                            // draw in local space
-                rlPopMatrix();
+                if (!world.HasComponent<cmpt::Player>(entity)) {
+                    rlPushMatrix();
+                        rlTranslatef(trans.position.x, trans.position.y, trans.position.z);   // pivot at model position
+                        rlRotatef(RAD2DEG * angle, axis.x, axis.y, axis.z);                   // apply same rotation
+                        DrawCubeWiresV({0,0,0}, draw.size, BLACK);                            // draw in local space
+                    rlPopMatrix();
+                }
             }
         }
         

@@ -6,10 +6,12 @@
 #include "utils/debug.h"
 
 namespace asset {
-    Sound LoadSoundAndSetVolume(std::string_view path) {
-        Sound s = LoadSound(path.data());
-        SetSoundVolume(s, 0.1f);
-        return s;
+    void LoadSoundFx(asset::SoundFxType type, std::string_view path) {
+        asset::sound_fx.Insert(
+            type,
+            LoadSound(path.data())
+        );
+        SetSoundVolume(asset::sound_fx[type], 0.1f);
     }
 
     void LoadSoundAssets() {
@@ -18,136 +20,58 @@ namespace asset {
         SetMusicPan(asset::bg_music, 0.5f);
         SetMusicVolume(asset::bg_music, 0.1f);
 
-        asset::sound_fx.Set(
-            asset::SoundFxType::Dash, 
-            LoadSoundAndSetVolume("assets/soundfx/new/dash.wav")
-        );
+        LoadSoundFx(asset::SoundFxType::Dash, "assets/soundfx/new/dash.wav");
 
-        asset::sound_fx.Set(
-            asset::SoundFxType::MeleeHit, 
-            LoadSoundAndSetVolume("assets/soundfx/new/melee_hit.wav")
-        );
-        asset::sound_fx.Set(
-            asset::SoundFxType::BulletHit, 
-            LoadSoundAndSetVolume("assets/soundfx/damage.wav")
-        );
+        LoadSoundFx(asset::SoundFxType::BulletHit, "assets/soundfx/damage.wav");
+        LoadSoundFx(asset::SoundFxType::MeleeHit, "assets/soundfx/new/melee_hit.wav");
+        
+        LoadSoundFx(asset::SoundFxType::Pistol, "assets/soundfx/new/pistol.wav");
+        LoadSoundFx(asset::SoundFxType::Shotgun, "assets/soundfx/new/shotgun.wav");
+        LoadSoundFx(asset::SoundFxType::Sniper, "assets/soundfx/new/sniper.wav");
+        LoadSoundFx(asset::SoundFxType::SMG, "assets/soundfx/new/pistol.wav");
+        LoadSoundFx(asset::SoundFxType::GrenadeLauncher, "assets/soundfx/new/pistol.wav");
+        LoadSoundFx(asset::SoundFxType::Explosion, "assets/soundfx/new/explosion.wav");
 
-        asset::sound_fx.Set(
-            asset::SoundFxType::Pistol, 
-            LoadSoundAndSetVolume("assets/soundfx/new/pistol.wav")
-        );
-        asset::sound_fx.Set(
-            asset::SoundFxType::Shotgun, 
-            LoadSoundAndSetVolume("assets/soundfx/new/shotgun.wav")
-        );
-        asset::sound_fx.Set(
-            asset::SoundFxType::Sniper, 
-            LoadSoundAndSetVolume("assets/soundfx/new/sniper.wav")
-        );
-        asset::sound_fx.Set(
-            asset::SoundFxType::SMG, 
-            LoadSoundAndSetVolume("assets/soundfx/new/pistol.wav")
-        );
-        asset::sound_fx.Set(
-            asset::SoundFxType::GrenadeLauncher, 
-            LoadSoundAndSetVolume("assets/soundfx/new/pistol.wav")
-        );
-        asset::sound_fx.Set(
-            asset::SoundFxType::Explosion, 
-            LoadSoundAndSetVolume("assets/soundfx/new/explosion.wav")
-        );
-
-        asset::sound_fx.Set(
-            asset::SoundFxType::Pickup, 
-            LoadSoundAndSetVolume("assets/soundfx/new/pickup.wav")
-        );
+        LoadSoundFx(asset::SoundFxType::Pickup, "assets/soundfx/new/pickup.wav");
     }
 
     void UnloadSoundAssets() {
-        auto [beg, end] = asset::sound_fx.Iter();
-        for (auto it = beg; it != end; ++it) {
-            UnloadSound(*it);
+        for (auto sound : asset::sound_fx) {
+            UnloadSound(sound);
         }
         asset::sound_fx.Clear();
     }
 
+    void ModelFromMesh(const asset::ModelType type, const Vector3 size) {
+        asset::models.Insert(
+            type,
+            LoadModelFromMesh(GenMeshCube(size.x, size.y, size.z))
+        );
+    }
+
     void LoadModelAssets() {
-        asset::models.Set(
-            asset::ModelType::Player,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::PLAYER_SIZE.x, data::cnst::PLAYER_SIZE.y, data::cnst::PLAYER_SIZE.z)
-            )
+        ModelFromMesh(asset::ModelType::Player, data::cnst::PLAYER_SIZE);
+        asset::models[asset::ModelType::Player].materials[0].shader = LoadShader(
+            "assets/shaders/blue.vs", 
+            "assets/shaders/blue.fs"
         );
 
-        asset::models.Set(
-            asset::ModelType::Grunt,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::GRUNT_SIZE.x, data::cnst::GRUNT_SIZE.y, data::cnst::GRUNT_SIZE.z)
-            )
-        );
-
-        asset::models.Set(
-            asset::ModelType::Brute,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::BRUTE_SIZE.x, data::cnst::BRUTE_SIZE.y, data::cnst::BRUTE_SIZE.z)
-            )
-        );
-
-        asset::models.Set(
-            asset::ModelType::Bullet,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::BULLET_SIZE.x, data::cnst::BULLET_SIZE.y, data::cnst::BULLET_SIZE.z)
-            )
-        );
-
-        asset::models.Set(
-            asset::ModelType::Grenade,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::GRENADE_SIZE.x, data::cnst::GRENADE_SIZE.y, data::cnst::GRENADE_SIZE.z)
-            )
-        );
-
-        asset::models.Set(
-            asset::ModelType::Exp,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::EXP_SIZE.x, data::cnst::EXP_SIZE.y, data::cnst::EXP_SIZE.z)
-            )
-        );
-
-        asset::models.Set(
-            asset::ModelType::Money,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::MONEY_SIZE.x, data::cnst::MONEY_SIZE.y, data::cnst::MONEY_SIZE.z)
-            )
-        );
-
-        asset::models.Set(
-            asset::ModelType::Powerup,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::POWERUP_SIZE.x, data::cnst::POWERUP_SIZE.y, data::cnst::POWERUP_SIZE.z)
-            )
-        );
-
-        asset::models.Set(
-            asset::ModelType::Weapon,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::WEAPON_SIZE.x, data::cnst::WEAPON_SIZE.y, data::cnst::WEAPON_SIZE.z)
-            )
-        );
-
-        asset::models.Set(
-            asset::ModelType::WeaponCrate,
-            LoadModelFromMesh(
-                GenMeshCube(data::cnst::WEAPON_CRATE_SIZE.x, data::cnst::WEAPON_CRATE_SIZE.y, data::cnst::WEAPON_CRATE_SIZE.z)
-            )
-        );
+        ModelFromMesh(asset::ModelType::Grunt, data::cnst::GRUNT_SIZE);
+        ModelFromMesh(asset::ModelType::Brute, data::cnst::BRUTE_SIZE);
+        ModelFromMesh(asset::ModelType::Bullet, data::cnst::BULLET_SIZE);
+        ModelFromMesh(asset::ModelType::Grenade, data::cnst::GRENADE_SIZE);
+        ModelFromMesh(asset::ModelType::Exp, data::cnst::EXP_SIZE);
+        ModelFromMesh(asset::ModelType::Money, data::cnst::MONEY_SIZE);
+        ModelFromMesh(asset::ModelType::Powerup, data::cnst::POWERUP_SIZE);
+        ModelFromMesh(asset::ModelType::Weapon, data::cnst::WEAPON_SIZE);
+        ModelFromMesh(asset::ModelType::WeaponCrate, data::cnst::WEAPON_CRATE_SIZE);
     }
     
     void UnloadModelAssets() {
-        auto [beg, end] = asset::models.Iter();
-        for (auto it = beg; it != end; ++it) {
-            UnloadModel(*it);
+        for (auto asset : asset::models) {
+            UnloadModel(asset);
         }
+        UnloadShader(asset::models[asset::ModelType::Player].materials[0].shader);
         asset::models.Clear();
     }
 

@@ -4,7 +4,7 @@
 
 namespace snd {
     void PlaySoundFxGlobal(asset::SoundFxType type) {
-        auto& soundfx = asset::sound_fx.Get(type);
+        auto& soundfx = asset::sound_fx[type];
         PlaySound(soundfx);
         SetSoundPitch(soundfx, static_cast<float>(GetRandomValue(9, 15)) * 0.1f);
     }
@@ -17,7 +17,7 @@ namespace snd {
             volume = Clamp(MAX_VOLUME * (10.0f / distance), 0.0f, MAX_VOLUME);
         }
 
-        auto& soundfx = asset::sound_fx.Get(type);
+        auto& soundfx = asset::sound_fx[type];
         SetSoundVolume(soundfx, volume);
         PlaySound(soundfx);
         SetSoundPitch(soundfx, static_cast<float>(GetRandomValue(9, 15)) * 0.1f);

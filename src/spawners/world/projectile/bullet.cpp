@@ -70,7 +70,7 @@ namespace spwn::proj {
                 .size = data::cnst::BULLET_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::BULLET_COLOR,
-                .model = &asset::models.Get(asset::ModelType::Bullet),
+                .model = &asset::models[asset::ModelType::Bullet],
             }
         );
     }

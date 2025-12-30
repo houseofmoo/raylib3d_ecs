@@ -47,7 +47,7 @@ namespace spwn::player {
                 .size = data::cnst::PLAYER_SIZE,
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::PLAYER_COLOR,
-                .model = &asset::models.Get(asset::ModelType::Player)
+                .model = &asset::models[asset::ModelType::Player]
             }
         );
 

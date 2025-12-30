@@ -89,7 +89,7 @@ namespace spwn::proj {
                 .size = data::cnst::GRENADE_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::GRENADE_COLOR,
-                .model = &asset::models.Get(asset::ModelType::Grenade),
+                .model = &asset::models[asset::ModelType::Grenade],
             }
         );
     }

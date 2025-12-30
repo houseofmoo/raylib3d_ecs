@@ -81,7 +81,7 @@ namespace spwn::enemy {
                 .size = data::cnst::BRUTE_SIZE,
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::BRUTE_COLOR, 
-                .model = &asset::models.Get(asset::ModelType::Brute)
+                .model = &asset::models[asset::ModelType::Brute]
             }
         );
 

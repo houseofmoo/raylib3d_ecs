@@ -59,7 +59,7 @@ namespace spwn::loot {
                 .size = data::cnst::EXP_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::EXP_COLOR, 
-                .model = &asset::models.Get(asset::ModelType::Exp),
+                .model = &asset::models[asset::ModelType::Exp],
             }
         );
     }
@@ -116,7 +116,7 @@ namespace spwn::loot {
                 .size = data::cnst::MONEY_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = GOLD, 
-                .model = &asset::models.Get(asset::ModelType::Money),
+                .model = &asset::models[asset::ModelType::Money],
             }
         );
     }
@@ -173,7 +173,7 @@ namespace spwn::loot {
                 .size = data::cnst::POWERUP_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::POWERUP_COLORS[(int)kind],
-                .model = &asset::models.Get(asset::ModelType::Powerup),
+                .model = &asset::models[asset::ModelType::Powerup],
             }
         );
     }
@@ -230,7 +230,7 @@ namespace spwn::loot {
                 .size = data::cnst::WEAPON_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::WEAPON_COLORS[(int)kind],
-                .model = &asset::models.Get(asset::ModelType::Weapon)
+                .model = &asset::models[asset::ModelType::Weapon]
             }
         );
     }
@@ -282,7 +282,7 @@ namespace spwn::loot {
                 .size = data::cnst::WEAPON_CRATE_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::WEAPON_CRATE_COLOR,
-                .model = &asset::models.Get(asset::ModelType::WeaponCrate)
+                .model = &asset::models[asset::ModelType::WeaponCrate]
             }
         );
 

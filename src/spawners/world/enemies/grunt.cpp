@@ -80,7 +80,7 @@ namespace spwn::enemy {
                 .size = data::cnst::GRUNT_SIZE, 
                 .scale = data::cnst::BASE_SCALE,
                 .color = data::cnst::GRUNT_COLOR, 
-                .model = &asset::models.Get(asset::ModelType::Grunt),
+                .model = &asset::models[asset::ModelType::Grunt],
             }
         );
 
