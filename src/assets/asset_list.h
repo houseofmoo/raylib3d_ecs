@@ -17,7 +17,8 @@ namespace asset {
 
         public:
             const T& operator[](E type) const { return assets[static_cast<size_t>(type)]; }
-            T& operator[](E type) { return assets[static_cast<size_t>(type)]; }
+            // turn off mutable access via [index]
+            //T& operator[](E type) { return assets[static_cast<size_t>(type)]; }
 
             void Insert(E type, T asset) noexcept {
                 const size_t idx = static_cast<size_t>(type);

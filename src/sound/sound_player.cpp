@@ -10,11 +10,12 @@ namespace snd {
     }
 
     void PlaySoundFxPositional(asset::SoundFxType type, const Vector3 position) {
-        constexpr float MAX_VOLUME = 0.1f;
+        constexpr float MAX_VOLUME = 0.12f;
+        constexpr float THRESHOLD = 10.0f;
         float distance = Vector3Distance(data::g_player.position, position);
         float volume = MAX_VOLUME;
         if (distance > 0.0f) {
-            volume = Clamp(MAX_VOLUME * (10.0f / distance), 0.0f, MAX_VOLUME);
+            volume = Clamp(MAX_VOLUME * (THRESHOLD / distance), 0.0f, MAX_VOLUME);
         }
 
         auto& soundfx = asset::sound_fx[type];

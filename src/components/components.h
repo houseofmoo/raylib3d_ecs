@@ -354,6 +354,6 @@ namespace cmpt {
         Vector3 size;
         Vector3 scale;
         Color color;
-        Model* model;
+        const Model* model;
     };
 }

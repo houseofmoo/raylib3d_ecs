@@ -35,7 +35,10 @@ namespace asset {
         GrenadeLauncher,
         Explosion,
 
-        Pickup
+        PickupExp,
+        PickupMoney,
+        PickupPowerup,
+        PickupWeaponCrate
     };
 
     extern Music bg_music;

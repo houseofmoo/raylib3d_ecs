@@ -4,6 +4,8 @@
 #include "components/components.h"
 #include "spawners/system/events/notification.h"
 #include "spawners/equip/weapon/weapons.h"
+#include "assets/assets.h"
+#include "sound/sound_player.h"
 #include "data/game/game.h"
 #include "data/entity.h"
 #include "utils/debug.h"
@@ -168,6 +170,7 @@ namespace sys::evt {
                     auto& exp = world.GetComponent<cmpt::ExpLoot>(entity);
                     ApplyExp(world, evt.id, exp.amount);
                     spwn::evt::Notification(world, data::notif::GAIN_EXP);
+                    snd::PlaySoundFxGlobal(asset::SoundFxType::PickupExp);
                     break;
                 }
                 case data::loot::LootKind::Money: {
@@ -175,6 +178,7 @@ namespace sys::evt {
                     if (auto* player = world.TryGetComponent<cmpt::Player>(evt.id)) {
                         player->money += money.amount;
                         spwn::evt::Notification(world, data::notif::GAIN_MONEY);
+                        snd::PlaySoundFxGlobal(asset::SoundFxType::PickupMoney);
                     }
                     break;
                 }
@@ -182,6 +186,7 @@ namespace sys::evt {
                 case data::loot::LootKind::Powerup: {
                     auto& pukind = world.GetComponent<cmpt::PowerupLoot>(entity);
                     ApplyPowerup(world, pukind.kind, evt.id);
+                    snd::PlaySoundFxGlobal(asset::SoundFxType::PickupPowerup);
                     break;
                 }
 
@@ -189,12 +194,13 @@ namespace sys::evt {
                     PRINT("old, delete me - found weapon drop")
                     auto& wepkind = world.GetComponent<cmpt::WeaponLoot>(entity);
                     ApplyWeapon(world, wepkind.kind, evt.id);
+                    snd::PlaySoundFxGlobal(asset::SoundFxType::PickupWeaponCrate);
                     break;
                 }
 
                 case data::loot::LootKind::WeaponCrate: {
                     data::g_weapon_select_menu.show = true;
-                    PRINT("+wep crate");
+                    snd::PlaySoundFxGlobal(asset::SoundFxType::PickupWeaponCrate);
                     break;
                 }
 

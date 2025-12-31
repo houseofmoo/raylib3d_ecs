@@ -32,7 +32,10 @@ namespace asset {
         LoadSoundFx(asset::SoundFxType::GrenadeLauncher, "assets/soundfx/new/pistol.wav");
         LoadSoundFx(asset::SoundFxType::Explosion, "assets/soundfx/new/explosion.wav");
 
-        LoadSoundFx(asset::SoundFxType::Pickup, "assets/soundfx/new/pickup.wav");
+        LoadSoundFx(asset::SoundFxType::PickupExp, "assets/soundfx/new/pickup_small.wav");
+        LoadSoundFx(asset::SoundFxType::PickupMoney, "assets/soundfx/new/pickup_small.wav");
+        LoadSoundFx(asset::SoundFxType::PickupPowerup, "assets/soundfx/new/pickup_power_up.wav");
+        LoadSoundFx(asset::SoundFxType::PickupWeaponCrate, "assets/soundfx/new/pickup_weapon_crate.wav");
     }
 
     void UnloadSoundAssets() {

@@ -131,17 +131,17 @@ target_link_libraries(RL_IMGUI PUBLIC IMGUI raylib)
 target_link_libraries(${PROJECT_NAME} PRIVATE IMGUI RL_IMGUI)
 
 # Copy assets to output directory
-# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy_directory
-#         "${CMAKE_SOURCE_DIR}/assets"
-#         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
-#     COMMENT "Copying assets directory"
-# )
-
-# always copy assets to output directory
-add_custom_target(copy_assets ALL
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/assets"
         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
     COMMENT "Copying assets directory"
 )
+
+# always copy assets to output directory
+# add_custom_target(copy_assets ALL
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#         "${CMAKE_SOURCE_DIR}/assets"
+#         "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
+#     COMMENT "Copying assets directory"
+# )
