@@ -21,7 +21,7 @@
 #include "systems/collisions/entity_collision_system.h"
 #include "systems/collisions/collision_handlers.h"
 #include "systems/damage_system.h"
-#include "systems/drop_loot.h"
+#include "systems/loot/drop_loot.h"
 #include "systems/timed_spawn_system.h"
 #include "systems/events/loot_pickedup_event_system.h"
 #include "systems/events/notification_event_system.h"
@@ -97,7 +97,7 @@ namespace sys {
         sys::SpawnAnimation(world);
         sys::DeathAnimation(world);
         
-        sys::loot::LootDrop(world);
+        sys::loot::DropLoot(world);
         sys::evt::HandleLootPickedupEvents(world);
 
         sys::vel::ApplyVelocity(world, delta_time);
@@ -116,8 +116,6 @@ namespace sys {
         int enemies_count = 0;
 
         // temp test vars
-        
-
         for (auto entity : sys::world.View<cmpt::Draw, cmpt::Transform>()) {
             auto& draw = sys::world.GetComponent<cmpt::Draw>(entity);
             auto& trans = sys::world.GetComponent<cmpt::Transform>(entity);

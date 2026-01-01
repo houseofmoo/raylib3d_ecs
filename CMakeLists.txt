@@ -90,6 +90,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/cleanup
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/collisions
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/events
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/input
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/loot
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
 )

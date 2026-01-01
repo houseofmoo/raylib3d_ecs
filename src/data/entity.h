@@ -115,8 +115,9 @@ namespace data {
         constexpr float   PLAYER_EXP_MODIFIER       = 1.15f;
 
         // loot
-        constexpr int     LOOT_CHANCE             = 50;
-        constexpr int     LOOT_BADLUCK_PROTECTION = 10;
+        constexpr int     LOOT_CHANCE             = 30;
+        constexpr int     LOOT_BADLUCK_POWERUP    = 10;
+        constexpr int     LOOT_BADLUCK_WEPCRATE   = 30;
         constexpr float   LOOT_ROTATION_SPEED     = 2.5f;
         constexpr Vector3 MIN_LOOT_COLLIDER       = { 0.5f, 0.5f, 0.5f };
         constexpr float   LOOT_LIFETIME           = 15.0f;
