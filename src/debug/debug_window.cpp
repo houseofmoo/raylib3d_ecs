@@ -1,7 +1,7 @@
 #include "debug/debug_window.h"
 
 #include "rlImGui.h"
-#include "data/game/game.h"
+#include "data/global_data.h"
 #include "utils/debug.h"
 #include "components/components.h"
 #include "spawners/world/enemies/enemies.h"
@@ -45,18 +45,18 @@ namespace debug {
     }
     
     void DrawStatsTab(strg::Registry& world) {
-        auto* info = world.TryGetComponent<cmpt::Player>(data::g_player.id);
-        auto* stats = world.TryGetComponent<cmpt::Stats>(data::g_player.id);
+        auto* info = world.TryGetComponent<cmpt::Player>(gd::player.id);
+        auto* stats = world.TryGetComponent<cmpt::Stats>(gd::player.id);
 
         ImGui::Text("fps:        %d", GetFPS());
-        ImGui::Text("entities:   %d", data::g_game.entity_count);
-        ImGui::Text("enemies:    %d", data::g_game.enemy_count);
-        ImGui::Text("spawn time: %.2f", data::g_game.enemy_spawn_interval);
-        ImGui::Text("difficulty: %d", data::g_game.difficulty);
+        ImGui::Text("entities:   %d", gd::game.entity_count);
+        ImGui::Text("enemies:    %d", gd::game.enemy_count);
+        ImGui::Text("spawn time: %.2f", gd::game.enemy_spawn_interval);
+        ImGui::Text("difficulty: %d", gd::game.difficulty);
         ImGui::Separator();
 
         if (info != nullptr) {
-            ImGui::Text("id:         %d", data::g_player.id);
+            ImGui::Text("id:         %d", gd::player.id);
             ImGui::Text("level:      %d", info->level);
             ImGui::Text("gold:       %d", info->money);
             ImGui::Text("exp:        %d", info->exp);
@@ -134,70 +134,70 @@ namespace debug {
         if (ImGui::Button("+pistol", size)) {
             spwn::weapon::EquipPistol(
                 world, 
-                data::g_player.id, 
+                gd::player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-pistol", size)) {
-            spwn::weapon::DequipPistol(world, data::g_player.id);
+            spwn::weapon::DequipPistol(world, gd::player.id);
         }
 
         if (ImGui::Button("+shotgun", size)) {
             spwn::weapon::EquipShotgun(
                 world, 
-                data::g_player.id, 
+                gd::player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-shotgun", size)) {
-            spwn::weapon::DequipShotgun(world, data::g_player.id);
+            spwn::weapon::DequipShotgun(world, gd::player.id);
         }
 
         if (ImGui::Button("+rifle", size)) {
             spwn::weapon::EquipRifle(
                 world, 
-                data::g_player.id, 
+                gd::player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-rifle", size)) {
-            spwn::weapon::DequipRifle(world, data::g_player.id);
+            spwn::weapon::DequipRifle(world, gd::player.id);
         }
 
         if (ImGui::Button("+smg", size)) {
             spwn::weapon::EquipSMG(
                 world, 
-                data::g_player.id, 
+                gd::player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-smg", size)) {
-            spwn::weapon::DequipSMG(world, data::g_player.id);
+            spwn::weapon::DequipSMG(world, gd::player.id);
         }
         
         if (ImGui::Button("+grenade", size)) {
             spwn::weapon::EquipGrenadeLauncher(
                 world, 
-                data::g_player.id, 
+                gd::player.id, 
                 data::cnst::PLAYER_PROJECTILE_LAYER, 
                 data::cnst::PLAYER_PROJECTILE_LAYER_MASK
             );
         }
         ImGui::SameLine();
         if (ImGui::Button("-grenade", size)) {
-            spwn::weapon::DequipGrenadeLauncher(world, data::g_player.id);
+            spwn::weapon::DequipGrenadeLauncher(world, gd::player.id);
         }
         ImGui::Separator();
 
-        if (auto* wep = world.TryGetComponent<cmpt::Pistol>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Pistol>(gd::player.id)) {
             ImGui::Text("pistol:");
             ImGui::Text("  dmg:         %d", wep->base.damage);
             ImGui::Text("  pen:         %d", wep->base.penetration);
@@ -208,7 +208,7 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::Shotgun>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Shotgun>(gd::player.id)) {
             ImGui::Text("shotgun:");
             ImGui::Text("  dmg:         %d", wep->base.damage);
             ImGui::Text("  pen:         %d", wep->base.penetration);
@@ -221,7 +221,7 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::Rifle>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::Rifle>(gd::player.id)) {
             ImGui::Text("rifle:");
             ImGui::Text("  dmg:         %d", wep->base.damage);
             ImGui::Text("  pen:         %d", wep->base.penetration);
@@ -234,7 +234,7 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::SMG>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::SMG>(gd::player.id)) {
             ImGui::Text("smg:");
             ImGui::Text("  dmg:         %d", wep->base.damage);
             ImGui::Text("  pen:         %d", wep->base.penetration);
@@ -245,7 +245,7 @@ namespace debug {
             ImGui::Separator();
         }
 
-        if (auto* wep = world.TryGetComponent<cmpt::GrenadeLauncher>(data::g_player.id)) {
+        if (auto* wep = world.TryGetComponent<cmpt::GrenadeLauncher>(gd::player.id)) {
             ImGui::Text("grenade:");
             ImGui::Text("  dmg:         %d", wep->base.damage);
             ImGui::Text("  pen:         %d", wep->base.penetration);
@@ -270,14 +270,14 @@ namespace debug {
         }
 
         // cheats
-        ImGui::Checkbox(" god mode", &data::g_cheats.god_mode);
-        ImGui::Checkbox(" dont spawn enemies", &data::g_cheats.dont_spawn_enemies);
-        ImGui::Checkbox(" always loot", &data::g_cheats.always_drop_loot);
-        ImGui::Checkbox(" no loot", &data::g_cheats.never_drop_loot);
+        ImGui::Checkbox(" god mode", &gd::cheats.god_mode);
+        ImGui::Checkbox(" dont spawn enemies", &gd::cheats.dont_spawn_enemies);
+        ImGui::Checkbox(" always loot", &gd::cheats.always_drop_loot);
+        ImGui::Checkbox(" no loot", &gd::cheats.never_drop_loot);
         ImGui::Separator();
 
         ImGui::Text("difficulty slider");
-        if (ImGui::SliderInt("##diff_slider", &data::g_game.difficulty, 0, 2000)) {}
+        if (ImGui::SliderInt("##diff_slider", &gd::game.difficulty, 0, 2000)) {}
         ImGui::Separator();
 
         // spawn enemies
@@ -313,7 +313,7 @@ namespace debug {
     void DrawTilemapTab() {
         // tilemap testing
         if (ImGui::Button("draw tilemap")) {
-            data::g_terrain.DrawTileMap();
+            gd::terrain.DrawTileMap();
         }
     }
 
@@ -321,7 +321,7 @@ namespace debug {
         #ifdef PROFILER_ENABLED
         // Profiler Tab
         if (ImGui::BeginTabItem("profiler")) {
-            if (ImGui::Checkbox("enable profiler: ", &data::g_cheats.profiler_enabled)) {
+            if (ImGui::Checkbox("enable profiler: ", &gd::cheats.profiler_enabled)) {
                 PRINT("Profiler contents cleared");
                 PROFILER_CLEAR;
             }

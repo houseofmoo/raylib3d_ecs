@@ -8,7 +8,8 @@
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/src/**",
                 "${workspaceFolder}/libs/**",
-                "${workspaceFolder}/libs/raylib/src"
+                "${workspaceFolder}/libs/raylib/src",
+                "${workspaceFolder}/libs/raygui_styles"
             ],
             "windowsSdkVersion": "10.0.26100.0",
             "intelliSenseMode": "windows-msvc-x64",

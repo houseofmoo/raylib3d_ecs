@@ -1,15 +1,12 @@
-#include "data/game/game.h"
-#include "data/entity.h"
-#include "raymath.h"
+#include "data/global_data.h"
 
-namespace data {
-    strg::Tilemap g_terrain(
+namespace gd {
+    strg::Tilemap terrain(
         data::cnst::PLAY_AREA.min,
         data::cnst::PLAY_AREA.max
     );
 
-    constinit GameState g_game {
-        .state = GameState_E::StartScreen,
+    constinit GameStatus game {
         .difficulty = 0,
         .enemy_spawn_countdown = 0.0f,
         .enemy_spawn_interval = data::cnst::MAX_SPAWN_INTERVAL,
@@ -17,12 +14,7 @@ namespace data {
         .entity_count = 0,
     };
 
-    constinit WeaponSelectMenu g_weapon_select_menu {
-        .show = false,
-        .selections = {-1, -1, -1 }
-    };
-
-    constinit Cheats g_cheats {
+    constinit Cheats cheats {
         .god_mode = false,
         .dont_spawn_enemies = false,
         .always_drop_loot = false,
@@ -30,8 +22,14 @@ namespace data {
         .profiler_enabled = false,
     };
 
-    constinit PlayerInfo g_player {
+    constinit PlayerInfo player {
         .id = 0,
         .position = { 0.0f, 0.0f, 0.0f }
     };
+
+    constinit Vector2 screen_size = {
+        .x = 0.0f,
+        .y = 0.0f,
+    };
 }
+

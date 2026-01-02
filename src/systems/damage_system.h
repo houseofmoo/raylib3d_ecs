@@ -2,8 +2,8 @@
 #pragma once
 
 #include "storage/registry.h"
-#include "data/game/game.h"
 #include "data/entity.h"
+#include "data/global_data.h"
 #include "components/components.h"
 #include "components/cmpt_helpers.h"
 #include "spawners/system/events/notification.h"
@@ -29,7 +29,7 @@ namespace sys::dmg {
             // player taking damage is special
             if (world.HasComponent<cmpt::Player>(entity)) {
                 // if god mode enabled, remove all player damage
-                if (data::g_cheats.god_mode) {
+                if (gd::cheats.god_mode) {
                     dmg.total = 0;
                 } 
 
@@ -53,6 +53,8 @@ namespace sys::dmg {
 
             if (auto* trans = world.TryGetComponent<cmpt::Transform>(entity)) {
                 snd::PlaySoundFxPositional(asset::SoundFxType::BulletHit, trans->position);
+            } else {
+                snd::PlaySoundFxGlobal(asset::SoundFxType::BulletHit);
             }
 
             if (stats.current_hp <= 0) {

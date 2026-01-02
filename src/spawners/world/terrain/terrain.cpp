@@ -2,7 +2,7 @@
 #include "raymath.h"
 #include "components/components.h"
 #include "assets/assets.h"
-#include "data/game/game.h"
+#include "data/global_data.h"
 
 namespace spwn::terrain {
      void Terrain(strg::Registry& world, const Vector3 position, const Vector3 size, const bool visible) {
@@ -34,6 +34,6 @@ namespace spwn::terrain {
         }
 
         // add to terrain tilemap
-        data::g_terrain.SetAreaTiles(position, size);
+        gd::terrain.SetAreaTiles(position, size);
     }
 }

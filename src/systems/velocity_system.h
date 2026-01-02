@@ -6,7 +6,7 @@
 
 #include "storage/registry.h"
 #include "components/components.h"
-#include "data/game/game.h"
+#include "data/global_data.h"
 #include "utils/rl_utils.h"
 #include "utils/position.h"
 #include "utils/debug.h"
@@ -24,7 +24,7 @@ namespace sys::vel {
             
             auto* col = world.TryGetComponent<cmpt::Collider>(entity);
             float height = (col == nullptr) ? 0.0f : utils::GetEntityHeight(new_pos, col->size);
-            if (data::g_terrain.ValidMove(new_pos, height)) {
+            if (gd::terrain.ValidMove(new_pos, height)) {
                 trans.position = new_pos;
                 continue;
             }
@@ -42,7 +42,7 @@ namespace sys::vel {
         // TODO: this is ugly, but we need it for testing
         for (auto entity : world.View<cmpt::Player, cmpt::Transform>()) {
             auto& trans = world.GetComponent<cmpt::Transform>(entity);
-            data::g_player.position = trans.position;
+            gd::player.position = trans.position;
             break;
         }
     }
@@ -67,7 +67,7 @@ namespace sys::vel {
             new_pos.y += 4.0f * arch.height * time * (1.0f - time);
             float height = (col == nullptr) ? 0.0f : utils::GetEntityHeight(new_pos, col->size);
 
-            if (data::g_terrain.ValidMove(new_pos, height)) {   
+            if (gd::terrain.ValidMove(new_pos, height)) {   
                 trans.position = new_pos;
                 continue;
             }

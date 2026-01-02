@@ -6,7 +6,6 @@
 #include "spawners/equip/weapon/weapons.h"
 #include "assets/assets.h"
 #include "sound/sound_player.h"
-#include "data/game/game.h"
 #include "data/entity.h"
 #include "utils/debug.h"
 
@@ -159,7 +158,7 @@ namespace sys::evt {
         }
     }
 
-    void HandleLootPickedupEvents(strg::Registry& world) noexcept {
+    void HandleLootPickedupEvents(strg::Registry& world, state::NavRequest& nav) noexcept {
         PROFILE_SCOPE("HandleLootPickedupEvents()");
         for(auto entity : world.View<cmpt::LootEvent>()) {
 
@@ -199,7 +198,7 @@ namespace sys::evt {
                 }
 
                 case data::loot::LootKind::WeaponCrate: {
-                    data::g_weapon_select_menu.show = true;
+                    nav.MakeRequest(state::NavRequestKind::WeaponSelectMenu);
                     snd::PlaySoundFxGlobal(asset::SoundFxType::PickupWeaponCrate);
                     break;
                 }

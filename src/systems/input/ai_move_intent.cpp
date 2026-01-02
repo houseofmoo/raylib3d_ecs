@@ -1,6 +1,7 @@
 #include "systems/input/input_system.h"
 #include "raymath.h"
 #include "components/components.h"
+#include "data\global_data.h"
 #include "utils/rl_utils.h"
 #include "utils/position.h"
 #include "utils/debug.h"
@@ -10,7 +11,7 @@ namespace sys::input {
         PROFILE_SCOPE("AIMoveIntent()");
         // get player position
         Vector3 player_pos = Vector3Zero();
-        if (auto ptrans = world.TryGetComponent<cmpt::Transform>(data::g_player.id)) {
+        if (auto ptrans = world.TryGetComponent<cmpt::Transform>(gd::player.id)) {
             player_pos = ptrans->position;
         }
 

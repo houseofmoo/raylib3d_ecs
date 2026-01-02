@@ -3,7 +3,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "storage/registry.h"
-#include "data/game/game.h"
+#include "data/global_data.h"
 #include "data/entity.h"
 #include "utils/debug.h"
 
@@ -23,7 +23,7 @@ namespace utils {
                 data::cnst::PLAY_AREA.max.z - 1.0f
             );
             
-            if (data::g_terrain.ValidMove(new_x, new_z, 0.0f)) break;
+            if (gd::terrain.ValidMove(new_x, new_z, 0.0f)) break;
 
             attempts += 1;
             if (attempts > 5) {
@@ -50,7 +50,7 @@ namespace utils {
                 (int)std::ceil(target.z + offset)
             );
 
-            if (data::g_terrain.ValidMove(new_x, new_z, 0.0f)) break;
+            if (gd::terrain.ValidMove(new_x, new_z, 0.0f)) break;
             
             attempts += 1;
             if (attempts > 5) {
@@ -64,7 +64,7 @@ namespace utils {
 
     inline Vector3 ValidateMovePosition(const Vector3 from_position, const Vector3 to_position, const float height) {
         // if to_position is valid, just return it
-        if (data::g_terrain.ValidMove(to_position, height)){
+        if (gd::terrain.ValidMove(to_position, height)){
             return to_position;
         }
         
@@ -73,13 +73,13 @@ namespace utils {
         
         // if X is not valid, restore from_position.x
         valid_position.x = to_position.x;
-        if (!data::g_terrain.ValidMove(valid_position.x, valid_position.z, height)) {
+        if (!gd::terrain.ValidMove(valid_position.x, valid_position.z, height)) {
             valid_position.x = from_position.x;
         }
 
         // if Z is not valid, restore from_position.z
         valid_position.z = to_position.z;
-        if (!data::g_terrain.ValidMove(valid_position.x, valid_position.z, height)) {
+        if (!gd::terrain.ValidMove(valid_position.x, valid_position.z, height)) {
             valid_position.z = from_position.z;
         }
 

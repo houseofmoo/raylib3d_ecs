@@ -1,6 +1,5 @@
 #include "assets/asset_loader.h"
 #include "data/entity.h"
-#include "data/game/game.h"
 #include "raymath.h"
 #include "assets.h"
 #include "utils/debug.h"

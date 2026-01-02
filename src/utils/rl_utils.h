@@ -3,7 +3,6 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "data/entity.h"
-#include "data/game/game.h"
 #include "components/components.h"
 #include "storage/registry.h"
 

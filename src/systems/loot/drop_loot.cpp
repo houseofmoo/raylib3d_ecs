@@ -4,7 +4,7 @@
 #include "raylib.h"
 #include "components/components.h"
 #include "spawners/world/loot/loot.h"
-#include "data/game/game.h"
+#include "data/global_data.h"
 #include "data/entity.h"
 #include "utils/debug.h"
 
@@ -14,7 +14,7 @@ namespace sys::loot {
 
     float ColliderScaler(strg::Registry& world) {
         float collider_scale = 1.0f;
-        if (auto* stats = world.TryGetComponent<cmpt::Stats>(data::g_player.id)) {
+        if (auto* stats = world.TryGetComponent<cmpt::Stats>(gd::player.id)) {
             collider_scale = stats->pickup_range_modifier;
         }
         return collider_scale;
@@ -41,7 +41,7 @@ namespace sys::loot {
 
     void DropLoot(strg::Registry& world) {
         PROFILE_SCOPE("DropLoot()");
-        if (data::g_cheats.never_drop_loot) {
+        if (gd::cheats.never_drop_loot) {
             return;
         }
         
@@ -56,7 +56,7 @@ namespace sys::loot {
             // all enemies that drop loot always drop exp
             spwn::loot::Exp(world, etrans.position, data::cnst::EXP_VALUE, collider_scale);
 
-            if (data::g_cheats.always_drop_loot) {
+            if (gd::cheats.always_drop_loot) {
                 spwn::loot::Powerup(world, etrans.position, data::loot::GetRandomPowerupKind(), collider_scale);
                 spwn::loot::WeaponCrate(world, etrans.position, collider_scale);
                 continue;

@@ -1,11 +1,11 @@
 #include "spawners/system/map/map.h"
 #include "spawners/world/terrain/terrain.h"
-#include "data/game/game.h"
+#include "data/global_data.h"
 
 namespace spwn::map {
      void GenerateMap(strg::Registry& world) {
         // spawn world boundaries
-        data::g_terrain.ResetTiles();
+        gd::terrain.ResetTiles();
       
         //spwn::terrain::Terrain2(world, Vector3{ boundary.min.x - 0.5f, 3.0f, 0.0f }, Vector3{ 1.0f, 6.0f, boundary.max.z - boundary.min.z });
         //spwn::terrain::Terrain2(world, Vector3{ boundary.max.x + 0.5f, 3.0f, 0.0f }, Vector3{ 1.0f, 6.0f, boundary.max.z - boundary.min.z });

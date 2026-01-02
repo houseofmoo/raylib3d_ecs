@@ -1,5 +1,29 @@
 #include "main.h"
 
+#include "raylib.h"
+// #include "draw/ui/start_screen.h"
+// #include "render/ui/death_screen.h"
+// #include "render/ui/hud.h"
+// #include "render/ui/weapon_select.h"
+// #include "render/entities/render_entities.h"
+#include "draw/draw_guard.h"
+
+#ifdef DEBUG
+#include "rlImGui.h"
+#include "imgui.h"
+#include "debug/debug_window.h"
+#include "utils/debug.h"
+#endif
+
+#include "state/game.h"
+#include "state/menus/start_menu/start_menu.h"
+
+#include "data/global_data.h"
+#include "assets/assets.h"
+#include "assets/asset_loader.h"
+#include "systems/systems.h"
+#include "components/components.h"
+
 constexpr int SCREEN_WIDTH = 1920;
 constexpr int SCREEN_HEIGHT = 1080;
 
@@ -11,7 +35,7 @@ int main() {
 
     // raygui
     //::GuiLoadStyleDark();
-    ::GuiLoadStyleBoxOnBox();
+    rgui::LoadStyles();
 
     #ifdef DEBUG
     //rlImGuiBeginInitImGui();
@@ -31,31 +55,54 @@ int main() {
     asset::LoadAssets();
     sys::InitWorld();
 
-    float delta_time = 0.0f;
-    int screen_width = SCREEN_WIDTH;
-    int screen_height = SCREEN_HEIGHT;
+    Game game;
+    state::Input input;
+    state::StateContext ctx { 
+        .cmd = game.states, 
+        .input = input, 
+        .world = sys::world,
+        .delta_time = 0.0f,
+    };
+
+    // always start at start up screen
+    game.states.Push(std::make_unique<state::StartMenu>());
+    game.states.ApplyPending();
+
+    gd::screen_size.x = SCREEN_WIDTH;
+    gd::screen_size.y = SCREEN_HEIGHT;
 
     while (!::WindowShouldClose()) {
-        delta_time = ::GetFrameTime();
-        screen_width = ::GetScreenWidth();
-        screen_height = ::GetScreenHeight();
+        gd::screen_size.x = ::GetScreenWidth();
+        gd::screen_size.y = ::GetScreenHeight();
+        ctx.delta_time = ::GetFrameTime();;
 
+        // get input and updadte context
+        ctx.input.Reset();
+        if (IsKeyDown(KEY_W)) ctx.input.up = 1.0f;
+        if (IsKeyDown(KEY_S)) ctx.input.down = 1.0f;
+        if (IsKeyDown(KEY_A)) ctx.input.left = 1.0f;
+        if (IsKeyDown(KEY_D)) ctx.input.right = 1.0f;
+        ctx.input.dash = IsKeyDown(KEY_SPACE);
+        ctx.input.pause = IsKeyPressed(KEY_GRAVE);
+
+        // udpate background music
         ::UpdateMusicStream(asset::bg_music);
 
-        // check for pause key
-        HandlePause(false);
-
-        StateSystems(delta_time);
+        // run state handlers
+        game.states.HandleInput(ctx);
+        game.states.Update(ctx);
        
-        // DRAWING ONLY BELOW HERE
-        ::BeginDrawing();
-        ::ClearBackground(Color{30,30,30,255});
-        StateDraws(delta_time, screen_width, screen_height);
-        #ifdef DEBUG
-            // imgui ui
+        {
+            // draw calls
+            guard::Drawing d;
+            ::ClearBackground(Color{30,30,30,255});
+            game.states.Draw(ctx);
+            #ifdef DEBUG
             debug::DrawDebugUI(sys::world, io);
-        #endif
-        ::EndDrawing();
+            #endif
+        }
+
+        game.states.ApplyPending();
     }
 
     asset::UnloadAssets();
@@ -75,144 +122,109 @@ int main() {
     return 0;
 }
 
-void HandlePause(bool clicked) {
-    static data::GameState_E prev_state;
-    if (::IsKeyPressed(KEY_GRAVE) || clicked) {
-        if (data::g_game.state == data::GameState_E::Paused) {
-            // unpausing restores previous game state
-            data::g_game.state = prev_state;
-        } else {
-            // pausing stores current gmae state and sets pause state
-            prev_state = data::g_game.state;
-            data::g_game.state = data::GameState_E::Paused;
-        }
-    }
-}
+// void HandlePause(bool clicked) {
+//     static game::GameState_E prev_state;
+//     if (::IsKeyPressed(KEY_GRAVE) || clicked) {
+//         if (game::g_game.state == game::GameState_E::Paused) {
+//             // unpausing restores previous game state
+//             game::g_game.state = prev_state;
+//         } else {
+//             // pausing stores current gmae state and sets pause state
+//             prev_state = game::g_game.state;
+//             game::g_game.state = game::GameState_E::Paused;
+//         }
+//     }
+// }
 
-void StateSystems(const float delta_time) {
-     switch (data::g_game.state) {
-        case data::GameState_E::StartScreen: {
-            // start up menu checks
-            // if game started transition to newgame
-            break;
-        }
+// void StateSystems(const float delta_time) {
+//      switch (game::g_game.state) {
+//         case game::GameState_E::StartScreen: {
+//             // start up menu checks
+//             // if game started transition to newgame
+//             break;
+//         }
 
-        case data::GameState_E::NewGame: {
-            sys::StartGame();
-            data::g_game.state = data::GameState_E::Running;
-            break;
-        }
+//         case game::GameState_E::NewGame: {
+//             sys::StartGame();
+//             game::g_game.state = game::GameState_E::Running;
+//             break;
+//         }
 
-        case data::GameState_E::Running: {
-            // normal ops
-            sys::RunUpdateSystems(delta_time);
-            // if player dies transition to death screen?
-            break;
-        }
+//         case game::GameState_E::Running: {
+//             // normal ops
+//             sys::RunGameSystems(delta_time);
+//             // if player dies transition to death screen?
+//             break;
+//         }
 
-        case data::GameState_E::StatsScreen: {
-            // when player presses TAB show stats screen
-            // transition back to running
-            break;
-        }
+//         case game::GameState_E::StatsScreen: {
+//             // when player presses TAB show stats screen
+//             // transition back to running
+//             break;
+//         }
 
-        case data::GameState_E::Paused: {
-            // draw pause/options menu
-            break;
-        }
+//         case game::GameState_E::Paused: {
+//             // draw pause/options menu
+//             break;
+//         }
         
-        case data::GameState_E::Dead: {
-            // show death UI
-            break;
-        }
-    }
-}
+//         case game::GameState_E::Dead: {
+//             // show death UI
+//             break;
+//         }
+//     }
+// }
 
-void StateDraws(const float delta_time, const int screen_width, const int screen_height) {
-    switch (data::g_game.state) {
-        case data::GameState_E::StartScreen: {
-            // draw dark box over entire screen
-            ::DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175} );
+// void StateDraws(const float delta_time) {
+//     switch (game::g_game.state) {
+//         case game::GameState_E::StartScreen: {
+//             StartScreen();
+//             break;
+//         }
 
-            // draw title
-            Font font = ::GuiGetFont();
-            int width = ::MeasureText("BOX ON BOX CRIME", font.baseSize);
-            ::GuiDrawText(
-                "BOX ON BOX CRIME", 
-                Rectangle{ 
-                    (screen_width * 0.5f) - (width * 0.5f), 
-                    100, 
-                    (float)width, 
-                    50 
-                }, 
-                TEXT_ALIGN_CENTER, WHITE
-            );
+//         case game::GameState_E::NewGame: {
+//             // nothing to draw here
+//             break;
+//         }
 
-            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Start")) {
-                data::g_game.state = data::GameState_E::NewGame;
-            }
-            break;
-        }
+//         case game::GameState_E::Running: {
+//             {
+//                 guard::Mode3D _(sys::camera);
+//                 RenderEntities(sys::world, delta_time);
+//             }
+//             HUD(sys::world, delta_time);
 
-        case data::GameState_E::NewGame: {
-            // nothing to draw here
-            break;
-        }
+//             if (game::g_weapon_select_menu.show) {
+//                 WeaponSelect(sys::world);
+//             }
+//             break;
+//         }
 
-        case data::GameState_E::Running: {
-            ::BeginMode3D(sys::camera);
-            sys::RunEntityDrawSystems(delta_time);
-            ::EndMode3D();
-            sys::RunUIDrawSystems(delta_time);
+//         case game::GameState_E::StatsScreen: {
+//             // draw stats screen menu
+//             break;
+//         }
 
-            if (data::g_weapon_select_menu.show) {
-                sys::RunWeaponSelectDrawSystem(screen_width, screen_height);
-            }
-            break;
-        }
-
-        case data::GameState_E::StatsScreen: {
-            // draw stats screen menu
-            break;
-        }
-
-        case data::GameState_E::Paused: {
-            ::BeginMode3D(sys::camera);
-            sys::RunEntityDrawSystems(delta_time);
-            ::EndMode3D();
-            sys::RunUIDrawSystems(delta_time);
+//         case game::GameState_E::Paused: {
+//             {
+//                 // Render3D render(sys::camera);
+//                 guard::Mode3D _(sys::camera);
+//                 RenderEntities(sys::world, delta_time);
+//             }
+//             HUD(sys::world, delta_time);
             
-            // draw dark box over entire screen
-            DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175});
+//             // draw dark box over entire screen
+//             DrawRectangle(0, 0, app::g_screen_width, app::g_screen_height, Color{0,0,0,175});
 
-            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Unpause")) {
-                HandlePause(true);
-            }
-            break;
-        }
+//             if (rgui::Button("Unpause", Vector2{ app::g_screen_width * 0.5f, 150.0f }, rgui::HAlign::Center)) {
+//                 HandlePause(true);
+//             }
+//             break;
+//         }
 
-        case data::GameState_E::Dead: {
-            // draw dark box over entire screen
-            ::DrawRectangle(0, 0, screen_width, screen_height, Color{0,0,0,175} );
-
-            // draw title
-            Font font = ::GuiGetFont();
-            int width = ::MeasureText("YOU DIED! PLAY AGAIN?", font.baseSize);
-            ::GuiDrawText(
-                "YOU DIED! PLAY AGAIN?", 
-                Rectangle{ 
-                    (screen_width * 0.5f) - (width * 0.5f), 
-                    100, 
-                    (float)width, 
-                    50 
-                }, 
-                TEXT_ALIGN_CENTER, WHITE
-            );
-
-            if (::GuiButton(Rectangle{ (screen_width * 0.5f) - 50.0f, 150.0f, 100.0f, 50.0f }, "Start")) {
-                data::g_game.state = data::GameState_E::NewGame;
-            }
-            break;
-        }
-    }
-}
+//         case game::GameState_E::Dead: {
+//             DeathScreen();
+//             break;
+//         }
+//     }
+// }

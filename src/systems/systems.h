@@ -2,6 +2,7 @@
 
 #include "raylib.h"
 #include "storage/registry.h"
+#include "state/nav_request.h"
 
 namespace sys {
     extern Camera3D camera;
@@ -9,8 +10,5 @@ namespace sys {
 
     void InitWorld();
     void StartGame();
-    void RunUpdateSystems(const float delta_time);
-    void RunEntityDrawSystems(const float delta_time);
-    void RunUIDrawSystems(const float delta_time);
-    void RunWeaponSelectDrawSystem(const int screen_width, const int screen_height);
+    void RunGameSystems(state::NavRequest& nav, const float delta_time);
 }

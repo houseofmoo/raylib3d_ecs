@@ -1,5 +1,5 @@
 #include "sound/sound_player.h"
-#include "data/game/game.h"
+#include "data/global_data.h"
 #include "raymath.h"
 
 namespace snd {
@@ -12,7 +12,7 @@ namespace snd {
     void PlaySoundFxPositional(asset::SoundFxType type, const Vector3 position) {
         constexpr float MAX_VOLUME = 0.12f;
         constexpr float THRESHOLD = 10.0f;
-        float distance = Vector3Distance(data::g_player.position, position);
+        float distance = Vector3Distance(gd::player.position, position);
         float volume = MAX_VOLUME;
         if (distance > 0.0f) {
             volume = Clamp(MAX_VOLUME * (THRESHOLD / distance), 0.0f, MAX_VOLUME);

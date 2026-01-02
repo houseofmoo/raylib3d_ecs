@@ -57,15 +57,18 @@ install(TARGETS ${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/assets
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/components
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/data
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/data/game
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/debug
-
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/assets
     
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/draw
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/draw/entities
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/draw/hud
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/sound
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners
@@ -82,6 +85,15 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/projectile
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world/terrain
 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/state
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/death_menu
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/options_menu
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/pause_menu
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/start_menu
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/weapon_select
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/state/play
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/storage
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems
@@ -92,6 +104,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/events
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/input
     ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/loot
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/systems/spawn_enemies
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
 )
