@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include "raylib.h"
 #include "storage/registry.h"
 #include "utils/debug.h"
 
@@ -58,8 +59,9 @@ namespace state {
 
     struct StateContext {
         StateCommands& cmd;
-        Input& input;
         strg::Registry& world;
+        Camera3D& camera;
+        Input input;
         float delta_time;
         // Assets& assets;
         // Audio& audio;

@@ -1,4 +1,4 @@
-#include "state/menus/weapon_select/weapon_select.h"
+#include "state/menus/player_levelup/player_levelup.h"
 
 #include <memory>
 #include "raylib.h"
@@ -10,13 +10,15 @@
 namespace state {
     DISABLE_UNUSED_WARNINGS
 
-    void WeaponSelectMenu::HandleInput(StateContext& ctx) {}
+    void PlayerLevelupMenu::HandleInput(StateContext& ctx) {}
 
-    void WeaponSelectMenu::Update(StateContext& ctx) {}
+    void PlayerLevelupMenu::Update(StateContext& ctx) {}
 
-    void WeaponSelectMenu::Draw(StateContext& ctx) {
+    void PlayerLevelupMenu::Draw(StateContext& ctx) {
         // darken background
         DrawRectangle(0, 0,  gd::screen_size.x, gd::screen_size.y, Color{0,0,0,128});
+
+        rgui::Label("Level up!", Vector2{ (gd::screen_size.x * 0.5f), 200.0}, rgui::HAlign::Center);
 
         // display choices
         auto rec = Rectangle{ (gd::screen_size.x * 0.5f), 300.0f, 200.0f, 40.0f };

@@ -10,28 +10,9 @@
 #include "utils/debug.h"
 
 namespace sys::evt {
-    void UpgradeStats(strg::Registry& world, Entity id) {
-        auto* stats = world.TryGetComponent<cmpt::Stats>(id);
-        stats->damage_modifier += data::cnst::LEVEL_UP_DAMAGE_VALUE;
-        stats->attack_speed_modifier += data::cnst::LEVEL_UP_ATTACK_SPEED_VALUE;
-        stats->move_speed_modifier += data::cnst::LEVEL_UP_MOVE_SPEED_VALUE;
-        stats->pickup_range_modifier += data::cnst::LEVEL_UP_PICKUP_RANGE_VALUE;
-        stats->dash_speed_modifier += data::cnst::LEVEL_UP_DASH_DISTANCE_VALUE;
-    }
-
     void ApplyExp(strg::Registry& world, Entity id, int exp_amount) {
-        auto* player = world.TryGetComponent<cmpt::Player>(id);
-        if (player == nullptr) return;
-
-        player->exp += exp_amount;
-        if (player->exp > player->exp_to_level) {
-            while (player->exp >= player->exp_to_level) {
-                player->exp  = player->exp - player->exp_to_level;
-                player->level += 1;
-                player->exp_to_level *= data::cnst::PLAYER_EXP_MODIFIER;
-                spwn::evt::Notification(world, data::notif::GAIN_LEVELUP);
-                UpgradeStats(world, id);
-            }
+        if (auto* player = world.TryGetComponent<cmpt::Player>(id)) {
+            player->exp += exp_amount;
         }
     }
 
@@ -86,8 +67,6 @@ namespace sys::evt {
     }
 
     void ApplyWeapon(strg::Registry& world, data::loot::WeaponKind kind, Entity id) {
-        // TODO: if weapon exists, upgrade it
-        // otherwise give baselist to entity
         switch (kind) {
             case data::loot::WeaponKind::Pistol: {
                 spwn::weapon::EquipPistol(

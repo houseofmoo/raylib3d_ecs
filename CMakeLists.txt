@@ -75,7 +75,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/equip/weapon
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system/camera
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system/events
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/system/map
     ${CMAKE_CURRENT_SOURCE_DIR}/src/spawners/world
@@ -90,6 +89,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/death_menu
     ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/options_menu
     ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/pause_menu
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/player_levelup
     ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/start_menu
     ${CMAKE_CURRENT_SOURCE_DIR}/src/state/menus/weapon_select
     ${CMAKE_CURRENT_SOURCE_DIR}/src/state/play

@@ -8,7 +8,6 @@
 #include "assets/assets.h"
 #include "utils/debug.h"
 
-#include "spawners/system/camera/camera.h"
 #include "spawners/system/map/map.h"
 #include "spawners/equip/weapon/weapons.h"
 #include "spawners/world/player/player.h"
@@ -21,6 +20,7 @@
 #include "systems/collisions/collision_handlers.h"
 #include "systems/damage_system.h"
 #include "systems/loot/drop_loot.h"
+#include "systems/levelup_system.h"
 #include "systems/spawn_enemies/spawn_enemies.h"
 #include "systems/events/loot_pickedup_event_system.h"
 #include "systems/events/notification_event_system.h"
@@ -32,12 +32,14 @@
 #include "spawners/damage_zone.h"
 
 namespace sys {
-    Camera3D camera;
     strg::Registry world;
-
-    void InitWorld() {
-        camera = spwn::camera::Camera();
-    }
+    constinit Camera3D camera = {
+        .position = data::cnst::CAMERA_START_POSITION,
+        .target = data::cnst::CAMERA_TARGET,
+        .up = data::cnst::CAMERA_UP,
+        .fovy = data::cnst::CAMERA_FOVY,
+        .projection = CAMERA_PERSPECTIVE
+    };
 
     void StartGame() {
         world.Reset();
@@ -104,6 +106,8 @@ namespace sys {
         sys::vel::ApplyVelocity(world, delta_time);
         sys::vel::ApplyArch(world, delta_time);
         sys::vel::ApplyRotateInPlace(world, delta_time);
+
+        sys::lvl::LevelupSystem(world, nav);
 
         sys::cu::LifetimeTimer(world, delta_time);
         sys::cu::OnDestroyEffects(world);

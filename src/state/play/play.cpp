@@ -4,6 +4,7 @@
 #include "draw/draw_guard.h"
 #include "draw/hud/hud.h"
 #include "state/menus/pause_menu/pause_menu.h"
+#include "state/menus/player_levelup/player_levelup.h"
 #include "state/menus/death_menu/death_menu.h"
 #include "state/menus/weapon_select/weapon_select.h"
 #include "state/nav_request.h"
@@ -28,21 +29,31 @@ namespace state {
         NavRequest nav;
         sys::RunGameSystems(nav, ctx.delta_time);
 
-        switch (nav.GetRequest()) {
-            case NavRequestKind::DeathMenu: {
-                ctx.cmd.Pop();
-                ctx.cmd.Push(std::make_unique<state::DeathMenu>());
-                break;
-            }
+        nav.PrioritizeRequests();
+        for (auto req : nav) {
+            switch (req) {
+                case NavRequestKind::DeathMenu: {
+                    // if we have a death menu request, ignore all other requests
+                    ctx.cmd.Pop();
+                    ctx.cmd.Push(std::make_unique<state::DeathMenu>());
+                    return;
+                }
 
-            case NavRequestKind::WeaponSelectMenu: {
-                ctx.cmd.Push(std::make_unique<state::WeaponSelectMenu>());
-                break;
-            }
+                case NavRequestKind::PlayerLevelup: {
+                    ctx.cmd.Push(std::make_unique<state::PlayerLevelupMenu>());
+                    break;
+                }
 
-            case NavRequestKind::None: break;
-            default: { PRINT("unexpected state transition request"); break; }
+                case NavRequestKind::WeaponSelectMenu: {
+                    ctx.cmd.Push(std::make_unique<state::WeaponSelectMenu>());
+                    break;
+                }
+
+                case NavRequestKind::None: break;
+                default: { PRINT("unexpected state transition request"); break; }
+            }
         }
+
     }
 
     void Play::Draw(StateContext& ctx) {

@@ -8,7 +8,6 @@ namespace sys {
     extern Camera3D camera;
     extern strg::Registry world;
 
-    void InitWorld();
     void StartGame();
     void RunGameSystems(state::NavRequest& nav, const float delta_time);
 }

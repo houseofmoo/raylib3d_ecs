@@ -1,11 +1,4 @@
-#include "main.h"
-
 #include "raylib.h"
-// #include "draw/ui/start_screen.h"
-// #include "render/ui/death_screen.h"
-// #include "render/ui/hud.h"
-// #include "render/ui/weapon_select.h"
-// #include "render/entities/render_entities.h"
 #include "draw/draw_guard.h"
 
 #ifdef DEBUG
@@ -51,18 +44,17 @@ int main() {
     }
     //rlImGuiEndInitImGui();
     #endif
-
-    asset::LoadAssets();
-    sys::InitWorld();
-
+    
     Game game;
-    state::Input input;
     state::StateContext ctx { 
         .cmd = game.states, 
-        .input = input, 
         .world = sys::world,
+        .camera = sys::camera,
+        .input = {}, 
         .delta_time = 0.0f,
     };
+
+    asset::LoadAssets();
 
     // always start at start up screen
     game.states.Push(std::make_unique<state::StartMenu>());
@@ -121,110 +113,3 @@ int main() {
     #endif
     return 0;
 }
-
-// void HandlePause(bool clicked) {
-//     static game::GameState_E prev_state;
-//     if (::IsKeyPressed(KEY_GRAVE) || clicked) {
-//         if (game::g_game.state == game::GameState_E::Paused) {
-//             // unpausing restores previous game state
-//             game::g_game.state = prev_state;
-//         } else {
-//             // pausing stores current gmae state and sets pause state
-//             prev_state = game::g_game.state;
-//             game::g_game.state = game::GameState_E::Paused;
-//         }
-//     }
-// }
-
-// void StateSystems(const float delta_time) {
-//      switch (game::g_game.state) {
-//         case game::GameState_E::StartScreen: {
-//             // start up menu checks
-//             // if game started transition to newgame
-//             break;
-//         }
-
-//         case game::GameState_E::NewGame: {
-//             sys::StartGame();
-//             game::g_game.state = game::GameState_E::Running;
-//             break;
-//         }
-
-//         case game::GameState_E::Running: {
-//             // normal ops
-//             sys::RunGameSystems(delta_time);
-//             // if player dies transition to death screen?
-//             break;
-//         }
-
-//         case game::GameState_E::StatsScreen: {
-//             // when player presses TAB show stats screen
-//             // transition back to running
-//             break;
-//         }
-
-//         case game::GameState_E::Paused: {
-//             // draw pause/options menu
-//             break;
-//         }
-        
-//         case game::GameState_E::Dead: {
-//             // show death UI
-//             break;
-//         }
-//     }
-// }
-
-// void StateDraws(const float delta_time) {
-//     switch (game::g_game.state) {
-//         case game::GameState_E::StartScreen: {
-//             StartScreen();
-//             break;
-//         }
-
-//         case game::GameState_E::NewGame: {
-//             // nothing to draw here
-//             break;
-//         }
-
-//         case game::GameState_E::Running: {
-//             {
-//                 guard::Mode3D _(sys::camera);
-//                 RenderEntities(sys::world, delta_time);
-//             }
-//             HUD(sys::world, delta_time);
-
-//             if (game::g_weapon_select_menu.show) {
-//                 WeaponSelect(sys::world);
-//             }
-//             break;
-//         }
-
-//         case game::GameState_E::StatsScreen: {
-//             // draw stats screen menu
-//             break;
-//         }
-
-//         case game::GameState_E::Paused: {
-//             {
-//                 // Render3D render(sys::camera);
-//                 guard::Mode3D _(sys::camera);
-//                 RenderEntities(sys::world, delta_time);
-//             }
-//             HUD(sys::world, delta_time);
-            
-//             // draw dark box over entire screen
-//             DrawRectangle(0, 0, app::g_screen_width, app::g_screen_height, Color{0,0,0,175});
-
-//             if (rgui::Button("Unpause", Vector2{ app::g_screen_width * 0.5f, 150.0f }, rgui::HAlign::Center)) {
-//                 HandlePause(true);
-//             }
-//             break;
-//         }
-
-//         case game::GameState_E::Dead: {
-//             DeathScreen();
-//             break;
-//         }
-//     }
-// }

@@ -30,5 +30,6 @@ namespace gd {
     extern strg::Tilemap terrain;
     extern GameStatus game;
     extern PlayerInfo player;
+    // extern Camera camera;
     extern Vector2 screen_size;
 }
