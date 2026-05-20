@@ -102,25 +102,24 @@ namespace draw {
     }
 
     void DrawEntities(strg::Registry& world, const float delta_time) {
-            PROFILE_SCOPE("DrawEntities()");
-            gd::game.entity_count = 0;
-            gd::game.enemy_count = 0;
+        PROFILE_SCOPE("DrawEntities()");
+        gd::game.entity_count = 0;
+        gd::game.enemy_count = 0;
 
-            for (auto entity : world.View<cmpt::Draw, cmpt::Transform>()) {
-                auto& draw = world.GetComponent<cmpt::Draw>(entity);
-                auto& trans = world.GetComponent<cmpt::Transform>(entity);
+        for (auto entity : world.View<cmpt::Draw, cmpt::Transform>()) {
+            auto& draw = world.GetComponent<cmpt::Draw>(entity);
+            auto& trans = world.GetComponent<cmpt::Transform>(entity);
 
-                gd::game.entity_count += 1;
-                if (draw.model == nullptr) { // only terrain does not have a draw model atm
-                    // terrain does not have a model atm
-                    DrawStaticWiredModel(trans, draw);
-                } else {
-                    if (world.HasComponent<tag::Enemy>(entity)) gd::game.enemy_count += 1;
-                    DrawWiredModelEx(trans, draw, GetDrawColor(world, delta_time, entity, draw.color));
-                }
+            gd::game.entity_count += 1;
+            if (draw.model == nullptr) { // only terrain does not have a draw model atm
+                DrawStaticWiredModel(trans, draw);
+            } else {
+                if (world.HasComponent<tag::Enemy>(entity)) gd::game.enemy_count += 1;
+                DrawWiredModelEx(trans, draw, GetDrawColor(world, delta_time, entity, draw.color));
             }
-            
-            DrawPlayAreaGround();
-            DrawPlayAreaWalls();
+        }
+        
+        DrawPlayAreaGround();
+        DrawPlayAreaWalls();
     }
 }

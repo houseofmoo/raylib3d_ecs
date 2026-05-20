@@ -32,8 +32,26 @@ namespace sys::vel {
             if (world.HasComponent<tag::DestroyOnTerrainCollision>(entity)) {
                 world.AddComponent<tag::Destroy>(entity);
             } else if (world.HasComponent<cmpt::AIMoveIntent>(entity)) {
-                auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
-                intent.stuck = true;
+                // TODO: when the unit jumps, they can get stuck in the air
+                // we need to fix their Y position over time so they "fall"
+                // back to the ground
+                if (gd::terrain.InBoundsWorld(new_pos.x, new_pos.z)) {
+                    world.RemoveComponent<cmpt::Velocity>(entity);
+                    world.AddComponent<cmpt::ArchMove>(
+                        entity,
+                        cmpt::ArchMove{
+                            .start = trans.position,
+                            .end = new_pos * 1.1f,
+                            .duration = 1.0f,
+                            .elapsed = 0.0f,
+                            .height = 7.0f
+                        }
+                    );
+                } else {
+                    // pick a new target                
+                    auto& intent = world.GetComponent<cmpt::AIMoveIntent>(entity);
+                    intent.stuck = true;
+                }
             } else {
                 trans.position = utils::ValidateMovePosition(trans.position, new_pos, height);
             }
@@ -60,8 +78,13 @@ namespace sys::vel {
                 time = Clamp(arch.elapsed / arch.duration, 0.0f, 1.0f);
             } else {
                 time = 1.0f;
-            } 
-            //float time_eased = utils::EaseInOutQuad(time);
+            }
+
+            if (arch.elapsed > arch.duration) {
+                world.RemoveComponent<cmpt::ArchMove>(entity);
+                world.AddComponent<cmpt::Velocity>(entity, cmpt::Velocity{});
+                return;
+            }
 
             Vector3 new_pos = Vector3Lerp(arch.start, arch.end, time);
             new_pos.y += 4.0f * arch.height * time * (1.0f - time);
